@@ -1,191 +1,191 @@
-# Algorithm Complexity Visualizer
+# Trình Minh Họa Độ Phức Tạp Thuật Toán
 
-🎯 **Interactive visualization platform for understanding algorithm complexity**
+**Nền tảng minh họa tương tác để hiểu độ phức tạp thuật toán**
 
-An educational web application built with Next.js, React, TypeScript, and TailwindCSS that provides interactive visualizations for various algorithms including sorting, searching, and extreme value finding algorithms.
+Ứng dụng web giáo dục được xây dựng bằng Next.js, React, TypeScript và TailwindCSS, cung cấp các minh họa tương tác cho nhiều thuật toán khác nhau bao gồm sắp xếp, tìm kiếm và tìm giá trị cực trị.
 
-## ✨ Features
+## Tính Năng
 
-### 🏠 Interactive Homepage
-- **3D Animated Bubbles**: Three floating bubbles representing different algorithm categories
-- **Smooth Animations**: Built with Framer Motion for beautiful transitions
-- **Responsive Design**: Works seamlessly across all device sizes
+### Trang Chủ Tương Tác
+- **Bong Bóng Hoạt Hình 3D**: Ba bong bóng nổi đại diện cho các danh mục thuật toán khác nhau
+- **Hoạt Hình Mượt Mà**: Được xây dựng với Framer Motion cho các hiệu ứng chuyển cảnh đẹp mắt
+- **Thiết Kế Responsive**: Hoạt động liền mạch trên mọi kích cỡ thiết bị
 
-### 🔄 Sorting Algorithms
-- **Bubble Sort**: Simple comparison-based algorithm with O(n²) complexity
-- **Selection Sort**: Finds minimum element and places it at the beginning
-- **Insertion Sort**: Builds sorted array one element at a time
-- **Quick Sort**: Divide-and-conquer algorithm with O(n log n) average complexity
-- **Merge Sort**: Stable sorting algorithm with guaranteed O(n log n) performance
+### Thuật Toán Sắp Xếp
+- **Bubble Sort**: Thuật toán so sánh đơn giản với độ phức tạp O(n²)
+- **Selection Sort**: Tìm phần tử nhỏ nhất và đặt ở đầu
+- **Insertion Sort**: Xây dựng mảng đã sắp xếp từng phần tử một
+- **Quick Sort**: Thuật toán chia để trị với độ phức tạp trung bình O(n log n)
+- **Merge Sort**: Thuật toán sắp xếp ổn định với hiệu suất đảm bảo O(n log n)
 
-### 🔍 Searching Algorithms
-- **Linear Search**: Sequential search through unsorted arrays
-- **Binary Search**: Efficient search for sorted arrays with O(log n) complexity
+### Thuật Toán Tìm Kiếm
+- **Linear Search**: Tìm kiếm tuần tự qua mảng chưa sắp xếp
+- **Binary Search**: Tìm kiếm hiệu quả cho mảng đã sắp xếp với độ phức tạp O(log n)
 
-### 📊 Extreme Value Finding
-- **Linear Min/Max**: Simple scan to find minimum and maximum values
-- **Tournament Method**: Divide-and-conquer approach for finding extremes
+### Tìm Giá Trị Cực Trị
+- **Linear Min/Max**: Quét đơn giản để tìm giá trị nhỏ nhất và lớn nhất
+- **Tournament Method**: Phương pháp chia để trị để tìm giá trị cực trị
 
-## 🎮 Interactive Controls
+## Điều Khiển Tương Tác
 
-### Visualization Features
-- ▶️ **Play/Pause/Reset**: Full control over algorithm execution
-- 🎚️ **Speed Control**: Adjust animation speed from 0.25x to 3x
-- 📊 **Step-by-step Navigation**: Manually step through algorithm execution
-- 🔢 **Custom Arrays**: Generate new random arrays or adjust array size
-- 🎯 **Target Selection**: For searching algorithms, choose what to search for
+### Tính Năng Minh Họa
+- **Phát/Tạm Dừng/Đặt Lại**: Toàn quyền kiểm soát việc thực thi thuật toán
+- **Điều Khiển Tốc Độ**: Điều chỉnh tốc độ hoạt hình từ 0.25x đến 3x
+- **Điều Hướng Từng Bước**: Thực hiện thủ công từng bước của thuật toán
+- **Mảng Tùy Chỉnh**: Tạo mảng ngẫu nhiên mới hoặc điều chỉnh kích thước mảng
+- **Chọn Mục Tiêu**: Đối với thuật toán tìm kiếm, chọn giá trị cần tìm
 
-### Educational Elements
-- 📝 **Syntax-highlighted Code**: See the actual implementation
-- 📈 **Complexity Analysis**: Understand time and space complexity
-- 🎨 **Color-coded Visualization**: Different colors for different states
-- 📱 **Real-world Applications**: Learn when to use each algorithm
+### Yếu Tố Giáo Dục
+- **Mã Với Cú Pháp Nổi Bật**: Xem việc triển khai thực tế
+- **Phân Tích Độ Phức Tạp**: Hiểu độ phức tạp thời gian và không gian
+- **Minh Họa Mã Màu**: Màu sắc khác nhau cho các trạng thái khác nhau
+- **Ứng Dụng Thực Tế**: Học khi nào sử dụng thuật toán nào
 
-## 🛠️ Technology Stack
+## Công Nghệ Sử Dụng
 
-- **Frontend Framework**: Next.js 14 with App Router
-- **Language**: TypeScript for type safety
-- **Styling**: TailwindCSS for responsive design
-- **Animations**: Framer Motion for smooth animations
-- **Code Highlighting**: Prism.js for syntax highlighting
-- **Icons**: Lucide React for consistent iconography
+- **Framework Frontend**: Next.js 14 với App Router
+- **Ngôn Ngữ**: TypeScript để đảm bảo an toàn kiểu
+- **Styling**: TailwindCSS cho thiết kế responsive
+- **Hoạt Hình**: Framer Motion cho hoạt hình mượt mà
+- **Làm Nổi Bật Mã**: Prism.js cho cú pháp nổi bật
+- **Biểu Tượng**: Lucide React cho biểu tượng nhất quán
 
-## 🚀 Getting Started
+## Bắt Đầu
 
-### Prerequisites
+### Yêu Cầu Tiên Quyết
 - Node.js 18+ 
-- npm or yarn
+- npm hoặc yarn
 
-### Installation
+### Cài Đặt
 
-1. **Clone the repository**
+1. **Clone repository**
    ```bash
    git clone <repository-url>
    cd algorithm-complexity-visualizer
    ```
 
-2. **Install dependencies**
+2. **Cài đặt dependencies**
    ```bash
    npm install
    ```
 
-3. **Run the development server**
+3. **Chạy development server**
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+4. **Mở trình duyệt**
+   Điều hướng đến [http://localhost:3000](http://localhost:3000)
 
-## 📁 Project Structure
+## Cấu Trúc Dự Án
 
 ```
 src/
-├── app/                          # Next.js App Router pages
+├── app/                          # Trang Next.js App Router
 │   ├── algorithms/
 │   │   └── [category]/
-│   │       ├── page.tsx         # Category listing page
+│   │       ├── page.tsx         # Trang danh sách danh mục
 │   │       └── [algorithm]/
-│   │           └── page.tsx     # Algorithm detail page
-│   ├── globals.css              # Global styles
-│   ├── layout.tsx               # Root layout
-│   └── page.tsx                 # Homepage
-├── components/                   # Reusable React components
-│   ├── AlgorithmInfo.tsx        # Algorithm information display
-│   ├── CodeBlock.tsx            # Syntax-highlighted code viewer
-│   ├── ExtremeValueVisualizer.tsx # Min/Max algorithm visualizer
-│   ├── Header.tsx               # Navigation header
-│   ├── SearchingVisualizer.tsx  # Search algorithm visualizer
-│   └── SortingVisualizer.tsx    # Sorting algorithm visualizer
-├── lib/                         # Utility functions and data
-│   ├── algorithms.ts            # Algorithm definitions and metadata
-│   └── algorithmUtils.ts        # Algorithm implementations with steps
-└── types/                       # TypeScript type definitions
-    └── algorithm.ts             # Algorithm-related types
+│   │           └── page.tsx     # Trang chi tiết thuật toán
+│   ├── globals.css              # Styles toàn cục
+│   ├── layout.tsx               # Layout gốc
+│   └── page.tsx                 # Trang chủ
+├── components/                   # Các component React có thể tái sử dụng
+│   ├── AlgorithmInfo.tsx        # Hiển thị thông tin thuật toán
+│   ├── CodeBlock.tsx            # Trình xem mã với cú pháp nổi bật
+│   ├── ExtremeValueVisualizer.tsx # Trình minh họa thuật toán Min/Max
+│   ├── Header.tsx               # Header điều hướng
+│   ├── SearchingVisualizer.tsx  # Trình minh họa thuật toán tìm kiếm
+│   └── SortingVisualizer.tsx    # Trình minh họa thuật toán sắp xếp
+├── lib/                         # Hàm tiện ích và dữ liệu
+│   ├── algorithms.ts            # Định nghĩa và metadata thuật toán
+│   └── algorithmUtils.ts        # Triển khai thuật toán với các bước
+└── types/                       # Định nghĩa kiểu TypeScript
+    └── algorithm.ts             # Các kiểu liên quan đến thuật toán
 ```
 
-## 🎨 Design System
+## Hệ Thống Thiết Kế
 
-### Color Palette
-- **Primary**: Blue tones for main interface elements
-- **Success**: Green for completed/correct states
-- **Warning**: Yellow for comparison/current states
-- **Danger**: Red for swapping/error states
-- **Purple**: For special elements (pivot, middle, etc.)
+### Bảng Màu
+- **Chính**: Tông màu xanh dương cho các yếu tố giao diện chính
+- **Thành Công**: Xanh lá cho trạng thái hoàn thành/đúng
+- **Cảnh Báo**: Vàng cho trạng thái so sánh/hiện tại
+- **Nguy Hiểm**: Đỏ cho trạng thái đổi chỗ/lỗi
+- **Tím**: Cho các yếu tố đặc biệt (pivot, giữa, v.v.)
 
-### Animation Principles
-- **Smooth Transitions**: All state changes are animated
-- **Performance**: Optimized animations that don't block the UI
-- **User Control**: Users can control animation speed and pause/resume
+### Nguyên Tắc Hoạt Hình
+- **Chuyển Cảnh Mượt Mà**: Tất cả thay đổi trạng thái đều được hoạt hình
+- **Hiệu Suất**: Hoạt hình được tối ưu hóa không làm chặn UI
+- **Kiểm Soát Người Dùng**: Người dùng có thể kiểm soát tốc độ hoạt hình và tạm dừng/tiếp tục
 
-## 🎓 Educational Goals
+## Mục Tiêu Giáo Dục
 
-This platform helps students and developers:
+Nền tảng này giúp sinh viên và lập trình viên:
 
-1. **Visualize Abstract Concepts**: See how algorithms work step-by-step
-2. **Understand Complexity**: Learn Big-O notation through practical examples
-3. **Compare Algorithms**: See how different approaches solve the same problem
-4. **Practice Problem-solving**: Understand when to use which algorithm
+1. **Minh Họa Khái Niệm Trừu Tượng**: Xem cách thuật toán hoạt động từng bước
+2. **Hiểu Độ Phức Tạp**: Học ký hiệu Big-O qua ví dụ thực tế
+3. **So Sánh Thuật Toán**: Xem các cách tiếp cận khác nhau giải quyết cùng một vấn đề
+4. **Luyện Tập Giải Quyết Vấn Đề**: Hiểu khi nào sử dụng thuật toán nào
 
-## 🌟 Key Learning Outcomes
+## Kết Quả Học Tập Chính
 
-- **Algorithm Analysis**: Understanding time and space complexity
-- **Problem-solving Patterns**: Recognizing divide-and-conquer, greedy approaches
-- **Performance Trade-offs**: When to prioritize time vs space vs stability
-- **Real-world Applications**: Where these algorithms are used in practice
+- **Phân Tích Thuật Toán**: Hiểu độ phức tạp thời gian và không gian
+- **Mẫu Giải Quyết Vấn Đề**: Nhận biết chia để trị, cách tiếp cận tham lam
+- **Đánh Đổi Hiệu Suất**: Khi nào ưu tiên thời gian vs không gian vs tính ổn định
+- **Ứng Dụng Thực Tế**: Nơi các thuật toán này được sử dụng trong thực tế
 
-## 🔧 Customization
+## Tùy Chỉnh
 
-### Adding New Algorithms
+### Thêm Thuật Toán Mới
 
-1. **Define the algorithm** in `src/lib/algorithms.ts`
-2. **Implement the step-by-step logic** in `src/lib/algorithmUtils.ts`
-3. **Add visualization logic** to the appropriate visualizer component
-4. **Update routing** if needed
+1. **Định nghĩa thuật toán** trong `src/lib/algorithms.ts`
+2. **Triển khai logic từng bước** trong `src/lib/algorithmUtils.ts`
+3. **Thêm logic minh họa** vào component visualizer thích hợp
+4. **Cập nhật routing** nếu cần
 
-### Modifying Visualizations
+### Chỉnh Sửa Minh Họa
 
-The visualizer components are modular and can be easily customized:
-- Change colors in the `getElementColor` functions
-- Adjust animation timing in the `delay` calls
-- Modify layout in the JSX structure
+Các component visualizer có tính module và có thể dễ dàng tùy chỉnh:
+- Thay đổi màu sắc trong hàm `getElementColor`
+- Điều chỉnh thời gian hoạt hình trong các lời gọi `delay`
+- Chỉnh sửa layout trong cấu trúc JSX
 
-## 📱 Responsive Design
+## Thiết Kế Responsive
 
-- **Mobile-first approach**: Optimized for small screens first
-- **Flexible layouts**: Grid and flexbox for responsive components
-- **Touch-friendly**: All interactive elements work on touch devices
-- **Readable typography**: Proper font sizes and contrast ratios
+- **Phương pháp mobile-first**: Tối ưu cho màn hình nhỏ trước
+- **Layout linh hoạt**: Grid và flexbox cho components responsive
+- **Thân thiện với cảm ứng**: Tất cả yếu tố tương tác hoạt động trên thiết bị cảm ứng
+- **Typography dễ đọc**: Kích thước font và tỷ lệ tương phản phù hợp
 
-## 🚀 Performance Optimizations
+## Tối Ưu Hiệu Suất
 
-- **Code splitting**: Automatic route-based code splitting
-- **Lazy loading**: Components load when needed
-- **Optimized animations**: RAF-based animations for smooth performance
-- **Memory management**: Proper cleanup of animation timers
+- **Chia nhỏ mã**: Tự động chia nhỏ mã dựa trên route
+- **Lazy loading**: Components tải khi cần
+- **Hoạt hình tối ưu**: Hoạt hình dựa trên RAF cho hiệu suất mượt mà
+- **Quản lý bộ nhớ**: Dọn dẹp timer hoạt hình đúng cách
 
-## 🤝 Contributing
+## Đóng Góp
 
-Contributions are welcome! Areas for improvement:
+Chào mừng các đóng góp! Các lĩnh vực có thể cải thiện:
 
-- Additional algorithms (heap sort, radix sort, etc.)
-- More visualization styles (tree-based, graph-based)
-- Algorithm comparison mode
-- Performance benchmarking
-- Additional educational content
+- Các thuật toán bổ sung (heap sort, radix sort, v.v.)
+- Nhiều kiểu minh họa hơn (dựa trên cây, dựa trên đồ thị)
+- Chế độ so sánh thuật toán
+- Đo lường hiệu suất
+- Nội dung giáo dục bổ sung
 
-## 📄 License
+## Giấy Phép
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Dự án này được cấp phép theo Giấy phép MIT - xem file LICENSE để biết chi tiết.
 
-## 🙏 Acknowledgments
+## Lời Cảm Ơn
 
-- Algorithm implementations inspired by computer science textbooks
-- Visual design influenced by modern educational platforms
-- Built with modern web technologies for optimal user experience
+- Triển khai thuật toán lấy cảm hứng từ sách giáo khoa khoa học máy tính
+- Thiết kế trực quan chịu ảnh hưởng từ các nền tảng giáo dục hiện đại
+- Được xây dựng với công nghệ web hiện đại để có trải nghiệm người dùng tối ưu
 
 ---
 
-**Happy Learning! 🎉**
+**Chúc Học Vui Vẻ!**
 
-Made with ❤️ for computer science education
+Được tạo ra với tình yêu dành cho giáo dục khoa học máy tính
