@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-200 hover:bg-secondary-300 text-secondary-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100;
+  }
+
+  /* Prism.js Code Highlighting */
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #6a737d;
+  }
+
+  .token.punctuation {
+    color: #d1d5da;
+  }
+
+  .token.property,
+  .token.tag,
+  .token.boolean,
+  .token.number,
+  .token.constant,
+  .token.symbol,
+  .token.deleted {
+    color: #f97583;
+  }
+
+  .token.selector,
+  .token.attr-name,
+  .token.string,
+  .token.char,
+  .token.builtin,
+  .token.inserted {
+    color: #79b8ff;
+  }
+
+  .token.operator,
+  .token.entity,
+  .token.url,
+  .language-css .token.string,
+  .style .token.string {
+    color: #ffab70;
+  }
+
+  .token.atrule,
+  .token.attr-value,
+  .token.keyword {
+    color: #b392f0;
+  }
+
+  .token.function,
+  .token.class-name {
+    color: #f97583;
+  }
+
+  .token.regex,
+  .token.important,
+  .token.variable {
+    color: #ffab70;
+  }
+}
