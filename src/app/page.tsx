@@ -1,26 +1,27 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
 import Header from '@/components/Header';
-import { Search, BarChart3, TrendingUp } from 'lucide-react';
+import { Search, BarChart3, TrendingUp, Shuffle, ArrowUpDown, RotateCcw, Zap, Clock } from 'lucide-react';
 
 const algorithmCategories = [
   {
     id: 'sorting',
-    name: 'Thuật Toán Sắp Xếp',
+    name: 'Sorting',
     icon: BarChart3,
     position: 'top' // Bong bóng trên cùng
   },
   {
     id: 'searching',
-    name: 'Thuật Toán Tìm Kiếm',
+    name: 'Searching',
     icon: Search,
     position: 'bottom-left' // Bong bóng dưới trái
   },
   {
     id: 'extreme',
-    name: 'Tìm Giá Trị Cực Trị',
+    name: 'Extreme',
     icon: TrendingUp,
     position: 'bottom-right' // Bong bóng dưới phải
   }
@@ -28,6 +29,16 @@ const algorithmCategories = [
 
 export default function HomePage() {
   const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll-based animation setup - Extended range for smoother rotation
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Transform scroll progress to rotation degrees (very slow and smooth rotation)
+  const rotation = useTransform(scrollYProgress, [0, 1], [0, 90]); // Even slower rotation - 90 degrees total
 
   const handleCategoryClick = (categoryId: string) => {
     router.push(`/algorithms/${categoryId}`);
@@ -36,6 +47,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-255">
       <Header />
+      
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-16">
@@ -61,8 +73,15 @@ export default function HomePage() {
           </motion.p>
         </div>
 
-        {/* Bubble Layout - Triangle Formation */}
-        <div className="relative flex flex-col items-center space-y-16 max-w-4xl mx-auto">
+        {/* Bubble Layout - Triangle Formation with Scroll Rotation */}
+        <motion.div 
+          ref={containerRef}
+          style={{ 
+            rotate: rotation,
+            transformOrigin: "center center" 
+          }}
+          className="relative flex flex-col items-center space-y-16 max-w-4xl mx-auto"
+        >
           {algorithmCategories.map((category, index) => {
             const IconComponent = category.icon;
             
@@ -126,11 +145,11 @@ export default function HomePage() {
                     text-white p-6
                     border-4 border-white/20
                   `}>
-                    {/* Floating animation */}
+                    {/* Floating animation with counter-rotation to keep text upright */}
                     <motion.div
+                      style={{ rotate: useTransform(rotation, (r) => -r) }} // Counter-rotate to keep text upright
                       animate={{ 
-                        y: [0, -15, 0],
-                        rotate: [0, 1, -1, 0]
+                        y: [0, -15, 0] // Only vertical floating animation
                       }}
                       transition={{ 
                         duration: 4, 
@@ -164,10 +183,11 @@ export default function HomePage() {
                     " />
                   </div>
 
-                  {/* Hover text */}
+                  {/* Hover text - also counter-rotated to stay upright */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileHover={{ opacity: 1, y: 0 }}
+                    style={{ rotate: useTransform(rotation, (r) => -r) }} // Keep text upright
                     className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 
                                text-center text-gray-700 font-medium
                                bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full
@@ -179,7 +199,7 @@ export default function HomePage() {
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Additional info section */}
         <motion.div

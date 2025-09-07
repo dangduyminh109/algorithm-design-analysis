@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, Home } from 'lucide-react';
+import { ChevronLeft, Bird } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -31,7 +31,7 @@ export default function Header({ title = 'Algorithm Complexity Visualizer', show
             
             <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Home className="w-5 h-5 text-white" />
+                <Bird className="w-5 h-5 text-white" />
               </div>
               <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
                 {title}
