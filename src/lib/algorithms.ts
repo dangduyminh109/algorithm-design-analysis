@@ -4,7 +4,7 @@ export const algorithms: Record<string, Algorithm[]> = {
   sorting: [
     {
       id: 'bubble-sort',
-      name: 'Sắp Xếp Nổi Bọt',
+      name: 'Bubble Sort',
       category: 'sorting',
       timeComplexity: {
         best: 'O(n)',
@@ -35,7 +35,7 @@ export const algorithms: Record<string, Algorithm[]> = {
     },
     {
       id: 'selection-sort',
-      name: 'Sắp Xếp Chọn',
+      name: 'Selection Sort',
       category: 'sorting',
       timeComplexity: {
         best: 'O(n²)',
@@ -69,7 +69,7 @@ export const algorithms: Record<string, Algorithm[]> = {
     },
     {
       id: 'insertion-sort',
-      name: 'Sắp Xếp Chèn',
+      name: 'Insertion Sort',
       category: 'sorting',
       timeComplexity: {
         best: 'O(n)',
@@ -100,7 +100,7 @@ export const algorithms: Record<string, Algorithm[]> = {
     },
     {
       id: 'quick-sort',
-      name: 'Sắp Xếp Nhanh',
+      name: 'Quick Sort',
       category: 'sorting',
       timeComplexity: {
         best: 'O(n log n)',
@@ -141,7 +141,7 @@ function partition(arr, low, high) {
     },
     {
       id: 'merge-sort',
-      name: 'Sắp Xếp Trộn',
+      name: 'Merge Sort',
       category: 'sorting',
       timeComplexity: {
         best: 'O(n log n)',
@@ -188,7 +188,7 @@ function merge(left, right) {
   searching: [
     {
       id: 'linear-search',
-      name: 'Tìm Kiếm Tuyến Tính',
+      name: 'Linear Search',
       category: 'searching',
       timeComplexity: {
         best: 'O(1)',
@@ -215,7 +215,7 @@ function merge(left, right) {
     },
     {
       id: 'binary-search',
-      name: 'Tìm Kiếm Nhị Phân',
+      name: 'Binary Search',
       category: 'searching',
       timeComplexity: {
         best: 'O(1)',
@@ -254,7 +254,7 @@ function merge(left, right) {
   extreme: [
     {
       id: 'linear-min-max',
-      name: 'Tìm Min/Max Tuyến Tính',
+      name: 'Linear Min/Max',
       category: 'extreme',
       timeComplexity: {
         best: 'O(n)',
@@ -290,7 +290,7 @@ function merge(left, right) {
     },
     {
       id: 'tournament-method',
-      name: 'Phương Pháp Tournament',
+      name: 'Tournament',
       category: 'extreme',
       timeComplexity: {
         best: 'O(n)',
