@@ -1,4 +1,7 @@
-# Trình Minh Họa Độ Phức Tạp Thuật Toán
+# Web Minh Họa Độ Phức Tạp Thuật Toán
+
+## Giao diện trang chủ
+![alt text](image.png)
 
 **Nền tảng minh họa tương tác để hiểu độ phức tạp thuật toán**
 
