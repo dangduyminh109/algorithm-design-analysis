@@ -8,7 +8,8 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen;
+    background-image: linear-gradient(to bottom right, #f9fafb, #eff6ff);
+    min-height: 100vh;
   }
   
   /* Ensure responsive images and media */
