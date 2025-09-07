@@ -33,9 +33,9 @@ export default function Header({ title = 'Algorithm Complexity Visualizer', show
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                 <Bird className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
-                {title}
-              </h1>
+                        <h1 className="text-xl font-bold text-blue-400 hidden sm:block">
+            Algorithm Complexity Visualizer
+          </h1>
             </Link>
           </div>
 

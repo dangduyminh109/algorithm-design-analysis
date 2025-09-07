@@ -63,7 +63,7 @@ export default function AlgorithmCategoryPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
             {info.title}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -81,7 +81,7 @@ export default function AlgorithmCategoryPage() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
+              className="bg-blue-50 border border-blue-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
               onClick={() => handleAlgorithmClick(algorithm.id)}
             >
               <div className="p-6">
