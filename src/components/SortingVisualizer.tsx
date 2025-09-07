@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Shuffle, Settings } from 'lucide-react';
 import { SortingStep, VisualizationState } from '@/types/algorithm';
@@ -22,6 +22,14 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     steps: [],
     progress: 0
   });
+
+  // Use ref to track current state for animation
+  const stateRef = useRef(state);
+  
+  // Update ref when state changes
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   // Array size and settings
   const [arraySize, setArraySize] = useState(30);
@@ -88,12 +96,20 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
 
   // Animation control
   const animate = useCallback(async () => {
-    if (steps.length === 0) return;
+    console.log('Animate called, steps length:', steps.length);
+    if (steps.length === 0) {
+      console.log('No steps available for animation');
+      return;
+    }
 
     setState(prev => ({ ...prev, isPlaying: true, isPaused: false }));
+    console.log('Animation started');
 
-    for (let i = state.currentStep; i < steps.length; i++) {
-      if (!state.isPlaying) break;
+    for (let i = stateRef.current.currentStep; i < steps.length; i++) {
+      if (!stateRef.current.isPlaying) {
+        console.log('Animation stopped by user');
+        break;
+      }
 
       setState(prev => ({
         ...prev,
@@ -103,22 +119,28 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
 
       onStepChange?.(i, steps.length - 1);
 
-      const speedMultiplier = Math.max(0.1, Math.min(3, state.speed));
+      const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
       await delay(300 / speedMultiplier);
 
       // Check if paused
-      while (state.isPaused && state.isPlaying) {
+      while (stateRef.current.isPaused && stateRef.current.isPlaying) {
         await delay(100);
       }
     }
 
+    console.log('Animation completed');
     setState(prev => ({ ...prev, isPlaying: false }));
-  }, [steps, state.currentStep, state.isPlaying, state.isPaused, state.speed, onStepChange]);
+  }, [steps, onStepChange]);
 
   // Control functions
-  const handlePlay = () => {
-    if (state.currentStep >= steps.length - 1) {
+  const handlePlay = async () => {
+    console.log('Play clicked, steps length:', steps.length);
+    console.log('Current step:', stateRef.current.currentStep);
+    
+    if (stateRef.current.currentStep >= steps.length - 1) {
       setState(prev => ({ ...prev, currentStep: 0, progress: 0 }));
+      // Wait for state to update
+      await new Promise(resolve => setTimeout(resolve, 0));
     }
     animate();
   };

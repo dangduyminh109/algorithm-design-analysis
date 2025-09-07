@@ -63,7 +63,7 @@ export default function AlgorithmCategoryPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
             {info.title}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -81,7 +81,7 @@ export default function AlgorithmCategoryPage() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
+              className="bg-blue-50 border border-blue-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
               onClick={() => handleAlgorithmClick(algorithm.id)}
             >
               <div className="p-6">
@@ -168,49 +168,49 @@ export default function AlgorithmCategoryPage() {
           className="mt-16 bg-white rounded-xl shadow-md p-8"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            About {info.title}
+            Về thuật toán {info.title}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">What you'll learn:</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Bạn sẽ học được gì:</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>How different algorithms approach the same problem</span>
+                  <span>Cách các thuật toán khác nhau tiếp cận cùng một vấn đề</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Time and space complexity trade-offs</span>
+                  <span>Sự đánh đổi giữa độ phức tạp thời gian và không gian</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>When to use each algorithm in practice</span>
+                  <span>Khi nào nên sử dụng từng thuật toán trong thực tế</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Step-by-step visual understanding</span>
+                  <span>Hiểu biết trực quan từng bước một cách chi tiết</span>
                 </li>
               </ul>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Interactive features:</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Tính năng tương tác:</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Animated step-by-step execution</span>
+                  <span>Thực thi hoạt hình từng bước một cách chi tiết</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Adjustable animation speed</span>
+                  <span>Tốc độ hoạt hình có thể điều chỉnh</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Code highlighting synchronized with visualization</span>
+                  <span>Làm nổi bật code đồng bộ với trực quan hóa</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Custom data input and array generation</span>
+                  <span>Nhập dữ liệu tùy chỉnh và tạo mảng</span>
                 </li>
               </ul>
             </div>
