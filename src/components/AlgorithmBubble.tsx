@@ -143,9 +143,9 @@ export default function AlgorithmBubble({
       onMouseLeave={() => onHover(null)}
       onClick={() => onClick(algorithm.id)}
     >
-      {/* Main bubble with glass effect - larger for better visibility */}
+      {/* Main bubble with glass effect - responsive sizing */}
       <motion.div
-        className="relative w-28 h-28 rounded-full flex flex-col items-center justify-center overflow-hidden z-30"
+        className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full flex flex-col items-center justify-center overflow-hidden z-30"
         style={bubbleStyle}
         animate={{
           y: [0, -6, 0],
@@ -217,14 +217,14 @@ export default function AlgorithmBubble({
           />
         ))}
 
-        {/* Algorithm name - larger font for better visibility */}
+        {/* Algorithm name - responsive font size */}
         <motion.div 
-          className="text-base font-medium text-blue-700 text-center leading-tight px-2 z-10"
+          className="text-xs sm:text-sm lg:text-base font-medium text-blue-700 text-center leading-tight px-1 sm:px-2 z-10"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 + index * 0.2 }}
         >
-          {algorithm.name.length > 16 ? `${algorithm.name.slice(0, 16)}...` : algorithm.name}
+          {algorithm.name.length > 12 ? `${algorithm.name.slice(0, 12)}...` : algorithm.name}
         </motion.div>
 
         {/* Animated glow effect similar to main bubble */}

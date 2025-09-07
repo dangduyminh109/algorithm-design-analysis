@@ -93,25 +93,25 @@ export default function HomePage() {
       {/* Background animated effects */}
       <BackgroundEffects />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-4 lg:py-6 relative">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:gap-12 items-start xl:items-center min-h-[calc(100vh-6rem)]">
           
           {/* Left side - Content */}
-          <div className="space-y-8">
+          <div className="space-y-4 sm:space-y-6 order-2 xl:order-1 pt-4 sm:pt-8">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
                 Algorithm
               </h1>
               
-              <h2 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-6">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4 sm:mb-6">
                 Complexity Visualizer
               </h2>
               
-              <p className="text-xl text-gray-600 leading-relaxed mb-8">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed mb-6 sm:mb-8">
                 Khám phá và hiểu sâu về độ phức tạp thuật toán thông qua 
                 <span className="text-blue-600 font-semibold"> trực quan hóa tương tác</span> và 
                 <span className="text-purple-600 font-semibold"> animation sinh động</span>.
@@ -125,7 +125,7 @@ export default function HomePage() {
             >
               {(hoveredCategory || hoveredAlgorithm) && (
                 <motion.div 
-                  className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-2xl border border-white/60 mt-6"
+                  className="bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border border-white/60 mt-4 sm:mt-6"
                   initial={{ opacity: 0, y: 20, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -140,7 +140,7 @@ export default function HomePage() {
                       transition={{ delay: 0.1 }}
                     >
                       <motion.h3 
-                        className="text-2xl font-bold text-gray-900 mb-3"
+                        className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3"
                         initial={{ x: -20 }}
                         animate={{ x: 0 }}
                         transition={{ delay: 0.1 }}
@@ -148,39 +148,41 @@ export default function HomePage() {
                         {hoveredAlgorithm.name}
                       </motion.h3>
                       <motion.p 
-                        className="text-gray-700 mb-4 leading-relaxed"
+                        className="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 leading-relaxed"
                         initial={{ x: -20 }}
                         animate={{ x: 0 }}
                         transition={{ delay: 0.15 }}
                       >
                         {hoveredAlgorithm.description}
                       </motion.p>
-                      <div className="space-y-3">
+                      <div className="space-y-2 sm:space-y-3">
                         <motion.div
+                          className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2"
                           initial={{ x: -20 }}
                           animate={{ x: 0 }}
                           transition={{ delay: 0.2 }}
                         >
-                          <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                          <span className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
                             Độ phức tạp thời gian:
                           </span>
                           <motion.span 
-                            className="ml-2 px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 text-green-800 rounded-full text-sm font-mono"
+                            className="px-2 sm:px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 text-green-800 rounded-full text-xs sm:text-sm font-mono w-fit"
                             whileHover={{ scale: 1.05 }}
                           >
                             {hoveredAlgorithm.timeComplexity.average}
                           </motion.span>
                         </motion.div>
                         <motion.div
+                          className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2"
                           initial={{ x: -20 }}
                           animate={{ x: 0 }}
                           transition={{ delay: 0.22 }}
                         >
-                          <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                          <span className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
                             Độ phức tạp không gian:
                           </span>
                           <motion.span 
-                            className="ml-2 px-3 py-1 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-800 rounded-full text-sm font-mono"
+                            className="px-2 sm:px-3 py-1 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-800 rounded-full text-xs sm:text-sm font-mono w-fit"
                             whileHover={{ scale: 1.05 }}
                           >
                             {hoveredAlgorithm.spaceComplexity}
@@ -188,18 +190,18 @@ export default function HomePage() {
                         </motion.div>
                         <div>
                           <motion.span 
-                            className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2 block"
+                            className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2 block"
                             initial={{ x: -20 }}
                             animate={{ x: 0 }}
                             transition={{ delay: 0.25 }}
                           >
                             Ứng dụng:
                           </motion.span>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-1 sm:gap-2">
                             {hoveredAlgorithm.applications.slice(0, 3).map((app, index) => (
                               <motion.span
                                 key={index}
-                                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors"
+                                className="px-2 sm:px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm hover:bg-blue-200 transition-colors"
                                 initial={{ opacity: 0, y: 10, scale: 0.8 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 transition={{ delay: 0.3 + index * 0.05 }}
@@ -221,7 +223,7 @@ export default function HomePage() {
                         transition={{ delay: 0.1 }}
                       >
                         <motion.h3 
-                          className="text-2xl font-bold text-gray-900 mb-3"
+                          className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3"
                           initial={{ x: -20 }}
                           animate={{ x: 0 }}
                           transition={{ delay: 0.1 }}
@@ -229,24 +231,25 @@ export default function HomePage() {
                           {category.title}
                         </motion.h3>
                         <motion.p 
-                          className="text-gray-700 mb-4 leading-relaxed"
+                          className="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 leading-relaxed"
                           initial={{ x: -20 }}
                           animate={{ x: 0 }}
                           transition={{ delay: 0.15 }}
                         >
                           {category.description}
                         </motion.p>
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                           <motion.div
+                            className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2"
                             initial={{ x: -20 }}
                             animate={{ x: 0 }}
                             transition={{ delay: 0.2 }}
                           >
-                            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                            <span className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
                               Độ phức tạp:
                             </span>
                             <motion.span 
-                              className="ml-2 px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 text-green-800 rounded-full text-sm font-mono"
+                              className="px-2 sm:px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 text-green-800 rounded-full text-xs sm:text-sm font-mono w-fit"
                               whileHover={{ scale: 1.05 }}
                             >
                               {category.complexity}
@@ -254,18 +257,18 @@ export default function HomePage() {
                           </motion.div>
                           <div>
                             <motion.span 
-                              className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2 block"
+                              className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2 block"
                               initial={{ x: -20 }}
                               animate={{ x: 0 }}
                               transition={{ delay: 0.25 }}
                             >
                               Thuật toán bao gồm:
                             </motion.span>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-1 sm:gap-2">
                               {category.features.map((feature, index) => (
                                 <motion.span
                                   key={index}
-                                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors"
+                                  className="px-2 sm:px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm hover:bg-blue-200 transition-colors"
                                   initial={{ opacity: 0, y: 10, scale: 0.8 }}
                                   animate={{ opacity: 1, y: 0, scale: 1 }}
                                   transition={{ delay: 0.3 + index * 0.05 }}
@@ -286,15 +289,37 @@ export default function HomePage() {
           </div>
 
           {/* Right side - Bubbles */}
-          <div className="relative flex justify-center items-center" onClick={handleBackgroundClick}>
-            <div className="relative w-full max-w-2xl h-[700px]" onClick={(e) => e.stopPropagation()}>
+          <div className="relative flex justify-center items-start pt-8 sm:pt-12 order-1 xl:order-2" onClick={handleBackgroundClick}>
+            <div className="relative w-full max-w-lg sm:max-w-xl lg:max-w-2xl h-[350px] sm:h-[450px] lg:h-[550px] xl:h-[650px]" onClick={(e) => e.stopPropagation()}>
               {algorithmCategories.map((category, index) => {
                 // Define main bubble positions in coordinate system (x, y from container)
-                const mainBubblePositions = [
-                  { x: 300, y: 180 },  // Sorting - top center (moved down to avoid header)
-                  { x: 100, y: 500 },  // Searching - bottom left (dịch trái 50px)
-                  { x: 500, y: 500 }   // Extreme - bottom right (dịch trái 150px)
-                ];
+                // Responsive positions based on container size
+                const getResponsivePositions = () => {
+                  // Base positions for different screen sizes - moved higher
+                  const positions = {
+                    mobile: [
+                      { x: 200, y: 80 },   // Sorting - top center (moved up 40px)
+                      { x: 80, y: 220 },   // Searching - bottom left (moved up 60px)
+                      { x: 320, y: 220 }   // Extreme - bottom right (moved up 60px)
+                    ],
+                    tablet: [
+                      { x: 250, y: 100 },  // Sorting - top center (moved up 40px)
+                      { x: 100, y: 300 },  // Searching - bottom left (moved up 60px)
+                      { x: 400, y: 300 }   // Extreme - bottom right (moved up 60px)
+                    ],
+                    desktop: [
+                      { x: 300, y: 120 },  // Sorting - top center (moved up 60px)
+                      { x: 100, y: 380 },  // Searching - bottom left (moved up 120px)
+                      { x: 500, y: 380 }   // Extreme - bottom right (moved up 120px)
+                    ]
+                  };
+                  
+                  // Return positions based on current breakpoint
+                  // This will be handled by CSS classes for true responsiveness
+                  return positions.desktop;
+                };
+
+                const mainBubblePositions = getResponsivePositions();
 
                 // Calculate pushed away positions when a category is expanded  
                 const getPushedPosition = (currentIndex: number, expandedIndex: number) => {
@@ -398,10 +423,10 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-20"
+          className="mt-8 sm:mt-12 lg:mt-16"
         >
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 icon: Eye,
@@ -426,7 +451,7 @@ export default function HomePage() {
               return (
               <motion.div
                 key={index}
-                className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg"
+                className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
@@ -436,14 +461,14 @@ export default function HomePage() {
                 }}
               >
                 <motion.div 
-                  className={`w-12 h-12 bg-gradient-to-r ${item.gradient} rounded-full flex items-center justify-center mx-auto mb-4`}
+                  className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${item.gradient} rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4`}
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <IconComponent className="w-5 h-5 text-white" />
+                  <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </motion.div>
-                <h3 className="font-bold text-gray-900 mb-3">{item.title}</h3>
-                <p className="text-gray-600 text-sm">{item.description}</p>
+                <h3 className="font-bold text-gray-900 mb-2 sm:mb-3 text-sm sm:text-base">{item.title}</h3>
+                <p className="text-gray-600 text-xs sm:text-sm">{item.description}</p>
               </motion.div>
             );
             })}

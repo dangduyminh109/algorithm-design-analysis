@@ -119,7 +119,7 @@ export default function AnimatedBubble({
     >
       <motion.div 
         className={`
-          relative w-48 h-48 rounded-full 
+          relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full 
           bg-gradient-to-br ${category.color}
           shadow-2xl hover:shadow-3xl
           flex items-center justify-center
@@ -154,9 +154,9 @@ export default function AnimatedBubble({
         {/* Icon and Name */}
         <div className="text-center z-20 relative">
           <div>
-            <IconComponent className="w-14 h-14 mb-2 mx-auto drop-shadow-lg" />
+            <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 mb-1 sm:mb-2 mx-auto drop-shadow-lg" />
           </div>
-          <span className="text-lg font-bold drop-shadow-md tracking-wide">
+          <span className="text-sm sm:text-base lg:text-lg font-bold drop-shadow-md tracking-wide">
             {category.name}
           </span>
         </div>

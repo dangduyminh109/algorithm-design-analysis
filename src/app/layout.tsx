@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Trực Quan Hóa Độ Phức Tạp Thuật Toán',
   description: 'Trực quan hóa tương tác về độ phức tạp thuật toán cho các thuật toán sắp xếp, tìm kiếm và tìm giá trị cực trị',
+  viewport: 'width=device-width, initial-scale=1',
 }
 
 export default function RootLayout({
