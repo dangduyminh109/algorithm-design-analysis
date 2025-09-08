@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
+import { useCallback, useMemo } from 'react';
+import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 
 interface AnimatedBubbleProps {
   category: {
@@ -30,20 +32,47 @@ export default function AnimatedBubble({
   isPushed = false
 }: AnimatedBubbleProps) {
   const IconComponent = category.icon;
+  const { isSlowDevice } = usePerformanceOptimization();
 
-  // Get positioning style
-  const getPositionStyle = () => {
+  // Optimize animation settings based on device capability
+  const animationSettings = useMemo(() => {
+    const baseSettings = {
+      duration: isSlowDevice ? 0.8 : 1.2,
+      delay: isSlowDevice ? index * 0.15 : index * 0.3,
+      type: isSlowDevice ? "tween" : "spring",
+      stiffness: isSlowDevice ? 80 : 100,
+      damping: isSlowDevice ? 15 : 12,
+    };
+
+    return baseSettings;
+  }, [isSlowDevice, index]);
+
+  // Memoized position style calculation
+  const positionStyle = useMemo(() => {
     if (typeof position === 'object') {
       return {
         position: 'absolute' as const,
-        // Remove left and top from style since we'll animate them
-        transform: 'translate(-50%, -50%)' // Center the bubble on the coordinate
+        transform: 'translate(-50%, -50%)',
+        willChange: 'transform, left, top',
       };
     }
-    return {}; // Use className for legacy string positions
-  };
+    return {
+      willChange: 'transform',
+    };
+  }, [position]);
 
-  const positionStyle = getPositionStyle();
+  // Optimized hover handlers
+  const handleMouseEnter = useCallback(() => {
+    onHover(category.id);
+  }, [onHover, category.id]);
+
+  const handleMouseLeave = useCallback(() => {
+    onHover(null);
+  }, [onHover]);
+
+  const handleClick = useCallback(() => {
+    onClick(category.id);
+  }, [onClick, category.id]);
 
   return (
     <motion.div
@@ -52,8 +81,8 @@ export default function AnimatedBubble({
       initial={{ 
         opacity: 0, 
         scale: 0,
-        x: 100,
-        rotate: -180,
+        x: isSlowDevice ? 50 : 100,
+        rotate: isSlowDevice ? -90 : -180,
         // Set initial position for coordinate-based positioning
         ...(typeof position === 'object' && {
           left: `${position.x}px`,
@@ -72,43 +101,46 @@ export default function AnimatedBubble({
         })
       }}
       transition={{ 
-        duration: 1.2, 
-        delay: index * 0.3,
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
+        duration: animationSettings.duration, 
+        delay: animationSettings.delay,
+        type: animationSettings.type,
+        stiffness: animationSettings.stiffness,
+        damping: animationSettings.damping,
         scale: { 
-          duration: isPushed ? 0.4 : 0.6, 
+          duration: isPushed ? 0.3 : 0.5, 
           ease: "easeInOut",
-          type: "spring",
-          stiffness: isPushed ? 150 : 100,
-          damping: isPushed ? 15 : 12
+          type: animationSettings.type,
+          stiffness: isPushed ? 130 : animationSettings.stiffness,
+          damping: isPushed ? 18 : animationSettings.damping
         },
-        // Smooth position transitions
+        // Optimized position transitions
         left: { 
-          duration: 0.8, 
+          duration: isSlowDevice ? 0.5 : 0.8, 
           ease: "easeInOut",
-          type: "spring",
-          stiffness: 80,
+          type: animationSettings.type,
+          stiffness: isSlowDevice ? 60 : 80,
           damping: 15
         },
         top: { 
-          duration: 0.8, 
+          duration: isSlowDevice ? 0.5 : 0.8, 
           ease: "easeInOut",
-          type: "spring",
-          stiffness: 80,
+          type: animationSettings.type,
+          stiffness: isSlowDevice ? 60 : 80,
           damping: 15
         }
       }}
-      onHoverStart={() => onHover(category.id)}
-      onHoverEnd={() => onHover(null)}
-      onClick={() => onClick(category.id)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
       whileHover={{ 
         scale: 1.15,
         rotate: [0, -8, 8, 0],
         transition: { 
-          duration: 0.5,
-          rotate: { duration: 0.8, ease: "easeInOut" }
+          duration: isSlowDevice ? 0.3 : 0.5,
+          rotate: { 
+            duration: isSlowDevice ? 0.5 : 0.8, 
+            ease: "easeInOut" 
+          }
         }
       }}
       whileTap={{ 
