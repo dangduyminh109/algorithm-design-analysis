@@ -182,7 +182,7 @@ export default function AlgorithmDetailPage() {
                           <li>So sánh các phần tử liền kề trong mảng</li>
                           <li>Hoán đổi chúng nếu chúng sai thứ tự</li>
                           <li>Lặp lại cho đến khi không còn hoán đổi nào cần thiết</li>
-                          <li>Mỗi lượt đảm bảo phần tử lớn nhất "nổi lên" cuối mảng</li>
+                          <li>Mỗi lượt đảm bảo phần tử lớn nhất &quot;nổi lên&quot; cuối mảng</li>
                         </>
                       )}
                       {algorithmId === 'selection-sort' && (
