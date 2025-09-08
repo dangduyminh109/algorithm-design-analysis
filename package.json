@@ -1,12 +1,18 @@
 {
   "name": "algorithm-complexity-visualizer",
   "version": "0.1.0",
+  "description": "Interactive algorithm complexity visualizer with dynamic animations for sorting, searching, and extreme value algorithms",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next export",
+    "deploy": "npm run build && npm run export",
+    "vercel-build": "next build",
+    "check": "npm run lint && npm run build",
+    "clean": "rm -rf .next out node_modules/.cache"
   },
   "dependencies": {
     "@types/animejs": "^3.1.13",
