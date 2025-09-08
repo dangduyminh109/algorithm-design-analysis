@@ -1,5 +1,5 @@
 # PowerShell build script for Windows
-Write-Host "🚀 Starting optimized build process..." -ForegroundColor Green
+Write-Host "Starting optimized build process..." -ForegroundColor Green
 
 # Clean previous builds
 Write-Host "🧹 Cleaning previous builds..." -ForegroundColor Yellow
@@ -8,52 +8,52 @@ if (Test-Path "out") { Remove-Item -Recurse -Force "out" }
 if (Test-Path "node_modules\.cache") { Remove-Item -Recurse -Force "node_modules\.cache" }
 
 # Install dependencies with cache optimization
-Write-Host "📦 Installing dependencies..." -ForegroundColor Blue
+Write-Host "Installing dependencies..." -ForegroundColor Blue
 try {
     npm ci --prefer-offline --no-audit
     if ($LASTEXITCODE -ne 0) { throw "npm ci failed" }
 }
 catch {
-    Write-Host "❌ Failed to install dependencies!" -ForegroundColor Red
+    Write-Host "Failed to install dependencies!" -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
 # Check for TypeScript errors
-Write-Host "🔍 Checking TypeScript..." -ForegroundColor Cyan
+Write-Host "Checking TypeScript..." -ForegroundColor Cyan
 try {
     npx tsc --noEmit
     if ($LASTEXITCODE -ne 0) { throw "TypeScript check failed" }
 }
 catch {
-    Write-Host "❌ TypeScript check failed!" -ForegroundColor Red
+    Write-Host "TypeScript check failed!" -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
 # Lint code
-Write-Host "✅ Linting code..." -ForegroundColor Magenta
+Write-Host "Linting code..." -ForegroundColor Magenta
 try {
     npm run lint
     if ($LASTEXITCODE -ne 0) { throw "Linting failed" }
 }
 catch {
-    Write-Host "❌ Linting failed!" -ForegroundColor Red
+    Write-Host "Linting failed!" -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
 # Build with optimizations
-Write-Host "🏗️ Building with optimizations..." -ForegroundColor Green
+Write-Host "Building with optimizations..." -ForegroundColor Green
 try {
     $env:NODE_ENV = "production"
     npm run build
     if ($LASTEXITCODE -ne 0) { throw "Build failed" }
 }
 catch {
-    Write-Host "❌ Build failed!" -ForegroundColor Red
+    Write-Host "Build failed!" -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
 # Analyze bundle size
-Write-Host "📊 Analyzing bundle size..." -ForegroundColor Yellow
+Write-Host "Analyzing bundle size..." -ForegroundColor Yellow
 if (Test-Path ".next") {
     Write-Host "Build completed successfully!" -ForegroundColor Green
     Write-Host "Checking bundle size..." -ForegroundColor Cyan
@@ -69,7 +69,7 @@ if (Test-Path ".next") {
         Write-Host "  No JS files found in chunks directory" -ForegroundColor Yellow
     }
 } else {
-    Write-Host "❌ Build failed!" -ForegroundColor Red
+    Write-Host "Build failed!" -ForegroundColor Red
     exit 1
 }
 
