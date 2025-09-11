@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, RotateCcw, Shuffle, Settings } from 'lucide-react';
 import { SortingStep, VisualizationState } from '@/types/algorithm';
 import { SortingAlgorithms, generateRandomArray, delay } from '@/lib/algorithmUtils';
+import { usePerformanceOptimization, useAnimationDebounce } from '@/hooks/usePerformanceOptimization';
+import OptimizedAnimation from './OptimizedAnimation';
 
 interface SortingVisualizerProps {
   algorithm: string;
@@ -23,8 +25,13 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     progress: 0
   });
 
+  // Performance optimization hooks
+  const { requestOptimizedFrame, isSlowDevice } = usePerformanceOptimization();
+  const debouncedAnimate = useAnimationDebounce(isSlowDevice ? 32 : 16);
+
   // Use ref to track current state for animation
   const stateRef = useRef(state);
+  const animationRef = useRef<boolean>(false);
   
   // Update ref when state changes
   useEffect(() => {
@@ -32,10 +39,10 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
   }, [state]);
 
   // Array size and settings
-  const [arraySize, setArraySize] = useState(30);
+  const [arraySize, setArraySize] = useState(isSlowDevice ? 20 : 30);
   const [showSettings, setShowSettings] = useState(false);
 
-  // Initialize array
+  // Memoize array generation for better performance
   const initializeArray = useCallback(() => {
     const newArray = generateRandomArray(arraySize, 5, 95);
     setArray(newArray);
@@ -53,7 +60,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     initializeArray();
   }, [initializeArray]);
 
-  // Generate steps for the selected algorithm
+  // Memoized steps generation for better performance
   const generateSteps = useCallback(() => {
     if (array.length === 0) return;
 
@@ -90,26 +97,28 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
 
   useEffect(() => {
     if (array.length > 0) {
-      generateSteps();
+      // Debounce step generation to avoid excessive computation
+      debouncedAnimate(() => generateSteps());
     }
-  }, [generateSteps]);
+  }, [generateSteps, debouncedAnimate]);
 
-  // Animation control
+  // Optimized animation control with frame management
   const animate = useCallback(async () => {
-    console.log('Animate called, steps length:', steps.length);
-    if (steps.length === 0) {
-      console.log('No steps available for animation');
-      return;
-    }
+    if (steps.length === 0) return;
 
+    // Stop any existing animation first
+    animationRef.current = false;
+    await delay(50);
+
+    animationRef.current = true;
     setState(prev => ({ ...prev, isPlaying: true, isPaused: false }));
-    console.log('Animation started');
 
-    for (let i = stateRef.current.currentStep; i < steps.length; i++) {
-      if (!stateRef.current.isPlaying) {
-        console.log('Animation stopped by user');
-        break;
-      }
+    // Get current step from state ref to avoid stale closure
+    let currentStepIndex = stateRef.current.currentStep;
+
+    for (let i = currentStepIndex; i < steps.length; i++) {
+      // Check if we should stop
+      if (!animationRef.current) break;
 
       setState(prev => ({
         ...prev,
@@ -119,28 +128,28 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
 
       onStepChange?.(i, steps.length - 1);
 
+      // Adaptive delay based on device performance
       const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
-      await delay(300 / speedMultiplier);
+      const baseDelay = isSlowDevice ? 400 : 300;
+      await delay(baseDelay / speedMultiplier);
 
       // Check if paused
-      while (stateRef.current.isPaused && stateRef.current.isPlaying) {
+      while (stateRef.current.isPaused && animationRef.current) {
         await delay(100);
       }
     }
 
-    console.log('Animation completed');
+    animationRef.current = false;
     setState(prev => ({ ...prev, isPlaying: false }));
-  }, [steps, onStepChange]);
+  }, [steps, onStepChange, isSlowDevice]);
 
-  // Control functions
-  const handlePlay = async () => {
-    console.log('Play clicked, steps length:', steps.length);
-    console.log('Current step:', stateRef.current.currentStep);
-    
+  // Control functions with performance optimization
+  const handlePlay = async () => {    
+    // Only reset if we're at the end
     if (stateRef.current.currentStep >= steps.length - 1) {
       setState(prev => ({ ...prev, currentStep: 0, progress: 0 }));
       // Wait for state to update
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise(resolve => setTimeout(resolve, 10));
     }
     animate();
   };
@@ -150,6 +159,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
   };
 
   const handleReset = () => {
+    animationRef.current = false;
     setState(prev => ({
       ...prev,
       isPlaying: false,
@@ -173,11 +183,13 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     }
   };
 
-  // Get current step data
-  const currentStepData = steps[state.currentStep] || { array: array, comparing: [], swapping: [], sorted: [] };
+  // Memoized step data for better performance
+  const currentStepData = useMemo(() => {
+    return steps[state.currentStep] || { array: array, comparing: [], swapping: [], sorted: [] };
+  }, [steps, state.currentStep, array]);
 
-  // Get bar color based on state
-  const getBarColor = (index: number) => {
+  // Memoized color calculation
+  const getBarColor = useCallback((index: number) => {
     const { comparing, swapping, sorted, pivot } = currentStepData;
 
     if (sorted.includes(index)) return 'bg-green-500';
@@ -185,14 +197,14 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     if (swapping.includes(index)) return 'bg-red-500';
     if (comparing.includes(index)) return 'bg-yellow-500';
     return 'bg-blue-500';
-  };
+  }, [currentStepData]);
 
-  // Get bar height
-  const getBarHeight = (value: number) => {
-    const maxHeight = 300;
+  // Memoized height calculation
+  const getBarHeight = useCallback((value: number) => {
+    const maxHeight = isSlowDevice ? 250 : 300;
     const maxValue = Math.max(...currentStepData.array);
     return (value / maxValue) * maxHeight;
-  };
+  }, [currentStepData.array, isSlowDevice]);
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">

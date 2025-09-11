@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Shuffle, TrendingUp, TrendingDown, Settings } from 'lucide-react';
 import { ExtremeStep, VisualizationState } from '@/types/algorithm';
@@ -77,14 +77,31 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
     }
   }, [generateSteps]);
 
-  // Animation control
+  // Animation control with ref for state access
+  const stateRef = useRef(state);
+  const animationRef = useRef<boolean>(false);
+  
+  // Update ref when state changes
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   const animate = useCallback(async () => {
     if (steps.length === 0) return;
+    
+    // Stop any existing animation first
+    animationRef.current = false;
+    await delay(50);
 
+    animationRef.current = true;
     setState(prev => ({ ...prev, isPlaying: true, isPaused: false }));
 
-    for (let i = state.currentStep; i < steps.length; i++) {
-      if (!state.isPlaying) break;
+    // Get current step from state ref to avoid stale closure
+    let currentStepIndex = stateRef.current.currentStep;
+
+    for (let i = currentStepIndex; i < steps.length; i++) {
+      // Check if we should stop
+      if (!animationRef.current) break;
 
       setState(prev => ({
         ...prev,
@@ -94,22 +111,26 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
 
       onStepChange?.(i, steps.length - 1);
 
-      const speedMultiplier = Math.max(0.1, Math.min(3, state.speed));
+      const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
       await delay(500 / speedMultiplier);
 
       // Check if paused
-      while (state.isPaused && state.isPlaying) {
+      while (stateRef.current.isPaused && animationRef.current) {
         await delay(100);
       }
     }
 
+    animationRef.current = false;
     setState(prev => ({ ...prev, isPlaying: false }));
-  }, [steps, state.currentStep, state.isPlaying, state.isPaused, state.speed, onStepChange]);
+  }, [steps, onStepChange]);
 
   // Control functions
-  const handlePlay = () => {
-    if (state.currentStep >= steps.length - 1) {
+  const handlePlay = async () => {
+    // Only reset if we're at the end
+    if (stateRef.current.currentStep >= steps.length - 1) {
       setState(prev => ({ ...prev, currentStep: 0, progress: 0 }));
+      // Wait for state to update
+      await new Promise(resolve => setTimeout(resolve, 10));
     }
     animate();
   };
@@ -119,6 +140,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
   };
 
   const handleReset = () => {
+    animationRef.current = false;
     setState(prev => ({
       ...prev,
       isPlaying: false,

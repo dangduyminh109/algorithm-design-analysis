@@ -8,7 +8,11 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen;
+    background-image: linear-gradient(to bottom right, #f9fafb, #eff6ff);
+    min-height: 100vh;
+    /* GPU acceleration for smooth scrolling */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
   
   /* Ensure responsive images and media */
@@ -19,6 +23,35 @@
   /* Prevent horizontal overflow */
   * {
     @apply max-w-full;
+  }
+
+  /* Performance optimizations */
+  * {
+    /* Enable hardware acceleration for all elements */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    /* Improve text rendering */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Optimize animations */
+  *,
+  *::before,
+  *::after {
+    /* Use GPU for transitions */
+    will-change: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Smooth scrolling containers */
+  .scroll-container {
+    /* Enable momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Use GPU acceleration */
+    transform: translate3d(0, 0, 0);
   }
 }
 
