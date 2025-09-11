@@ -104,61 +104,52 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
 
   // Optimized animation control with frame management
   const animate = useCallback(async () => {
-    if (steps.length === 0 || animationRef.current) {
-      return;
-    }
+    if (steps.length === 0) return;
+
+    // Stop any existing animation first
+    animationRef.current = false;
+    await delay(50);
 
     animationRef.current = true;
     setState(prev => ({ ...prev, isPlaying: true, isPaused: false }));
 
-    const animateStep = async (i: number) => {
-      return new Promise<void>((resolve) => {
-        requestOptimizedFrame(() => {
-          if (!stateRef.current.isPlaying || i >= steps.length) {
-            resolve();
-            return;
-          }
+    // Get current step from state ref to avoid stale closure
+    let currentStepIndex = stateRef.current.currentStep;
 
-          setState(prev => ({
-            ...prev,
-            currentStep: i,
-            progress: (i / (steps.length - 1)) * 100
-          }));
+    for (let i = currentStepIndex; i < steps.length; i++) {
+      // Check if we should stop
+      if (!animationRef.current) break;
 
-          onStepChange?.(i, steps.length - 1);
-          resolve();
-        });
-      });
-    };
+      setState(prev => ({
+        ...prev,
+        currentStep: i,
+        progress: (i / (steps.length - 1)) * 100
+      }));
 
-    for (let i = stateRef.current.currentStep; i < steps.length; i++) {
-      if (!stateRef.current.isPlaying) {
-        break;
-      }
-
-      await animateStep(i);
+      onStepChange?.(i, steps.length - 1);
 
       // Adaptive delay based on device performance
       const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
       const baseDelay = isSlowDevice ? 400 : 300;
       await delay(baseDelay / speedMultiplier);
 
-      // Check if paused with optimized polling
-      while (stateRef.current.isPaused && stateRef.current.isPlaying) {
+      // Check if paused
+      while (stateRef.current.isPaused && animationRef.current) {
         await delay(100);
       }
     }
 
     animationRef.current = false;
     setState(prev => ({ ...prev, isPlaying: false }));
-  }, [steps, onStepChange, requestOptimizedFrame, isSlowDevice]);
+  }, [steps, onStepChange, isSlowDevice]);
 
   // Control functions with performance optimization
   const handlePlay = async () => {    
+    // Only reset if we're at the end
     if (stateRef.current.currentStep >= steps.length - 1) {
       setState(prev => ({ ...prev, currentStep: 0, progress: 0 }));
       // Wait for state to update
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise(resolve => setTimeout(resolve, 10));
     }
     animate();
   };
