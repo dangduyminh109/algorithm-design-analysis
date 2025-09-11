@@ -19,8 +19,6 @@ export default function AlgorithmDetailPage() {
   const categoryAlgorithms = algorithms[category] || [];
   const algorithm = categoryAlgorithms.find(alg => alg.id === algorithmId);
 
-  const [currentStep, setCurrentStep] = useState(0);
-  const [totalSteps, setTotalSteps] = useState(0);
 
   if (!algorithm) {
     return (
@@ -36,32 +34,25 @@ export default function AlgorithmDetailPage() {
     );
   }
 
-  const handleStepChange = (step: number, total: number) => {
-    setCurrentStep(step);
-    setTotalSteps(total);
-  };
 
   const renderVisualizer = () => {
     switch (category) {
       case 'sorting':
         return (
           <SortingVisualizer 
-            algorithm={algorithmId} 
-            onStepChange={handleStepChange}
+            algorithm={algorithmId}
           />
         );
       case 'searching':
         return (
           <SearchingVisualizer 
-            algorithm={algorithmId} 
-            onStepChange={handleStepChange}
+            algorithm={algorithmId}
           />
         );
       case 'extreme':
         return (
           <ExtremeValueVisualizer 
-            algorithm={algorithmId} 
-            onStepChange={handleStepChange}
+            algorithm={algorithmId}
           />
         );
       default:
@@ -103,32 +94,6 @@ export default function AlgorithmDetailPage() {
             className="xl:col-span-1"
           >
             <AlgorithmInfo algorithm={algorithm} />
-            
-            {/* Step Counter */}
-            {totalSteps > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="mt-6 bg-white rounded-xl shadow-md p-4"
-              >
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Execution Progress
-                </h3>
-                <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span>Step:</span>
-                  <span className="font-mono">
-                    {currentStep + 1} / {totalSteps + 1}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                  <div
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${((currentStep) / totalSteps) * 100}%` }}
-                  />
-                </div>
-              </motion.div>
-            )}
           </motion.div>
 
           {/* Right Column - Visualizer and Code */}

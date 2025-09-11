@@ -8,10 +8,9 @@ import { SearchingAlgorithms, generateRandomArray, delay } from '@/lib/algorithm
 
 interface SearchingVisualizerProps {
   algorithm: string;
-  onStepChange?: (step: number, totalSteps: number) => void;
 }
 
-export default function SearchingVisualizer({ algorithm, onStepChange }: SearchingVisualizerProps) {
+export default function SearchingVisualizer({ algorithm }: SearchingVisualizerProps) {
   const [array, setArray] = useState<number[]>([]);
   const [steps, setSteps] = useState<SearchingStep[]>([]);
   const [target, setTarget] = useState<number>(50);
@@ -107,7 +106,6 @@ export default function SearchingVisualizer({ algorithm, onStepChange }: Searchi
         progress: (i / (steps.length - 1)) * 100
       }));
 
-      onStepChange?.(i, steps.length - 1);
 
       const speedMultiplier = Math.max(0.1, Math.min(3, state.speed));
       await delay(500 / speedMultiplier);
@@ -119,7 +117,7 @@ export default function SearchingVisualizer({ algorithm, onStepChange }: Searchi
     }
 
     setState(prev => ({ ...prev, isPlaying: false }));
-  }, [steps, state.currentStep, state.isPlaying, state.isPaused, state.speed, onStepChange]);
+  }, [steps, state.currentStep, state.isPlaying, state.isPaused, state.speed]);
 
   // Control functions
   const handlePlay = () => {
@@ -316,7 +314,7 @@ export default function SearchingVisualizer({ algorithm, onStepChange }: Searchi
       {/* Progress Bar */}
       <div className="mb-6">
         <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-          <span>Progress</span>
+          <span>Tiến Trình</span>
           <span>Step {state.currentStep + 1} of {steps.length}</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
