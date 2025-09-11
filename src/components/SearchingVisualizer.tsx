@@ -36,19 +36,20 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       newArray.sort((a, b) => a - b);
     }
     
-    setArray(newArray);
-    
     // Set target to a random element from the array for better demonstration
     const randomTarget = newArray[Math.floor(Math.random() * newArray.length)];
-    setTarget(randomTarget);
     
+    // Update all states at once to prevent race conditions
+    setArray(newArray);
+    setTarget(randomTarget);
     setSteps([]);
     setState(prev => ({
       ...prev,
       currentStep: 0,
       progress: 0,
       isPlaying: false,
-      isPaused: false
+      isPaused: false,
+      steps: []
     }));
   }, [arraySize, algorithm]);
 
@@ -56,40 +57,32 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     initializeArray();
   }, [initializeArray]);
 
-  // Generate steps for the selected algorithm
-  const generateSteps = useCallback(() => {
-    if (array.length === 0) return;
-
-    let algorithmSteps: SearchingStep[] = [];
-
-    switch (algorithm) {
-      case 'linear-search':
-        algorithmSteps = SearchingAlgorithms.linearSearch(array, target);
-        break;
-      case 'binary-search':
-        // Ensure array is sorted for binary search
-        const sortedArray = [...array].sort((a, b) => a - b);
-        setArray(sortedArray);
-        algorithmSteps = SearchingAlgorithms.binarySearch(sortedArray, target);
-        break;
-      default:
-        algorithmSteps = SearchingAlgorithms.linearSearch(array, target);
-    }
-
-    setSteps(algorithmSteps);
-    setState(prev => ({
-      ...prev,
-      steps: algorithmSteps,
-      currentStep: 0,
-      progress: 0
-    }));
-  }, [array, target, algorithm]);
 
   useEffect(() => {
     if (array.length > 0) {
-      generateSteps();
+      let algorithmSteps: SearchingStep[] = [];
+
+      switch (algorithm) {
+        case 'linear-search':
+          algorithmSteps = SearchingAlgorithms.linearSearch(array, target);
+          break;
+        case 'binary-search':
+          // Array should already be sorted from initializeArray
+          algorithmSteps = SearchingAlgorithms.binarySearch(array, target);
+          break;
+        default:
+          algorithmSteps = SearchingAlgorithms.linearSearch(array, target);
+      }
+
+      setSteps(algorithmSteps);
+      setState(prev => ({
+        ...prev,
+        steps: algorithmSteps,
+        currentStep: 0,
+        progress: 0
+      }));
     }
-  }, [generateSteps]);
+  }, [array, target, algorithm]);
 
   // Animation control
   const animate = useCallback(async () => {
@@ -162,7 +155,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
   };
 
   // Get current step data
-  const currentStepData = steps[state.currentStep] || { 
+  const currentStepData = (steps.length > 0 && steps[state.currentStep]) ? steps[state.currentStep] : { 
     array: array, 
     target: target, 
     currentIndex: -1, 
