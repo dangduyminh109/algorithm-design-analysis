@@ -238,7 +238,7 @@ export default function AlgorithmDetailPage() {
                 )}
 
                 <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-semibold text-blue-900 mb-2">💡 Mẹo:</h4>
+                  <h4 className="font-semibold text-blue-900 mb-2">Mẹo:</h4>
                   <p className="text-blue-800 text-sm">
                     Sử dụng điều khiển tốc độ và điều hướng từng bước để hiểu rõ hơn cách thuật toán xử lý dữ liệu.
                     Thử các kích thước mảng và mẫu dữ liệu khác nhau để xem thuật toán hoạt động như thế nào trong các tình huống khác nhau.

@@ -16,7 +16,7 @@ interface AnimatedBubbleProps {
     complexity: string;
     color: string;
   };
-  position: { x: number; y: number } | string; // Support both coordinate system and legacy string
+  position: { x: number; y: number } | string; 
   index: number;
   onHover: (categoryId: string | null) => void;
   onClick: (categoryId: string) => void;
