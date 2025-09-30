@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, RotateCcw, Shuffle, Search, Settings } from 'lucide-react';
+import { Play, Pause, RotateCcw, Shuffle, Search, Settings, Dices } from 'lucide-react';
 import { SearchingStep, VisualizationState } from '@/types/algorithm';
-import { SearchingAlgorithms, generateRandomArray, delay } from '@/lib/algorithmUtils';
+import { SearchingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 
 interface SearchingVisualizerProps {
   algorithm: string;
@@ -14,6 +14,8 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
   const [array, setArray] = useState<number[]>([]);
   const [steps, setSteps] = useState<SearchingStep[]>([]);
   const [target, setTarget] = useState<number>(50);
+  const [targetInput, setTargetInput] = useState<string>('50'); // State cho input string
+  const [targetWarning, setTargetWarning] = useState<string>(''); // State cho cảnh báo
   const [state, setState] = useState<VisualizationState>({
     isPlaying: false,
     isPaused: false,
@@ -32,9 +34,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     // Stop any ongoing animation
     animationRef.current = false;
     
-    const newArray = generateRandomArray(arraySize, 10, 100).sort((a, b) => a - b); // Keep sorted for binary search
+    const newArray = generateUniqueRandomArray(arraySize, 10, 100).sort((a, b) => a - b); // Keep sorted for binary search
     setArray(newArray);
-    setTarget(newArray[Math.floor(Math.random() * newArray.length)]);
+    const randomTarget = newArray[Math.floor(Math.random() * newArray.length)];
+    setTarget(randomTarget);
+    setTargetInput(randomTarget.toString());
+    setTargetWarning('');
     setSteps([]);
     setState(prev => ({
       ...prev,
@@ -166,10 +171,51 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     }
   };
 
-  const handleTargetChange = (newTarget: number) => {
-    if (!state.isPlaying) {
-      setTarget(newTarget);
+  const handleTargetInputChange = (inputValue: string) => {
+    if (state.isPlaying) return;
+    
+    setTargetInput(inputValue);
+    
+    // Clear warning initially
+    setTargetWarning('');
+    
+    // If input is empty, allow it but don't update target
+    if (inputValue.trim() === '') {
+      return;
     }
+    
+    // Parse the input
+    const numValue = parseInt(inputValue);
+    
+    // Check if it's a valid number
+    if (isNaN(numValue)) {
+      setTargetWarning('Vui lòng nhập số hợp lệ');
+      return;
+    }
+    
+    // Update target
+    setTarget(numValue);
+    
+    // Check if number exists in array and show warning
+    if (!array.includes(numValue)) {
+      setTargetWarning('Số này không có trong mảng');
+    }
+  };
+  
+  const handleTargetInputBlur = () => {
+    // If input is empty on blur, restore last valid target
+    if (targetInput.trim() === '') {
+      setTargetInput(target.toString());
+    }
+  };
+  
+  const randomizeTarget = () => {
+    if (state.isPlaying || array.length === 0) return;
+    
+    const randomTarget = array[Math.floor(Math.random() * array.length)];
+    setTarget(randomTarget);
+    setTargetInput(randomTarget.toString());
+    setTargetWarning('');
   };
 
   // Get current step data
@@ -283,15 +329,36 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         <div className="flex items-center space-x-4">
           <Search className="w-5 h-5 text-blue-600" />
           <label className="text-sm font-medium text-blue-800">Mục Tiêu Tìm Kiếm:</label>
-          <input
-            type="number"
-            min="1"
-            max="100"
-            value={target}
-            onChange={(e) => handleTargetChange(parseInt(e.target.value) || 50)}
-            disabled={state.isPlaying}
-            className="px-3 py-1 border border-blue-300 rounded text-center w-20 text-blue-800 font-bold"
-          />
+          <div className="flex flex-col">
+            <div className="flex items-center space-x-2">
+              <input
+                type="text"
+                value={targetInput}
+                onChange={(e) => handleTargetInputChange(e.target.value)}
+                onBlur={handleTargetInputBlur}
+                disabled={state.isPlaying}
+                placeholder="Nhập số cần tìm..."
+                className={`px-3 py-1 border rounded text-center w-24 font-bold ${
+                  targetWarning 
+                    ? 'border-orange-400 text-orange-800 bg-orange-50' 
+                    : 'border-blue-300 text-blue-800'
+                }`}
+              />
+              <button
+                onClick={randomizeTarget}
+                disabled={state.isPlaying}
+                className="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded text-xs transition-colors disabled:opacity-50 flex items-center"
+                title="Chọn số ngẫu nhiên từ mảng"
+              >
+                <Dices className="w-4 h-4" />
+              </button>
+            </div>
+            {targetWarning && (
+              <span className="text-xs text-orange-600 mt-1 flex items-center">
+                {targetWarning}
+              </span>
+            )}
+          </div>
           <span className="text-sm text-blue-600">
             {currentStepData.found ? '✓ Đã Tìm Thấy!' : 'Đang Tìm Kiếm...'}
           </span>

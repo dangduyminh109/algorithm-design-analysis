@@ -81,10 +81,10 @@ export default function AlgorithmCategoryPage() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-blue-50 border border-blue-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
+              className="bg-blue-50 border border-blue-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
               onClick={() => handleAlgorithmClick(algorithm.id)}
             >
-              <div className="p-6">
+              <div className="p-6 flex flex-col flex-grow">
                 {/* Algorithm header */}
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold text-gray-900">{algorithm.name}</h3>
@@ -128,7 +128,7 @@ export default function AlgorithmCategoryPage() {
                 </div>
 
                 {/* Applications preview */}
-                <div className="mb-4">
+                <div className="mb-4 flex-grow">
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Best for:</h4>
                   <div className="flex flex-wrap gap-1">
                     {algorithm.applications.slice(0, 2).map((app, idx) => (
@@ -147,8 +147,8 @@ export default function AlgorithmCategoryPage() {
                   </div>
                 </div>
 
-                {/* Action button */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                {/* Action button - now pushed to bottom */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <span className="text-sm text-gray-500">Click to visualize</span>
                   <ArrowRight className="w-4 h-4 text-gray-400" />
                 </div>

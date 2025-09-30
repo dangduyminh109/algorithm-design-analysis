@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Shuffle, TrendingUp, TrendingDown, Settings } from 'lucide-react';
 import { ExtremeStep, VisualizationState } from '@/types/algorithm';
-import { ExtremeValueAlgorithms, generateRandomArray, delay } from '@/lib/algorithmUtils';
+import { ExtremeValueAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 
 interface ExtremeValueVisualizerProps {
   algorithm: string;
@@ -34,7 +34,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       animationRef.current = false;
     }
     
-    const newArray = generateRandomArray(arraySize, 10, 90);
+    const newArray = generateUniqueRandomArray(arraySize, 10, 90);
     setArray(newArray);
     setSteps([]);
     setState(prev => ({

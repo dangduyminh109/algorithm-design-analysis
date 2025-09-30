@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, RotateCcw, Shuffle, Settings } from 'lucide-react';
 import { SortingStep, VisualizationState } from '@/types/algorithm';
-import { SortingAlgorithms, generateRandomArray, delay } from '@/lib/algorithmUtils';
+import { SortingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 import { usePerformanceOptimization, useAnimationDebounce } from '@/hooks/usePerformanceOptimization';
 import OptimizedAnimation from './OptimizedAnimation';
 
@@ -47,7 +47,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     // Stop any ongoing animation
     animationRef.current = false;
     
-    const newArray = generateRandomArray(arraySize, 5, 95);
+    const newArray = generateUniqueRandomArray(arraySize, 5, 95);
     setArray(newArray);
     setSteps([]);
     setState(prev => ({

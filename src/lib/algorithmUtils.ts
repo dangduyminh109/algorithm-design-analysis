@@ -5,6 +5,26 @@ export function generateRandomArray(size: number, min: number = 1, max: number =
   return Array.from({ length: size }, () => Math.floor(Math.random() * (max - min + 1)) + min);
 }
 
+// Generate random array with unique values (no duplicates)
+export function generateUniqueRandomArray(size: number, min: number = 1, max: number = 100): number[] {
+  const range = max - min + 1;
+  
+  // If requested size is larger than available range, fall back to regular random array
+  if (size > range) {
+    console.warn(`Cannot generate ${size} unique numbers in range [${min}, ${max}]. Falling back to regular random array.`);
+    return generateRandomArray(size, min, max);
+  }
+  
+  const uniqueNumbers = new Set<number>();
+  
+  while (uniqueNumbers.size < size) {
+    const randomNum = Math.floor(Math.random() * range) + min;
+    uniqueNumbers.add(randomNum);
+  }
+  
+  return Array.from(uniqueNumbers);
+}
+
 // Sorting Algorithm Implementations with Steps
 export class SortingAlgorithms {
   static bubbleSort(arr: number[]): SortingStep[] {
