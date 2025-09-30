@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { algorithms } from '@/lib/algorithms';
 import Header from '@/components/Header';
 import AlgorithmInfo from '@/components/AlgorithmInfo';
@@ -10,6 +10,8 @@ import SortingVisualizer from '@/components/SortingVisualizer';
 import SearchingVisualizer from '@/components/SearchingVisualizer';
 import ExtremeValueVisualizer from '@/components/ExtremeValueVisualizer';
 import { motion } from 'framer-motion';
+import { CODE_LANGUAGES } from '@/lib/codeLanguages';
+import { CodeLanguage } from '@/types/algorithm';
 
 export default function AlgorithmDetailPage() {
   const params = useParams();
@@ -19,6 +21,44 @@ export default function AlgorithmDetailPage() {
   const categoryAlgorithms = algorithms[category] || [];
   const algorithm = categoryAlgorithms.find(alg => alg.id === algorithmId);
 
+  const availableLanguages = useMemo(() => {
+    if (!algorithm) {
+      return CODE_LANGUAGES;
+    }
+    return CODE_LANGUAGES.filter(language => Boolean(algorithm.codeSnippets?.[language.id]));
+  }, [algorithm]);
+
+  const fallbackLanguage = useMemo<CodeLanguage>(() => {
+    if (algorithm?.defaultLanguage && algorithm.codeSnippets?.[algorithm.defaultLanguage]) {
+      return algorithm.defaultLanguage;
+    }
+    const firstAvailable = availableLanguages[0]?.id;
+    if (firstAvailable) {
+      return firstAvailable;
+    }
+    return 'javascript';
+  }, [algorithm, availableLanguages]);
+
+  const [selectedLanguage, setSelectedLanguage] = useState<CodeLanguage>(fallbackLanguage);
+
+  useEffect(() => {
+    setSelectedLanguage(fallbackLanguage);
+  }, [fallbackLanguage]);
+
+  const activeLanguageOption = useMemo(() => {
+    return CODE_LANGUAGES.find(option => option.id === selectedLanguage) || availableLanguages[0];
+  }, [selectedLanguage, availableLanguages]);
+
+  const activeCode = useMemo(() => {
+    if (!algorithm) {
+      return undefined;
+    }
+    if (algorithm.codeSnippets?.[selectedLanguage]) {
+      return algorithm.codeSnippets[selectedLanguage];
+    }
+    const fallback = availableLanguages[0]?.id;
+    return fallback ? algorithm.codeSnippets?.[fallback] : undefined;
+  }, [algorithm, availableLanguages, selectedLanguage]);
 
   if (!algorithm) {
     return (
@@ -33,7 +73,6 @@ export default function AlgorithmDetailPage() {
       </div>
     );
   }
-
 
   const renderVisualizer = () => {
     switch (category) {
@@ -119,11 +158,43 @@ export default function AlgorithmDetailPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Cài Đặt
               </h2>
-              <CodeBlock 
-                code={algorithm.code}
-                title={`${algorithm.name} - Cài Đặt JavaScript`}
-                language="javascript"
-              />
+
+              {availableLanguages.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  {availableLanguages.map(language => {
+                    const isActive = language.id === selectedLanguage;
+                    return (
+                      <button
+                        key={language.id}
+                        type="button"
+                        onClick={() => setSelectedLanguage(language.id)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                          isActive
+                            ? 'bg-blue-600 text-white border-blue-600 shadow focus:ring-blue-500'
+                            : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-50 focus:ring-blue-300'
+                        }`}
+                        aria-pressed={isActive}
+                      >
+                        {language.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {!activeCode ? (
+                <div className="bg-white border border-dashed border-blue-200 rounded-lg p-6 text-center text-blue-700">
+                  <p className="text-sm">
+                    Hiện chưa có mã nguồn cho ngôn ngữ này. Vui lòng chọn ngôn ngữ khác.
+                  </p>
+                </div>
+              ) : (
+                <CodeBlock 
+                  code={activeCode}
+                  title={`${algorithm.name} - Cài Đặt ${activeLanguageOption?.label ?? ''}`.trim()}
+                  language={activeLanguageOption?.prismLanguage ?? 'javascript'}
+                />
+              )}
             </motion.div>
 
             {/* Additional Information */}

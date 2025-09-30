@@ -44,6 +44,9 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
 
   // Memoize array generation for better performance
   const initializeArray = useCallback(() => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+    
     const newArray = generateRandomArray(arraySize, 5, 95);
     setArray(newArray);
     setSteps([]);
@@ -52,7 +55,8 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       currentStep: 0,
       progress: 0,
       isPlaying: false,
-      isPaused: false
+      isPaused: false,
+      steps: []
     }));
   }, [arraySize]);
 
@@ -64,26 +68,29 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
   const generateSteps = useCallback(() => {
     if (array.length === 0) return;
 
+    // Stop any ongoing animation before generating new steps
+    animationRef.current = false;
+
     let algorithmSteps: SortingStep[] = [];
 
     switch (algorithm) {
       case 'bubble-sort':
-        algorithmSteps = SortingAlgorithms.bubbleSort(array);
+        algorithmSteps = SortingAlgorithms.bubbleSort([...array]);
         break;
       case 'selection-sort':
-        algorithmSteps = SortingAlgorithms.selectionSort(array);
+        algorithmSteps = SortingAlgorithms.selectionSort([...array]);
         break;
       case 'insertion-sort':
-        algorithmSteps = SortingAlgorithms.insertionSort(array);
+        algorithmSteps = SortingAlgorithms.insertionSort([...array]);
         break;
       case 'quick-sort':
-        algorithmSteps = SortingAlgorithms.quickSort(array);
+        algorithmSteps = SortingAlgorithms.quickSort([...array]);
         break;
       case 'merge-sort':
-        algorithmSteps = SortingAlgorithms.mergeSort(array);
+        algorithmSteps = SortingAlgorithms.mergeSort([...array]);
         break;
       default:
-        algorithmSteps = SortingAlgorithms.bubbleSort(array);
+        algorithmSteps = SortingAlgorithms.bubbleSort([...array]);
     }
 
     setSteps(algorithmSteps);
@@ -91,7 +98,9 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       ...prev,
       steps: algorithmSteps,
       currentStep: 0,
-      progress: 0
+      progress: 0,
+      isPlaying: false,
+      isPaused: false
     }));
   }, [array, algorithm]);
 
@@ -100,7 +109,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       // Debounce step generation to avoid excessive computation
       debouncedAnimate(() => generateSteps());
     }
-  }, [generateSteps, debouncedAnimate]);
+  }, [generateSteps, debouncedAnimate, array.length]);
 
   // Optimized animation control with frame management
   const animate = useCallback(async () => {
@@ -167,6 +176,10 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       currentStep: 0,
       progress: 0
     }));
+    // Reset array to original unsorted state
+    if (steps.length > 0 && steps[0]) {
+      setArray([...steps[0].array]);
+    }
   };
 
   const handleSpeedChange = (newSpeed: number) => {

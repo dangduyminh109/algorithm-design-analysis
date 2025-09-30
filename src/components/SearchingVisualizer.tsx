@@ -27,21 +27,14 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
   const [arraySize, setArraySize] = useState(20);
   const [showSettings, setShowSettings] = useState(false);
 
-  // Initialize array
+    // Initialize array
   const initializeArray = useCallback(() => {
-    let newArray = generateRandomArray(arraySize, 1, 100);
+    // Stop any ongoing animation
+    animationRef.current = false;
     
-    // For binary search, we need a sorted array
-    if (algorithm === 'binary-search') {
-      newArray.sort((a, b) => a - b);
-    }
-    
-    // Set target to a random element from the array for better demonstration
-    const randomTarget = newArray[Math.floor(Math.random() * newArray.length)];
-    
-    // Update all states at once to prevent race conditions
+    const newArray = generateRandomArray(arraySize, 10, 100).sort((a, b) => a - b); // Keep sorted for binary search
     setArray(newArray);
-    setTarget(randomTarget);
+    setTarget(newArray[Math.floor(Math.random() * newArray.length)]);
     setSteps([]);
     setState(prev => ({
       ...prev,
@@ -51,7 +44,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       isPaused: false,
       steps: []
     }));
-  }, [arraySize, algorithm]);
+  }, [arraySize]);
 
   useEffect(() => {
     initializeArray();
@@ -153,6 +146,10 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       currentStep: 0,
       progress: 0
     }));
+    // Reset to initial search state
+    if (steps.length > 0 && steps[0]) {
+      setArray([...steps[0].array]);
+    }
   };
 
   const handleSpeedChange = (newSpeed: number) => {

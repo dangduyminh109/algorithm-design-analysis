@@ -1,3 +1,5 @@
+export type CodeLanguage = 'javascript' | 'java' | 'cpp' | 'csharp' | 'c' | 'python';
+
 export interface Algorithm {
   id: string;
   name: string;
@@ -11,7 +13,8 @@ export interface Algorithm {
   description: string;
   applications: string[];
   difficulty: 'Dễ' | 'Trung Bình' | 'Khó';
-  code: string;
+  codeSnippets: Partial<Record<CodeLanguage, string>>;
+  defaultLanguage?: CodeLanguage;
 }
 
 export interface SortingStep {

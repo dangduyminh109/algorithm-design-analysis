@@ -29,6 +29,11 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
 
   // Initialize array
   const initializeArray = useCallback(() => {
+    // Stop any ongoing animation
+    if (typeof animationRef !== 'undefined' && animationRef.current) {
+      animationRef.current = false;
+    }
+    
     const newArray = generateRandomArray(arraySize, 10, 90);
     setArray(newArray);
     setSteps([]);
@@ -37,7 +42,8 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       currentStep: 0,
       progress: 0,
       isPlaying: false,
-      isPaused: false
+      isPaused: false,
+      steps: []
     }));
   }, [arraySize]);
 
@@ -49,17 +55,20 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
   const generateSteps = useCallback(() => {
     if (array.length === 0) return;
 
+    // Stop any ongoing animation before generating new steps
+    animationRef.current = false;
+
     let algorithmSteps: ExtremeStep[] = [];
 
     switch (algorithm) {
       case 'linear-min-max':
-        algorithmSteps = ExtremeValueAlgorithms.linearMinMax(array);
+        algorithmSteps = ExtremeValueAlgorithms.linearMinMax([...array]);
         break;
       case 'tournament-method':
-        algorithmSteps = ExtremeValueAlgorithms.tournamentMinMax(array);
+        algorithmSteps = ExtremeValueAlgorithms.tournamentMinMax([...array]);
         break;
       default:
-        algorithmSteps = ExtremeValueAlgorithms.linearMinMax(array);
+        algorithmSteps = ExtremeValueAlgorithms.linearMinMax([...array]);
     }
 
     setSteps(algorithmSteps);
@@ -67,7 +76,9 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       ...prev,
       steps: algorithmSteps,
       currentStep: 0,
-      progress: 0
+      progress: 0,
+      isPlaying: false,
+      isPaused: false
     }));
   }, [array, algorithm]);
 
@@ -75,7 +86,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
     if (array.length > 0) {
       generateSteps();
     }
-  }, [generateSteps]);
+  }, [generateSteps, array.length]);
 
   // Animation control with ref for state access
   const stateRef = useRef(state);
@@ -148,6 +159,10 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       currentStep: 0,
       progress: 0
     }));
+    // Reset to initial state
+    if (steps.length > 0 && steps[0]) {
+      setArray([...steps[0].array]);
+    }
   };
 
   const handleSpeedChange = (newSpeed: number) => {

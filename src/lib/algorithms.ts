@@ -1,4 +1,5 @@
 import { Algorithm } from '@/types/algorithm';
+import { ALGORITHM_CODE_SAMPLES } from './codeSamples';
 
 export const algorithms: Record<string, Algorithm[]> = {
   sorting: [
@@ -20,18 +21,8 @@ export const algorithms: Record<string, Algorithm[]> = {
         'Làm thủ tục con trong các thuật toán phức tạp hơn'
       ],
       difficulty: 'Dễ',
-      code: `function bubbleSort(arr) {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    for (let j = 0; j < n - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-      }
-    }
-  }
-  return arr;
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['bubble-sort']
     },
     {
       id: 'selection-sort',
@@ -51,21 +42,8 @@ export const algorithms: Record<string, Algorithm[]> = {
         'Mục đích giáo dục'
       ],
       difficulty: 'Dễ',
-      code: `function selectionSort(arr) {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    let minIndex = i;
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
-  }
-  return arr;
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['selection-sort']
     },
     {
       id: 'insertion-sort',
@@ -85,18 +63,8 @@ export const algorithms: Record<string, Algorithm[]> = {
         'Khi cần hành vi thích ứng'
       ],
       difficulty: 'Dễ',
-      code: `function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-    arr[j + 1] = key;
-  }
-  return arr;
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['insertion-sort']
     },
     {
       id: 'quick-sort',
@@ -116,28 +84,8 @@ export const algorithms: Record<string, Algorithm[]> = {
         'Sắp xếp hiệu quả với cache'
       ],
       difficulty: 'Trung Bình',
-      code: `function quickSort(arr, low = 0, high = arr.length - 1) {
-  if (low < high) {
-    const pivotIndex = partition(arr, low, high);
-    quickSort(arr, low, pivotIndex - 1);
-    quickSort(arr, pivotIndex + 1, high);
-  }
-  return arr;
-}
-
-function partition(arr, low, high) {
-  const pivot = arr[high];
-  let i = low - 1;
-  
-  for (let j = low; j < high; j++) {
-    if (arr[j] <= pivot) {
-      i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  }
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-  return i + 1;
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['quick-sort']
     },
     {
       id: 'merge-sort',
@@ -157,32 +105,8 @@ function partition(arr, low, high) {
         'Môi trường xử lý song song'
       ],
       difficulty: 'Trung Bình',
-      code: `function mergeSort(arr) {
-  if (arr.length <= 1) return arr;
-  
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
-  
-  return merge(left, right);
-}
-
-function merge(left, right) {
-  const result = [];
-  let i = 0, j = 0;
-  
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
-    }
-  }
-  
-  return result.concat(left.slice(i)).concat(right.slice(j));
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['merge-sort']
     }
   ],
   searching: [
@@ -204,14 +128,8 @@ function merge(left, right) {
         'Tìm tất cả các lần xuất hiện của một phần tử'
       ],
       difficulty: 'Dễ',
-      code: `function linearSearch(arr, target) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === target) {
-      return i; // Element found at index i
-    }
-  }
-  return -1; // Element not found
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['linear-search']
     },
     {
       id: 'binary-search',
@@ -231,24 +149,8 @@ function merge(left, right) {
         'Tìm điểm chèn cho các phần tử mới'
       ],
       difficulty: 'Trung Bình',
-      code: `function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
-  
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-    
-    if (arr[mid] === target) {
-      return mid; // Element found
-    } else if (arr[mid] < target) {
-      left = mid + 1; // Search right half
-    } else {
-      right = mid - 1; // Search left half
-    }
-  }
-  
-  return -1; // Element not found
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['binary-search']
     }
   ],
   extreme: [
@@ -270,23 +172,8 @@ function merge(left, right) {
         'Thiết lập giới hạn hiển thị cho trực quan hóa'
       ],
       difficulty: 'Dễ',
-      code: `function findMinMax(arr) {
-  if (arr.length === 0) return null;
-  
-  let min = arr[0];
-  let max = arr[0];
-  
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < min) {
-      min = arr[i];
-    }
-    if (arr[i] > max) {
-      max = arr[i];
-    }
-  }
-  
-  return { min, max };
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['linear-min-max']
     },
     {
       id: 'tournament-method',
@@ -306,34 +193,8 @@ function merge(left, right) {
         'Tìm cả min và max đồng thời'
       ],
       difficulty: 'Trung Bình',
-      code: `function tournamentMinMax(arr) {
-  if (arr.length === 0) return null;
-  if (arr.length === 1) return { min: arr[0], max: arr[0] };
-  
-  function tournamentHelper(start, end) {
-    if (start === end) {
-      return { min: arr[start], max: arr[start] };
-    }
-    
-    if (end - start === 1) {
-      return {
-        min: Math.min(arr[start], arr[end]),
-        max: Math.max(arr[start], arr[end])
-      };
-    }
-    
-    const mid = Math.floor((start + end) / 2);
-    const left = tournamentHelper(start, mid);
-    const right = tournamentHelper(mid + 1, end);
-    
-    return {
-      min: Math.min(left.min, right.min),
-      max: Math.max(left.max, right.max)
-    };
-  }
-  
-  return tournamentHelper(0, arr.length - 1);
-}`
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['tournament-method']
     }
   ]
 };

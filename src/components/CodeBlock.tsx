@@ -3,6 +3,11 @@
 import { useEffect, useRef } from 'react';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-c';
+import 'prismjs/components/prism-cpp';
+import 'prismjs/components/prism-csharp';
+import 'prismjs/components/prism-python';
 
 interface CodeBlockProps {
   code: string;
@@ -17,7 +22,7 @@ export default function CodeBlock({ code, language = 'javascript', title }: Code
     if (codeRef.current) {
       Prism.highlightElement(codeRef.current);
     }
-  }, [code]);
+  }, [code, language]);
 
   return (
     <div className="bg-gray-900 rounded-lg overflow-hidden shadow-lg">

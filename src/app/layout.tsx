@@ -1,5 +1,5 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -7,7 +7,16 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Trực Quan Hóa Độ Phức Tạp Thuật Toán',
   description: 'Trực quan hóa tương tác về độ phức tạp thuật toán cho các thuật toán sắp xếp, tìm kiếm và tìm giá trị cực trị',
-  viewport: 'width=device-width, initial-scale=1',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({
