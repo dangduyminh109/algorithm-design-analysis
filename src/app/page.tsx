@@ -107,7 +107,7 @@ export default function HomePage() {
                 Algorithm
               </h1>
               
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4 sm:mb-6">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 mb-4 sm:mb-6">
                 Complexity Visualizer
               </h2>
               
@@ -116,6 +116,33 @@ export default function HomePage() {
                 <span className="text-blue-600 font-semibold"> trực quan hóa tương tác</span> và 
                 <span className="text-purple-600 font-semibold"> animation sinh động</span>.
               </p>
+
+              {/* Quick Access Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="flex flex-wrap gap-4"
+              >
+                <motion.button
+                  onClick={() => router.push('/benchmark')}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                >
+                  <Zap className="w-5 h-5" />
+                  Benchmark Lab
+                </motion.button>
+                <motion.button
+                  onClick={() => router.push('/theory')}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-6 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                >
+                  <Eye className="w-5 h-5" />
+                  Theory Explorer
+                </motion.button>
+              </motion.div>
             </motion.div>
 
             {/* Category and Algorithm description when hovering */}
