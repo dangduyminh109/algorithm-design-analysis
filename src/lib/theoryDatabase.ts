@@ -132,9 +132,10 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     difficulty: 'Dễ',
     
     history: {
-      inventor: 'Unknown (folklore algorithm)',
-      year: 1956,
-      motivation: 'Một trong những thuật toán sắp xếp đầu tiên được phân tích và dạy học'
+      inventor: 'Iverson, Kenneth E.',
+      year: 1962,
+      motivation: 'Được phân tích và công bố lần đầu trong luận văn của Iverson, mặc dù thuật toán có thể đã tồn tại từ trước đó',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Bubble_sort'
     },
     
     resources: {
@@ -285,9 +286,10 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     difficulty: 'Trung Bình',
     
     history: {
-      inventor: 'Tony Hoare',
+      inventor: 'C.A.R. Hoare (Tony Hoare)',
       year: 1959,
-      motivation: 'Phát triển để sắp xếp từ điển máy dịch tại Moscow University'
+      motivation: 'Phát triển trong thời gian làm việc tại Moscow State University để sắp xếp từ điển dịch máy Anh-Nga',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Quicksort'
     },
     
     resources: {
@@ -437,7 +439,8 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     history: {
       inventor: 'John von Neumann',
       year: 1945,
-      motivation: 'Phát triển cho EDVAC computer'
+      motivation: 'Phát triển cho máy tính EDVAC, một trong những thuật toán đầu tiên được thiết kế cho máy tính điện tử',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Merge_sort'
     },
     
     resources: {
@@ -583,9 +586,10 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     difficulty: 'Trung Bình',
     
     history: {
-      inventor: 'Không rõ (ancient algorithm)',
+      inventor: 'John Mauchly',
       year: 1946,
-      motivation: 'Được công bố lần đầu bởi John Mauchly'
+      motivation: 'Được công bố lần đầu tiên trong bài báo khoa học, mặc dù ý tưởng cơ bản đã tồn tại từ thời cổ đại',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Binary_search_algorithm'
     },
     
     resources: {
@@ -714,8 +718,10 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     },
     
     history: {
-      inventor: 'Không rõ (thuật toán cơ bản)',
-      motivation: 'Phương pháp tìm kiếm tự nhiên nhất'
+      inventor: 'Không rõ (ancient algorithm)',
+      year: undefined,
+      motivation: 'Thuật toán cơ bản và tự nhiên nhất, đã tồn tại từ thời cổ đại',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Linear_search'
     },
     
     resources: {
@@ -840,8 +846,10 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     },
     
     history: {
-      inventor: 'Không rõ (thuật toán cơ bản)',
-      motivation: 'Phương pháp tự nhiên nhất để tìm cực trị'
+      inventor: 'Không rõ (ancient algorithm)',
+      year: undefined,
+      motivation: 'Thuật toán cơ bản để tìm giá trị lớn nhất/nhỏ nhất trong tập dữ liệu',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Selection_algorithm'
     },
     
     resources: {
@@ -967,9 +975,10 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     },
     
     history: {
-      inventor: 'Không rõ',
-      year: 1960,
-      motivation: 'Tối ưu hóa số lần so sánh khi tìm nhiều cực trị'
+      inventor: 'Schreier, Alexander',
+      year: 1932,
+      motivation: 'Phát triển dựa trên ý tưởng giải đấu thể thao để tối ưu hóa số lần so sánh khi tìm min/max',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Selection_algorithm#Tournament_algorithm'
     },
     
     resources: {

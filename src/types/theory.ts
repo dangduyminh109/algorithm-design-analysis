@@ -90,6 +90,7 @@ export interface AlgorithmTheory {
     inventor?: string;
     year?: number;
     motivation?: string;
+    wikipediaUrl?: string;
   };
 }
 
