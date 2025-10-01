@@ -47,17 +47,22 @@ export default function AnimatedBubble({
     return baseSettings;
   }, [isSlowDevice, index]);
 
-  // Memoized position style calculation
+  // Memoized position style calculation with GPU acceleration
   const positionStyle = useMemo(() => {
     if (typeof position === 'object') {
       return {
         position: 'absolute' as const,
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, -50%) translateZ(0)',
         willChange: 'transform, left, top',
+        backfaceVisibility: 'hidden' as const,
+        WebkitFontSmoothing: 'antialiased' as const,
       };
     }
     return {
+      transform: 'translateZ(0)',
       willChange: 'transform',
+      backfaceVisibility: 'hidden' as const,
+      WebkitFontSmoothing: 'antialiased' as const,
     };
   }, [position]);
 

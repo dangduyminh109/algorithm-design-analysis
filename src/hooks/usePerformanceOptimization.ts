@@ -1,14 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 
 /**
  * Hook to optimize component performance using various strategies
+ * Enhanced with FPS monitoring and dynamic quality adjustment
  */
 export function usePerformanceOptimization() {
   const rafRef = useRef<number>();
   const frameTimeRef = useRef(0);
   const isSlowDeviceRef = useRef(false);
+  const [fps, setFps] = useState(60);
+  const [deviceTier, setDeviceTier] = useState<'high' | 'mid' | 'low'>('mid');
+  
+  const frameCountRef = useRef(0);
+  const lastFpsUpdateRef = useRef(performance.now());
 
   // Detect device performance capabilities
   useEffect(() => {
@@ -27,9 +33,55 @@ export function usePerformanceOptimization() {
         hardwareConcurrency < 4 ||
         effectiveType === 'slow-2g' ||
         effectiveType === '2g';
+      
+      // Set initial device tier
+      if (deviceMemory >= 8 && hardwareConcurrency >= 8) {
+        setDeviceTier('high');
+      } else if (deviceMemory >= 4 && hardwareConcurrency >= 4) {
+        setDeviceTier('mid');
+      } else {
+        setDeviceTier('low');
+      }
     };
 
     detectPerformance();
+  }, []);
+
+  // Real-time FPS monitoring
+  useEffect(() => {
+    const measureFps = (currentTime: number) => {
+      frameCountRef.current++;
+      
+      const timeSinceLastUpdate = currentTime - lastFpsUpdateRef.current;
+      
+      // Update FPS every second
+      if (timeSinceLastUpdate >= 1000) {
+        const currentFps = Math.round((frameCountRef.current * 1000) / timeSinceLastUpdate);
+        setFps(currentFps);
+        
+        // Dynamic tier adjustment based on actual FPS
+        if (currentFps > 55) {
+          setDeviceTier('high');
+        } else if (currentFps > 40) {
+          setDeviceTier('mid');
+        } else {
+          setDeviceTier('low');
+        }
+        
+        frameCountRef.current = 0;
+        lastFpsUpdateRef.current = currentTime;
+      }
+      
+      rafRef.current = requestAnimationFrame(measureFps);
+    };
+    
+    rafRef.current = requestAnimationFrame(measureFps);
+    
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, []);
 
   // Optimized RAF with frame timing
@@ -43,7 +95,7 @@ export function usePerformanceOptimization() {
       const deltaTime = time - frameTimeRef.current;
       frameTimeRef.current = time;
 
-      // Skip frame if device is struggling (> 20ms frame time)
+      // Skip frame if device is struggling (> 20ms frame time = <50 FPS)
       if (isSlowDeviceRef.current && deltaTime > 20) {
         return;
       }
@@ -52,18 +104,11 @@ export function usePerformanceOptimization() {
     });
   }, []);
 
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, []);
-
   return {
     requestOptimizedFrame,
     isSlowDevice: isSlowDeviceRef.current,
+    fps,
+    deviceTier,
   };
 }
 
@@ -115,6 +160,48 @@ export function useAnimationDebounce(delay: number = 16) {
   }, []);
 
   return debouncedAnimate;
+}
+
+/**
+ * Hook for throttled function calls
+ * Limits execution to once per specified delay
+ */
+export function useThrottle<T extends (...args: any[]) => any>(
+  callback: T,
+  delay: number = 16
+): T {
+  const lastRunRef = useRef(Date.now());
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  const throttledFunction = useCallback((...args: Parameters<T>) => {
+    const now = Date.now();
+    const timeSinceLastRun = now - lastRunRef.current;
+
+    if (timeSinceLastRun >= delay) {
+      lastRunRef.current = now;
+      callback(...args);
+    } else {
+      // Schedule for next available slot
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      
+      timeoutRef.current = setTimeout(() => {
+        lastRunRef.current = Date.now();
+        callback(...args);
+      }, delay - timeSinceLastRun);
+    }
+  }, [callback, delay]) as T;
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return throttledFunction;
 }
 
 /**

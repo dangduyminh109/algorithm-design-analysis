@@ -7,6 +7,7 @@ import { SortingStep, VisualizationState } from '@/types/algorithm';
 import { SortingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 import { usePerformanceOptimization, useAnimationDebounce } from '@/hooks/usePerformanceOptimization';
 import OptimizedAnimation from './OptimizedAnimation';
+import OptimizedBar from './OptimizedBar';
 
 interface SortingVisualizerProps {
   algorithm: string;
@@ -335,21 +336,17 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       <div className="relative bg-gray-50 rounded-lg p-4 min-h-[350px]">
         <div className="flex items-end justify-center space-x-1 h-[320px]">
           {currentStepData.array.map((value, index) => (
-            <motion.div
-              key={index}
-              className={`${getBarColor(index)} rounded-t-sm relative transition-colors duration-200`}
-              style={{
-                width: `${Math.max(600 / currentStepData.array.length - 1, 3)}px`,
-                height: `${getBarHeight(value)}px`
-              }}
-              layout
-              transition={{ duration: 0.2 }}
-            >
-              {/* Value label */}
-              <span className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
-                {value}
-              </span>
-            </motion.div>
+            <OptimizedBar
+              key={`bar-${index}-${value}`}
+              value={value}
+              height={getBarHeight(value)}
+              width={Math.max(600 / currentStepData.array.length - 1, 3)}
+              color={getBarColor(index)}
+              isComparing={currentStepData.comparing.includes(index)}
+              isSwapping={currentStepData.swapping.includes(index)}
+              isSorted={currentStepData.sorted.includes(index)}
+              index={index}
+            />
           ))}
         </div>
 

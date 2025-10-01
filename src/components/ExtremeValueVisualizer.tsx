@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Shuffle, TrendingUp, TrendingDown, Settings } from 'lucide-react';
 import { ExtremeStep, VisualizationState } from '@/types/algorithm';
 import { ExtremeValueAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
+import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
+import OptimizedBar from './OptimizedBar';
 
 interface ExtremeValueVisualizerProps {
   algorithm: string;
@@ -23,8 +25,11 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
     progress: 0
   });
 
+  // Performance optimization
+  const { isSlowDevice } = usePerformanceOptimization();
+
   // Array size and settings
-  const [arraySize, setArraySize] = useState(20);
+  const [arraySize, setArraySize] = useState(isSlowDevice ? 15 : 20);
   const [showSettings, setShowSettings] = useState(false);
 
   // Initialize array

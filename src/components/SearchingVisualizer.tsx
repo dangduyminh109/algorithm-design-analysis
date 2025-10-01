@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Shuffle, Search, Settings, Dices } from 'lucide-react';
 import { SearchingStep, VisualizationState } from '@/types/algorithm';
 import { SearchingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
+import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 
 interface SearchingVisualizerProps {
   algorithm: string;
@@ -25,8 +26,11 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     progress: 0
   });
 
+  // Performance optimization
+  const { isSlowDevice } = usePerformanceOptimization();
+
   // Array size and settings
-  const [arraySize, setArraySize] = useState(20);
+  const [arraySize, setArraySize] = useState(isSlowDevice ? 15 : 20);
   const [showSettings, setShowSettings] = useState(false);
 
     // Initialize array
@@ -419,16 +423,29 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         <div className="flex flex-wrap justify-center gap-2">
           {currentStepData.array.map((value, index) => (
             <motion.div
-              key={index}
+              key={`search-${index}-${value}`}
               className={`
                 ${getElementColor(index)} 
                 ${getElementTextColor(index)}
                 w-12 h-12 rounded-lg flex items-center justify-center
-                font-bold text-sm transition-all duration-300
+                font-bold text-sm
                 ${value === target ? 'ring-2 ring-yellow-400' : ''}
               `}
-              layout
-              transition={{ duration: 0.3 }}
+              style={{
+                transform: 'translateZ(0)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+              }}
+              animate={{
+                scale: currentStepData.currentIndex === index ? 1.15 : 
+                       (currentStepData.mid === index ? 1.1 : 1),
+                y: currentStepData.found && currentStepData.currentIndex === index ? -10 : 0,
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 400,
+                damping: 25,
+              }}
             >
               {value}
             </motion.div>
