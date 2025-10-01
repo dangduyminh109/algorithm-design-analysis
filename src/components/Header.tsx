@@ -46,16 +46,22 @@ export default function Header({ title = 'Algorithm Complexity Visualizer', show
 
           <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
             <Link href="/" className="text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm xl:text-base">
-              Trang Chủ
+              Trang chủ
             </Link>
             <Link href="/algorithms/sorting" className="text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm xl:text-base">
-              Sắp Xếp
+              Sắp xếp
             </Link>
             <Link href="/algorithms/searching" className="text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm xl:text-base">
-              Tìm Kiếm
+              Tìm kiếm
             </Link>
             <Link href="/algorithms/extreme" className="text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm xl:text-base">
-              Giá Trị Cực Trị
+              Giá trị cực trị
+            </Link>
+            <Link href="/theory" className="text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm xl:text-base">
+              Lý thuyết
+            </Link>
+            <Link href="/benchmark" className="text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm xl:text-base">
+              Benchmark
             </Link>
           </nav>
 

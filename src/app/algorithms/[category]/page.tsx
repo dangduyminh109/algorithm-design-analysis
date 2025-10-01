@@ -15,17 +15,17 @@ export default function AlgorithmCategoryPage() {
   
   const categoryInfo = {
     sorting: {
-      title: 'Thuật Toán Sắp Xếp',
+      title: 'Thuật toán sắp xếp',
       description: 'Khám phá các phương pháp khác nhau để sắp xếp dữ liệu theo thứ tự',
       color: 'blue'
     },
     searching: {
-      title: 'Thuật Toán Tìm Kiếm', 
+      title: 'Thuật toán tìm kiếm', 
       description: 'Tìm hiểu các phương pháp để tìm kiếm phần tử cụ thể trong tập dữ liệu',
       color: 'green'
     },
     extreme: {
-      title: 'Thuật Toán Tìm Giá Trị Cực Trị',
+      title: 'Thuật toán tìm giá trị cực trị',
       description: 'Học các thuật toán tìm giá trị nhỏ nhất và lớn nhất',
       color: 'purple'
     }
