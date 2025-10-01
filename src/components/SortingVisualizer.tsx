@@ -389,7 +389,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
           <span className="text-yellow-600">⏸ Paused</span>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
-          <span className="text-green-600">✓ Sorting Complete!</span>
+          <span className="text-green-600"> Sorting Complete!</span>
         )}
         {!state.isPlaying && state.currentStep === 0 && (
           <span className="text-gray-500">Ready to start</span>

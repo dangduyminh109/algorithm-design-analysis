@@ -438,7 +438,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
           <span className="text-green-600">
-            ✓ Complete! Min: {currentStepData.currentMin}, Max: {currentStepData.currentMax}
+             Complete! Min: {currentStepData.currentMin}, Max: {currentStepData.currentMax}
           </span>
         )}
         {!state.isPlaying && state.currentStep === 0 && (

@@ -360,7 +360,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
             )}
           </div>
           <span className="text-sm text-blue-600">
-            {currentStepData.found ? '✓ Đã Tìm Thấy!' : 'Đang Tìm Kiếm...'}
+            {currentStepData.found ? ' Đã Tìm Thấy!' : 'Đang Tìm Kiếm...'}
           </span>
         </div>
       </div>
@@ -488,7 +488,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           <span className="text-yellow-600">⏸ Paused</span>
         )}
         {!state.isPlaying && currentStepData.found && (
-          <span className="text-green-600">✓ Target found at position {currentStepData.currentIndex}!</span>
+          <span className="text-green-600"> Target found at position {currentStepData.currentIndex}!</span>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && !currentStepData.found && (
           <span className="text-red-600">✗ Target not found in array</span>
