@@ -374,11 +374,11 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
               transition={{ duration: 0.3 }}
             >
               {/* Value label */}
-              <span className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-medium">
+              <span className="absolute -top-6 left-[20%] text-xs text-gray-600 font-medium">
                 {value}
               </span>
               {/* Index label */}
-              <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
+              <span className="absolute -bottom-5 left-[20%] text-xs text-gray-500">
                 {index}
               </span>
             </motion.div>

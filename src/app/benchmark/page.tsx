@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import Header from '@/components/Header';
 import BenchmarkLab from '@/components/BenchmarkLab';
 import BenchmarkResults from '@/components/BenchmarkResults';
 import { 
@@ -81,17 +82,7 @@ export default function BenchmarkPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link 
-            href="/"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Quay lại trang chủ</span>
-          </Link>
-        </div>
-      </div>
+      <Header title="Benchmark Lab" showBackButton={true} />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
