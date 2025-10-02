@@ -61,7 +61,7 @@ const OptimizedBar = memo(({
       {/* Value label - only show for smaller arrays or specific states */}
       {(width > 8 || isComparing || isSwapping) && (
         <motion.span 
-          className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs text-gray-700 font-medium"
+          className="absolute -top-6 left-0 right-0 text-center text-xs text-gray-700 font-medium"
           initial={{ opacity: 0 }}
           animate={{ opacity: isComparing || isSwapping ? 1 : 0.7 }}
           transition={{ duration: 0.2 }}
@@ -92,7 +92,7 @@ const OptimizedBar = memo(({
       {/* Sorted checkmark indicator for larger bars */}
       {isSorted && width > 15 && (
         <motion.div
-          className="absolute top-1 left-1/2 transform -translate-x-1/2"
+          className="absolute top-1 left-0 right-0 flex justify-center"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ 
