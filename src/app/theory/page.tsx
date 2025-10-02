@@ -189,14 +189,14 @@ export default function TheoryPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="text-left py-4 px-6 font-semibold">Thuật Toán</th>
-                  <th className="text-center py-4 px-6 font-semibold">Best</th>
-                  <th className="text-center py-4 px-6 font-semibold">Average</th>
-                  <th className="text-center py-4 px-6 font-semibold">Worst</th>
-                  <th className="text-center py-4 px-6 font-semibold">Space</th>
-                  <th className="text-center py-4 px-6 font-semibold">Stable</th>
-                  <th className="text-center py-4 px-6 font-semibold">In-Place</th>
-                  <th className="text-center py-4 px-6 font-semibold">Actions</th>
+                  <th className="text-left py-4 px-6 font-semibold w-52">Thuật Toán</th>
+                  <th className="text-center py-4 px-4 font-semibold w-28">Best</th>
+                  <th className="text-center py-4 px-4 font-semibold w-28">Average</th>
+                  <th className="text-center py-4 px-4 font-semibold w-28">Worst</th>
+                  <th className="text-center py-4 px-4 font-semibold w-24">Space</th>
+                  <th className="text-center py-4 px-4 font-semibold w-20">Stable</th>
+                  <th className="text-center py-4 px-4 font-semibold w-24">In-Place</th>
+                  <th className="text-center py-4 px-6 font-semibold w-44">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -251,22 +251,22 @@ export default function TheoryPage() {
                       )}
                     </td>
                     <td className="py-4 px-6">
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex gap-2 justify-center items-center">
                         <button
                           onClick={() => setSelectedTheory(theory)}
-                          className="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                          className="w-20 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm whitespace-nowrap"
                         >
                           Chi tiết
                         </button>
                         <button
                           onClick={() => toggleComparison(theory.id)}
-                          className={`px-3 py-1 rounded-lg transition-colors text-sm ${
+                          className={`w-20 px-3 py-1.5 rounded-lg transition-colors text-sm whitespace-nowrap ${
                             selectedForComparison.has(theory.id)
                               ? 'bg-cyan-600 text-white'
                               : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                           }`}
                         >
-                          {selectedForComparison.has(theory.id) ? 'Đã chọn' : 'So sánh'}
+                          {selectedForComparison.has(theory.id) ? '✓ Chọn' : 'So sánh'}
                         </button>
                       </div>
                     </td>
@@ -291,6 +291,7 @@ export default function TheoryPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            // className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
             className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
             onClick={() => setSelectedTheory(null)}
           >
@@ -446,7 +447,7 @@ export default function TheoryPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
             onClick={() => setShowComparison(false)}
           >
             <motion.div
