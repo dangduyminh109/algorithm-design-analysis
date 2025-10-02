@@ -678,3 +678,280 @@ export function tournamentMethodInstrumented(
 
   return { min, max, minIndex, maxIndex, counters, steps: withSteps ? steps : undefined };
 }
+
+/**
+ * Jump Search with instrumentation
+ */
+export function jumpSearchInstrumented(
+  arr: number[],
+  target: number,
+  withSteps: boolean = false
+): {
+  found: boolean;
+  index: number;
+  counters: PerformanceCounters;
+  steps?: SearchingStepWithCounters[];
+} {
+  const counters = createCounters();
+  const steps: SearchingStepWithCounters[] = [];
+  const n = arr.length;
+  const step = Math.floor(Math.sqrt(n));
+  let prev = 0;
+
+  // Jump through blocks
+  while (arr[Math.min(step, n) - 1] < target) {
+    counters.iterations++;
+    counters.comparisons++;
+    counters.arrayAccesses++;
+
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: Math.min(step, n) - 1,
+        found: false,
+        left: prev,
+        right: Math.min(step, n) - 1,
+        counters: cloneCounters(counters)
+      });
+    }
+
+    prev = step;
+    if (prev >= n) {
+      return { found: false, index: -1, counters, steps: withSteps ? steps : undefined };
+    }
+  }
+
+  // Linear search in the identified block
+  const blockEnd = Math.min(step, n);
+  for (let i = prev; i < blockEnd; i++) {
+    counters.iterations++;
+    counters.comparisons++;
+    counters.arrayAccesses++;
+
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: i,
+        found: arr[i] === target,
+        left: prev,
+        right: blockEnd - 1,
+        counters: cloneCounters(counters)
+      });
+    }
+
+    if (arr[i] === target) {
+      return { found: true, index: i, counters, steps: withSteps ? steps : undefined };
+    }
+  }
+
+  return { found: false, index: -1, counters, steps: withSteps ? steps : undefined };
+}
+
+/**
+ * Interpolation Search with instrumentation
+ */
+export function interpolationSearchInstrumented(
+  arr: number[],
+  target: number,
+  withSteps: boolean = false
+): {
+  found: boolean;
+  index: number;
+  counters: PerformanceCounters;
+  steps?: SearchingStepWithCounters[];
+} {
+  const counters = createCounters();
+  const steps: SearchingStepWithCounters[] = [];
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right && target >= arr[left] && target <= arr[right]) {
+    counters.iterations++;
+    counters.comparisons += 2; // Check range boundaries
+    counters.arrayAccesses += 2;
+
+    if (left === right) {
+      counters.comparisons++;
+      counters.arrayAccesses++;
+      
+      if (withSteps) {
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: left,
+          found: arr[left] === target,
+          left,
+          right,
+          counters: cloneCounters(counters)
+        });
+      }
+
+      if (arr[left] === target) {
+        return { found: true, index: left, counters, steps: withSteps ? steps : undefined };
+      }
+      break;
+    }
+
+    // Interpolation formula
+    const pos = left + Math.floor(
+      ((right - left) / (arr[right] - arr[left])) * (target - arr[left])
+    );
+    counters.arrayAccesses += 2;
+
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: pos,
+        found: false,
+        left,
+        right,
+        mid: pos,
+        counters: cloneCounters(counters)
+      });
+    }
+
+    counters.comparisons++;
+    counters.arrayAccesses++;
+
+    if (arr[pos] === target) {
+      if (withSteps) {
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: pos,
+          found: true,
+          left,
+          right,
+          mid: pos,
+          counters: cloneCounters(counters)
+        });
+      }
+      return { found: true, index: pos, counters, steps: withSteps ? steps : undefined };
+    }
+
+    counters.comparisons++;
+    counters.arrayAccesses++;
+
+    if (arr[pos] < target) {
+      left = pos + 1;
+    } else {
+      right = pos - 1;
+    }
+  }
+
+  return { found: false, index: -1, counters, steps: withSteps ? steps : undefined };
+}
+
+/**
+ * Divide & Conquer Min/Max with instrumentation
+ */
+export function divideConquerMinMaxInstrumented(
+  arr: number[],
+  withSteps: boolean = false
+): {
+  min: number;
+  max: number;
+  minIndex: number;
+  maxIndex: number;
+  counters: PerformanceCounters;
+  steps?: ExtremeStepWithCounters[];
+} {
+  const counters = createCounters();
+  const steps: ExtremeStepWithCounters[] = [];
+
+  if (arr.length === 0) {
+    return {
+      min: 0,
+      max: 0,
+      minIndex: -1,
+      maxIndex: -1,
+      counters,
+      steps: withSteps ? steps : undefined
+    };
+  }
+
+  function dcHelper(start: number, end: number): { min: number; max: number; minIndex: number; maxIndex: number } {
+    counters.iterations++;
+
+    // Base case: one element
+    if (start === end) {
+      counters.arrayAccesses++;
+      counters.assignments += 4;
+
+      if (withSteps) {
+        steps.push({
+          array: [...arr],
+          currentMin: arr[start],
+          currentMax: arr[start],
+          currentIndex: start,
+          minIndex: start,
+          maxIndex: start,
+          comparing: [start],
+          counters: cloneCounters(counters)
+        });
+      }
+
+      return { min: arr[start], max: arr[start], minIndex: start, maxIndex: start };
+    }
+
+    // Base case: two elements
+    if (end - start === 1) {
+      counters.comparisons++;
+      counters.arrayAccesses += 2;
+
+      const min = Math.min(arr[start], arr[end]);
+      const max = Math.max(arr[start], arr[end]);
+      const minIndex = arr[start] <= arr[end] ? start : end;
+      const maxIndex = arr[start] >= arr[end] ? start : end;
+      counters.assignments += 4;
+
+      if (withSteps) {
+        steps.push({
+          array: [...arr],
+          currentMin: min,
+          currentMax: max,
+          currentIndex: start,
+          minIndex,
+          maxIndex,
+          comparing: [start, end],
+          counters: cloneCounters(counters)
+        });
+      }
+
+      return { min, max, minIndex, maxIndex };
+    }
+
+    // Divide and conquer
+    const mid = Math.floor((start + end) / 2);
+    const left = dcHelper(start, mid);
+    const right = dcHelper(mid + 1, end);
+
+    counters.comparisons += 2; // Compare min and max from both halves
+    const finalMin = Math.min(left.min, right.min);
+    const finalMax = Math.max(left.max, right.max);
+    const finalMinIndex = left.min <= right.min ? left.minIndex : right.minIndex;
+    const finalMaxIndex = left.max >= right.max ? left.maxIndex : right.maxIndex;
+    counters.assignments += 4;
+
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        currentMin: finalMin,
+        currentMax: finalMax,
+        currentIndex: mid,
+        minIndex: finalMinIndex,
+        maxIndex: finalMaxIndex,
+        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex],
+        counters: cloneCounters(counters)
+      });
+    }
+
+    return { min: finalMin, max: finalMax, minIndex: finalMinIndex, maxIndex: finalMaxIndex };
+  }
+
+  const result = dcHelper(0, arr.length - 1);
+  return { ...result, counters, steps: withSteps ? steps : undefined };
+}

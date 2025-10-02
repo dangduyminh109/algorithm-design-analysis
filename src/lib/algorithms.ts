@@ -151,6 +151,48 @@ export const algorithms: Record<string, Algorithm[]> = {
       difficulty: 'Trung Bình',
       defaultLanguage: 'javascript',
       codeSnippets: ALGORITHM_CODE_SAMPLES['binary-search']
+    },
+    {
+      id: 'jump-search',
+      name: 'Jump Search',
+      category: 'searching',
+      timeComplexity: {
+        best: 'O(1)',
+        average: 'O(√n)',
+        worst: 'O(√n)'
+      },
+      spaceComplexity: 'O(1)',
+      description: 'Jump Search là thuật toán tìm kiếm cho mảng đã sắp xếp bằng cách nhảy qua các khối có kích thước cố định (thường là √n) thay vì kiểm tra từng phần tử. Khi tìm thấy khối chứa giá trị, nó thực hiện tìm kiếm tuyến tính trong khối đó. Thuật toán này nhanh hơn Linear Search nhưng chậm hơn Binary Search.',
+      applications: [
+        'Tập dữ liệu đã sắp xếp với kích thước trung bình',
+        'Khi Binary Search quá phức tạp để implement',
+        'Hệ thống với chi phí nhảy thấp hơn so sánh',
+        'Tìm kiếm trong dữ liệu tuần tự'
+      ],
+      difficulty: 'Trung Bình',
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['jump-search']
+    },
+    {
+      id: 'interpolation-search',
+      name: 'Interpolation Search',
+      category: 'searching',
+      timeComplexity: {
+        best: 'O(1)',
+        average: 'O(log log n)',
+        worst: 'O(n)'
+      },
+      spaceComplexity: 'O(1)',
+      description: 'Interpolation Search là cải tiến của Binary Search cho mảng đã sắp xếp với dữ liệu phân bố đều. Thay vì luôn chia đôi, nó ước tính vị trí của giá trị cần tìm dựa trên công thức nội suy. Với dữ liệu phân bố đều, nó có thể đạt O(log log n), nhanh hơn Binary Search đáng kể.',
+      applications: [
+        'Dữ liệu đã sắp xếp và phân bố đều',
+        'Tập dữ liệu lớn với phân bố uniform',
+        'Tra cứu trong từ điển và danh bạ',
+        'Hệ thống cần tìm kiếm cực nhanh'
+      ],
+      difficulty: 'Khó',
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['interpolation-search']
     }
   ],
   extreme: [
@@ -195,6 +237,27 @@ export const algorithms: Record<string, Algorithm[]> = {
       difficulty: 'Trung Bình',
       defaultLanguage: 'javascript',
       codeSnippets: ALGORITHM_CODE_SAMPLES['tournament-method']
+    },
+    {
+      id: 'divide-conquer-minmax',
+      name: 'Divide & Conquer Min/Max',
+      category: 'extreme',
+      timeComplexity: {
+        best: 'O(n)',
+        average: 'O(n)',
+        worst: 'O(n)'
+      },
+      spaceComplexity: 'O(log n)',
+      description: 'Thuật toán Divide & Conquer tìm min/max bằng cách chia mảng thành hai nửa, đệ quy tìm min/max của mỗi nửa, sau đó so sánh để tìm min/max tổng thể. Phương pháp này hiệu quả về số lần so sánh (3n/2 - 2) và dễ song song hóa.',
+      applications: [
+        'Xử lý song song và phân tán',
+        'Tối ưu số lần so sánh',
+        'Big Data analytics',
+        'Thuật toán đệ quy cao cấp'
+      ],
+      difficulty: 'Trung Bình',
+      defaultLanguage: 'javascript',
+      codeSnippets: ALGORITHM_CODE_SAMPLES['divide-conquer-minmax']
     }
   ]
 };

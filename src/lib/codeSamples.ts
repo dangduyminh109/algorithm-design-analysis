@@ -936,5 +936,292 @@ struct MinMax tournamentMinMax(const int arr[], int n) {
 
     minimum, maximum = helper(0, len(arr) - 1)
     return {"min": minimum, "max": maximum}`
+  },
+  'jump-search': {
+    javascript: `function jumpSearch(arr, target) {
+  const n = arr.length;
+  const step = Math.floor(Math.sqrt(n));
+  let prev = 0;
+  
+  // Jump to find the block where element may be present
+  while (arr[Math.min(step, n) - 1] < target) {
+    prev = step;
+    step += Math.floor(Math.sqrt(n));
+    if (prev >= n) return -1;
+  }
+  
+  // Linear search in the identified block
+  while (arr[prev] < target) {
+    prev++;
+    if (prev == Math.min(step, n)) return -1;
+  }
+  
+  if (arr[prev] == target) return prev;
+  return -1;
+}`,
+    python: `import math
+
+def jump_search(arr, target):
+    n = len(arr)
+    step = int(math.sqrt(n))
+    prev = 0
+    
+    # Jump to find the block
+    while arr[min(step, n) - 1] < target:
+        prev = step
+        step += int(math.sqrt(n))
+        if prev >= n:
+            return -1
+    
+    # Linear search in block
+    while arr[prev] < target:
+        prev += 1
+        if prev == min(step, n):
+            return -1
+    
+    if arr[prev] == target:
+        return prev
+    return -1`,
+    java: `public static int jumpSearch(int[] arr, int target) {
+  int n = arr.length;
+  int step = (int) Math.sqrt(n);
+  int prev = 0;
+  
+  while (arr[Math.min(step, n) - 1] < target) {
+    prev = step;
+    step += (int) Math.sqrt(n);
+    if (prev >= n) return -1;
+  }
+  
+  while (arr[prev] < target) {
+    prev++;
+    if (prev == Math.min(step, n)) return -1;
+  }
+  
+  if (arr[prev] == target) return prev;
+  return -1;
+}`,
+    cpp: `#include <cmath>
+
+int jumpSearch(const std::vector<int>& arr, int target) {
+  int n = arr.size();
+  int step = std::sqrt(n);
+  int prev = 0;
+  
+  while (arr[std::min(step, n) - 1] < target) {
+    prev = step;
+    step += std::sqrt(n);
+    if (prev >= n) return -1;
+  }
+  
+  while (arr[prev] < target) {
+    prev++;
+    if (prev == std::min(step, n)) return -1;
+  }
+  
+  if (arr[prev] == target) return prev;
+  return -1;
+}`
+  },
+  'interpolation-search': {
+    javascript: `function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+  
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low == high) {
+      if (arr[low] == target) return low;
+      return -1;
+    }
+    
+    // Interpolation formula
+    const pos = low + Math.floor(
+      ((high - low) / (arr[high] - arr[low])) * (target - arr[low])
+    );
+    
+    if (arr[pos] == target) return pos;
+    if (arr[pos] < target) low = pos + 1;
+    else high = pos - 1;
+  }
+  return -1;
+}`,
+    python: `def interpolation_search(arr, target):
+    low = 0
+    high = len(arr) - 1
+    
+    while low <= high and target >= arr[low] and target <= arr[high]:
+        if low == high:
+            if arr[low] == target:
+                return low
+            return -1
+        
+        # Interpolation formula
+        pos = low + int(
+            ((high - low) / (arr[high] - arr[low])) * (target - arr[low])
+        )
+        
+        if arr[pos] == target:
+            return pos
+        if arr[pos] < target:
+            low = pos + 1
+        else:
+            high = pos - 1
+    
+    return -1`,
+    java: `public static int interpolationSearch(int[] arr, int target) {
+  int low = 0;
+  int high = arr.length - 1;
+  
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low == high) {
+      if (arr[low] == target) return low;
+      return -1;
+    }
+    
+    int pos = low + (int)(
+      ((double)(high - low) / (arr[high] - arr[low])) * (target - arr[low])
+    );
+    
+    if (arr[pos] == target) return pos;
+    if (arr[pos] < target) low = pos + 1;
+    else high = pos - 1;
+  }
+  return -1;
+}`,
+    cpp: `int interpolationSearch(const std::vector<int>& arr, int target) {
+  int low = 0;
+  int high = arr.size() - 1;
+  
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low == high) {
+      if (arr[low] == target) return low;
+      return -1;
+    }
+    
+    int pos = low + static_cast<int>(
+      (static_cast<double>(high - low) / (arr[high] - arr[low])) * (target - arr[low])
+    );
+    
+    if (arr[pos] == target) return pos;
+    if (arr[pos] < target) low = pos + 1;
+    else high = pos - 1;
+  }
+  return -1;
+}`
+  },
+  'divide-conquer-minmax': {
+    javascript: `function divideConquerMinMax(arr, low = 0, high = arr.length - 1) {
+  // Base case: one element
+  if (low == high) {
+    return { min: arr[low], max: arr[low] };
+  }
+  
+  // Base case: two elements
+  if (high == low + 1) {
+    if (arr[low] < arr[high]) {
+      return { min: arr[low], max: arr[high] };
+    } else {
+      return { min: arr[high], max: arr[low] };
+    }
+  }
+  
+  // Divide and conquer
+  const mid = Math.floor((low + high) / 2);
+  const left = divideConquerMinMax(arr, low, mid);
+  const right = divideConquerMinMax(arr, mid + 1, high);
+  
+  return {
+    min: Math.min(left.min, right.min),
+    max: Math.max(left.max, right.max)
+  };
+}`,
+    python: `def divide_conquer_minmax(arr, low=None, high=None):
+    if low is None:
+        low = 0
+    if high is None:
+        high = len(arr) - 1
+    
+    # Base case: one element
+    if low == high:
+        return {"min": arr[low], "max": arr[low]}
+    
+    # Base case: two elements
+    if high == low + 1:
+        if arr[low] < arr[high]:
+            return {"min": arr[low], "max": arr[high]}
+        else:
+            return {"min": arr[high], "max": arr[low]}
+    
+    # Divide and conquer
+    mid = (low + high) // 2
+    left = divide_conquer_minmax(arr, low, mid)
+    right = divide_conquer_minmax(arr, mid + 1, high)
+    
+    return {
+        "min": min(left["min"], right["min"]),
+        "max": max(left["max"], right["max"])
+    }`,
+    java: `class MinMaxResult {
+  int min, max;
+  MinMaxResult(int min, int max) {
+    this.min = min;
+    this.max = max;
+  }
+}
+
+public static MinMaxResult divideConquerMinMax(int[] arr, int low, int high) {
+  // Base case: one element
+  if (low == high) {
+    return new MinMaxResult(arr[low], arr[low]);
+  }
+  
+  // Base case: two elements
+  if (high == low + 1) {
+    if (arr[low] < arr[high]) {
+      return new MinMaxResult(arr[low], arr[high]);
+    } else {
+      return new MinMaxResult(arr[high], arr[low]);
+    }
+  }
+  
+  // Divide and conquer
+  int mid = (low + high) / 2;
+  MinMaxResult left = divideConquerMinMax(arr, low, mid);
+  MinMaxResult right = divideConquerMinMax(arr, mid + 1, high);
+  
+  return new MinMaxResult(
+    Math.min(left.min, right.min),
+    Math.max(left.max, right.max)
+  );
+}`,
+    cpp: `struct MinMaxResult {
+  int min, max;
+};
+
+MinMaxResult divideConquerMinMax(const std::vector<int>& arr, int low, int high) {
+  // Base case: one element
+  if (low == high) {
+    return {arr[low], arr[low]};
+  }
+  
+  // Base case: two elements
+  if (high == low + 1) {
+    if (arr[low] < arr[high]) {
+      return {arr[low], arr[high]};
+    } else {
+      return {arr[high], arr[low]};
+    }
+  }
+  
+  // Divide and conquer
+  int mid = (low + high) / 2;
+  MinMaxResult left = divideConquerMinMax(arr, low, mid);
+  MinMaxResult right = divideConquerMinMax(arr, mid + 1, high);
+  
+  return {
+    std::min(left.min, right.min),
+    std::max(left.max, right.max)
+  };
+}`
   }
 };

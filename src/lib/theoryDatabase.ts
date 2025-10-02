@@ -859,6 +859,432 @@ export const algorithmTheories: Record<string, AlgorithmTheory> = {
     }
   },
 
+  'jump-search': {
+    id: 'jump-search',
+    name: 'Jump Search',
+    category: 'searching',
+    
+    timeComplexity: {
+      best: {
+        formula: '$O(1)$',
+        bigO: 'O(1)',
+        explanation: 'Phần tử cần tìm nằm ngay ở vị trí đầu tiên của block đầu tiên.',
+        proof: 'Chỉ cần một phép so sánh duy nhất khi may mắn.'
+      },
+      average: {
+        formula: '$O(\\sqrt{n})$',
+        bigO: 'O(√n)',
+        explanation: 'Trung bình cần nhảy √n bước để tìm block chứa phần tử, sau đó tìm kiếm tuyến tính trong block.',
+        proof: 'Với bước nhảy tối ưu m = √n, số bước nhảy là n/m = √n và tìm kiếm tuyến tính thêm m = √n, tổng: √n + √n = O(√n)'
+      },
+      worst: {
+        formula: '$O(\\sqrt{n})$',
+        bigO: 'O(√n)',
+        explanation: 'Phần tử ở cuối mảng hoặc không tồn tại, phải nhảy qua tất cả blocks.',
+        proof: 'Tối đa n/√n = √n bước nhảy cộng √n bước tìm kiếm tuyến tính = O(√n)'
+      }
+    },
+    
+    spaceComplexity: {
+      auxiliary: {
+        formula: '$O(1)$',
+        bigO: 'O(1)',
+        explanation: 'Chỉ cần một số biến cố định để lưu prev, step và các index.',
+      },
+      total: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Bao gồm không gian lưu trữ của mảng đã sắp xếp.',
+      }
+    },
+    
+    properties: {
+      stable: true,
+      inPlace: true,
+      adaptive: false,
+      recursive: false,
+      comparison: true,
+      online: false
+    },
+    
+    description: {
+      overview: 'Jump Search là thuật toán tìm kiếm trên mảng đã sắp xếp, nhảy qua các block cố định kích thước √n thay vì duyệt tuần tự, sau đó tìm kiếm tuyến tính trong block chứa phần tử.',
+      howItWorks: [
+        'Chia mảng thành các block kích thước √n',
+        'Nhảy qua từng block bằng cách so sánh với phần tử cuối block',
+        'Khi phần tử cuối block >= target, dừng nhảy',
+        'Thực hiện tìm kiếm tuyến tính trong block đó',
+        'Trả về index nếu tìm thấy, -1 nếu không'
+      ],
+      keyInsights: [
+        'Bước nhảy tối ưu là √n để cân bằng giữa jumping và linear search',
+        'Nhanh hơn linear search nhưng chậm hơn binary search',
+        'Ưu điểm là backward jump không cần thiết (chỉ nhảy về 1 block)',
+        'Phù hợp khi binary search không khả thi (linked list, tape storage)'
+      ]
+    },
+    
+    mathematics: {
+      recurrenceRelation: 'Không có (iterative algorithm)',
+      invariants: [
+        'prev <= phần tử cần tìm < step (nếu tồn tại)',
+        'Các block trước prev không chứa phần tử cần tìm'
+      ]
+    },
+    
+    tradeoffs: {
+      pros: [
+        'Nhanh hơn Linear Search: O(√n) vs O(n)',
+        'Đơn giản hơn Binary Search, dễ implement',
+        'Backward jump tối thiểu (chỉ 1 block)',
+        'Phù hợp với dữ liệu trên băng từ hoặc linked list',
+        'Cache-friendly hơn binary search'
+      ],
+      cons: [
+        'Chậm hơn Binary Search: O(√n) vs O(log n)',
+        'Yêu cầu mảng phải được sắp xếp trước',
+        'Không hiệu quả cho mảng rất lớn',
+        'Cần tính toán bước nhảy tối ưu'
+      ]
+    },
+    
+    practical: {
+      bestUseCase: [
+        'Mảng đã sắp xếp với kích thước trung bình (1000-100000)',
+        'Hệ thống mà backward jump tốn kém (tape storage)',
+        'Khi binary search quá phức tạp cho yêu cầu',
+        'Linked list đã sắp xếp',
+        'Dữ liệu trên disk với sequential access'
+      ],
+      worstUseCase: [
+        'Mảng rất lớn (> 1 triệu phần tử) - dùng binary search',
+        'Mảng nhỏ (< 100) - linear search đủ',
+        'Mảng chưa sắp xếp',
+        'Cần tốc độ tối đa'
+      ],
+      optimizations: [
+        'Adaptive step: điều chỉnh bước nhảy dựa trên phân phối dữ liệu',
+        'Hybrid: kết hợp với interpolation search cho dữ liệu uniform'
+      ],
+      realWorldApplications: [
+        'Tìm kiếm trên băng từ (tape storage)',
+        'Tìm kiếm trong linked list đã sắp xếp',
+        'Hệ thống embedded với bộ nhớ cache nhỏ',
+        'Database index scanning'
+      ]
+    },
+    
+    tags: ['jumping', 'sorted', 'block-search', 'sqrt-n'],
+    difficulty: 'Trung Bình',
+    
+    metrics: {
+      averageComparisons: '√n + √n = 2√n',
+      averageSwaps: '0',
+      cacheFriendly: 'high',
+      parallelizable: false
+    },
+    
+    history: {
+      inventor: 'Không rõ',
+      year: undefined,
+      motivation: 'Phát triển để tối ưu tìm kiếm trên dữ liệu sequential access như băng từ',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Jump_search'
+    },
+    
+    resources: {
+      papers: [
+        'Knuth, D. (1998). TAOCP Vol. 3, Section 6.2.1'
+      ]
+    }
+  },
+
+  'interpolation-search': {
+    id: 'interpolation-search',
+    name: 'Interpolation Search',
+    category: 'searching',
+    
+    timeComplexity: {
+      best: {
+        formula: '$O(1)$',
+        bigO: 'O(1)',
+        explanation: 'Công thức nội suy ước lượng chính xác vị trí của phần tử ngay lần đầu.',
+        proof: 'Chỉ cần một phép so sánh khi may mắn.'
+      },
+      average: {
+        formula: '$O(\\log\\log n)$',
+        bigO: 'O(log log n)',
+        explanation: 'Với dữ liệu phân phối đồng đều, mỗi lần nội suy giảm khoảng tìm kiếm theo cấp số nhân nhanh hơn binary search.',
+        proof: 'Khoảng tìm kiếm giảm từ n xuống √n xuống log n... nhanh hơn binary search, complexity là log log n'
+      },
+      worst: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Với dữ liệu phân phối không đồng đều hoặc có outliers, nội suy có thể ước lượng sai nhiều lần.',
+        proof: 'Trường hợp xấu nhất khi các phần tử tăng theo cấp số nhân, mỗi lần chỉ loại được 1 phần tử.'
+      }
+    },
+    
+    spaceComplexity: {
+      auxiliary: {
+        formula: '$O(1)$',
+        bigO: 'O(1)',
+        explanation: 'Chỉ cần một số biến cố định để lưu low, high, pos.',
+      },
+      total: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Bao gồm không gian lưu trữ của mảng đã sắp xếp.',
+      }
+    },
+    
+    properties: {
+      stable: true,
+      inPlace: true,
+      adaptive: true,
+      recursive: false,
+      comparison: true,
+      online: false
+    },
+    
+    description: {
+      overview: 'Interpolation Search cải tiến Binary Search bằng cách sử dụng công thức nội suy để ước lượng vị trí của phần tử cần tìm dựa trên giá trị, thay vì luôn chọn giữa. Cực kỳ hiệu quả với dữ liệu phân phối đồng đều.',
+      howItWorks: [
+        'Giả sử dữ liệu phân phối tương đối đồng đều',
+        'Tính vị trí ước lượng: pos = low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])',
+        'So sánh arr[pos] với target',
+        'Nếu bằng nhau, trả về pos',
+        'Nếu arr[pos] < target, tìm trong [pos+1, high]',
+        'Nếu arr[pos] > target, tìm trong [low, pos-1]',
+        'Lặp lại cho đến khi tìm thấy hoặc low > high'
+      ],
+      keyInsights: [
+        'Công thức nội suy giống như tìm vị trí trong thước kẻ',
+        'Hiệu quả tối đa O(log log n) với dữ liệu uniform',
+        'Dễ bị worst-case O(n) với dữ liệu skewed',
+        'Cần kiểm tra phép chia cho 0 và overflow'
+      ]
+    },
+    
+    mathematics: {
+      recurrenceRelation: '$T(n) = T(\\sqrt{n}) + O(1)$ (average case với uniform data)',
+      invariants: [
+        'arr[low] <= target <= arr[high] (nếu target tồn tại)',
+        'Mảng luôn được sắp xếp tăng dần'
+      ]
+    },
+    
+    tradeoffs: {
+      pros: [
+        'Cực nhanh với dữ liệu uniform: O(log log n)',
+        'Thường nhanh hơn binary search trong thực tế',
+        'Ước lượng thông minh dựa trên giá trị',
+        'Đơn giản, dễ implement'
+      ],
+      cons: [
+        'Worst-case O(n) với dữ liệu skewed',
+        'Yêu cầu dữ liệu phân phối tương đối đồng đều',
+        'Cần xử lý edge cases (division by zero, overflow)',
+        'Không hiệu quả với dữ liệu có outliers',
+        'Phức tạp hơn binary search một chút'
+      ]
+    },
+    
+    practical: {
+      bestUseCase: [
+        'Dữ liệu lớn, phân phối đồng đều (uniform distribution)',
+        'Tìm kiếm trong bảng số liệu thống kê',
+        'Database với dữ liệu sequential (ID, timestamp)',
+        'Telephone directories',
+        'Numeric data với range đều'
+      ],
+      worstUseCase: [
+        'Dữ liệu có outliers hoặc skewed distribution',
+        'Dữ liệu tăng theo cấp số nhân',
+        'Mảng nhỏ (binary search đủ)',
+        'Khi không chắc về phân phối dữ liệu'
+      ],
+      optimizations: [
+        'Hybrid: fallback sang binary search nếu phát hiện non-uniform',
+        'Robust interpolation: sử dụng percentile thay vì linear interpolation'
+      ],
+      realWorldApplications: [
+        'Database index với uniformly distributed keys',
+        'Tìm kiếm trong phone book',
+        'Dictionary lookup',
+        'Numeric range queries'
+      ]
+    },
+    
+    tags: ['interpolation', 'sorted', 'uniform-data', 'fast-average'],
+    difficulty: 'Trung Bình',
+    
+    metrics: {
+      averageComparisons: 'log log n (uniform data)',
+      averageSwaps: '0',
+      cacheFriendly: 'medium',
+      parallelizable: false
+    },
+    
+    history: {
+      inventor: 'W. W. Peterson',
+      year: 1957,
+      motivation: 'Cải tiến binary search cho dữ liệu phân phối đồng đều bằng cách sử dụng thông tin về giá trị',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Interpolation_search'
+    },
+    
+    resources: {
+      papers: [
+        'Peterson, W. W. (1957). "Addressing for Random-Access Storage"',
+        'Knuth, D. (1998). TAOCP Vol. 3, Section 6.2.1'
+      ]
+    }
+  },
+
+  'divide-conquer-minmax': {
+    id: 'divide-conquer-minmax',
+    name: 'Divide & Conquer Min/Max',
+    category: 'extreme',
+    
+    timeComplexity: {
+      best: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Phải xem tất cả phần tử ít nhất một lần để xác định min và max.',
+        proof: 'Không thể xác định min/max mà không xem qua tất cả n phần tử.'
+      },
+      average: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Luôn cần 3n/2 - 2 phép so sánh để tìm cả min và max.',
+        proof: 'Chia đôi đệ quy, mỗi cặp phần tử so sánh 1 lần, sau đó so sánh min/max giữa 2 nửa: T(n) = 2T(n/2) + 2 = 3n/2 - 2'
+      },
+      worst: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Complexity không thay đổi theo trường hợp, luôn là 3n/2 - 2 comparisons.',
+        proof: 'Thuật toán divide & conquer có số phép so sánh cố định không phụ thuộc vào dữ liệu đầu vào.'
+      }
+    },
+    
+    spaceComplexity: {
+      auxiliary: {
+        formula: '$O(\\log n)$',
+        bigO: 'O(log n)',
+        explanation: 'Call stack của đệ quy có độ sâu log n do chia đôi mỗi lần.',
+      },
+      total: {
+        formula: '$O(n + \\log n)$',
+        bigO: 'O(n)',
+        explanation: 'Bao gồm mảng đầu vào O(n) và call stack O(log n).',
+      }
+    },
+    
+    properties: {
+      stable: false,
+      inPlace: true,
+      adaptive: false,
+      recursive: true,
+      comparison: true,
+      online: false
+    },
+    
+    description: {
+      overview: 'Thuật toán tìm đồng thời min và max bằng phương pháp chia để trị, tối ưu số phép so sánh xuống còn 3n/2 - 2 thay vì 2n - 2 của phương pháp naive.',
+      howItWorks: [
+        'Chia mảng thành hai nửa bằng nhau',
+        'Đệ quy tìm min/max của mỗi nửa',
+        'Base case 1: Nếu chỉ 1 phần tử, min = max = phần tử đó',
+        'Base case 2: Nếu 2 phần tử, so sánh 1 lần để xác định min và max',
+        'Merge: So sánh min của 2 nửa để lấy min chung, so sánh max của 2 nửa để lấy max chung',
+        'Mỗi merge chỉ cần 2 phép so sánh thay vì 4'
+      ],
+      keyInsights: [
+        'Tối ưu số phép so sánh: 3n/2 - 2 vs 2n - 2 (naive)',
+        'So sánh các phần tử thành cặp trước tiên giảm số comparison',
+        'Divide & conquer tận dụng cấu trúc cây để giảm so sánh',
+        'Trade-off: giảm 25% comparisons nhưng tăng space complexity do đệ quy'
+      ]
+    },
+    
+    mathematics: {
+      recurrenceRelation: '$T(n) = 2T(n/2) + 2$, giải ra được: $T(n) = \\frac{3n}{2} - 2$',
+      invariants: [
+        'Số phép so sánh luôn là 3n/2 - 2 (optimal)',
+        'Mỗi phần tử được xem đúng 1 lần'
+      ]
+    },
+    
+    tradeoffs: {
+      pros: [
+        'Optimal comparisons: 3n/2 - 2 (25% ít hơn naive 2n - 2)',
+        'Elegant divide & conquer solution',
+        'Tìm đồng thời cả min và max hiệu quả',
+        'Dễ chứng minh tính đúng đắn',
+        'Có thể song song hóa'
+      ],
+      cons: [
+        'Space complexity O(log n) do đệ quy',
+        'Overhead của recursive calls',
+        'Phức tạp hơn linear scan',
+        'Không in-place nếu implement không cẩn thận',
+        'Trong thực tế, improvement không lớn với mảng nhỏ'
+      ]
+    },
+    
+    practical: {
+      bestUseCase: [
+        'Cần tìm cả min và max đồng thời',
+        'Mảng lớn (> 10000 phần tử) để tận dụng 25% reduction',
+        'Khi số phép so sánh là bottleneck (comparison expensive)',
+        'Hệ thống có thể song song hóa',
+        'Mục đích giáo dục về divide & conquer'
+      ],
+      worstUseCase: [
+        'Mảng nhỏ (< 100) - overhead không đáng',
+        'Chỉ cần min hoặc max (không cả hai)',
+        'Memory-constrained systems',
+        'Real-time systems (predictable iteration)',
+        'Khi đơn giản quan trọng hơn tối ưu'
+      ],
+      optimizations: [
+        'Iterative version: loại bỏ recursion overhead',
+        'Parallel divide & conquer: tận dụng multi-core',
+        'Hybrid: dùng linear scan cho subarray nhỏ (< 32)'
+      ],
+      realWorldApplications: [
+        'Image processing: tìm min/max pixel value',
+        'Statistics: tìm range của dataset',
+        'Graphics: bounding box calculation',
+        'Data analysis: range normalization'
+      ]
+    },
+    
+    tags: ['divide-conquer', 'optimal-comparisons', 'recursive', 'simultaneous-minmax'],
+    difficulty: 'Trung Bình',
+    
+    metrics: {
+      averageComparisons: '3n/2 - 2',
+      averageSwaps: '0',
+      cacheFriendly: 'medium',
+      parallelizable: true
+    },
+    
+    history: {
+      inventor: 'Ira Pohl',
+      year: 1972,
+      motivation: 'Chứng minh rằng có thể tìm min và max đồng thời với ít hơn 2n comparisons bằng phương pháp chia để trị',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Selection_algorithm'
+    },
+    
+    resources: {
+      papers: [
+        'Knuth, D. (1998). TAOCP Vol. 3, Section 5.3.3',
+        'Pohl, I. (1972). "A sorting problem and its complexity"',
+        'Aho, Hopcroft, Ullman (1974). "The Design and Analysis of Computer Algorithms"'
+      ]
+    }
+  },
+
   'tournament-method': {
     id: 'tournament-method',
     name: 'Tournament Method',

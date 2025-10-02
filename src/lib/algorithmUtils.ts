@@ -394,6 +394,125 @@ export class SearchingAlgorithms {
 
     return steps;
   }
+
+  static jumpSearch(arr: number[], target: number): SearchingStep[] {
+    const steps: SearchingStep[] = [];
+    const n = arr.length;
+    const step = Math.floor(Math.sqrt(n));
+    let prev = 0;
+
+    // Jump through blocks
+    while (arr[Math.min(step, n) - 1] < target) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: Math.min(step, n) - 1,
+        found: false,
+        left: prev,
+        right: Math.min(step, n) - 1
+      });
+
+      prev = step;
+      if (prev >= n) {
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: -1,
+          found: false
+        });
+        return steps;
+      }
+      
+      // Update step for next jump
+      const nextStep = step + Math.floor(Math.sqrt(n));
+      if (nextStep < n) {
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: nextStep - 1,
+          found: false,
+          left: prev,
+          right: nextStep - 1
+        });
+      }
+    }
+
+    // Linear search in the identified block
+    const blockEnd = Math.min(step, n);
+    for (let i = prev; i < blockEnd; i++) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: i,
+        found: arr[i] === target,
+        left: prev,
+        right: blockEnd - 1
+      });
+
+      if (arr[i] === target) {
+        break;
+      }
+    }
+
+    return steps;
+  }
+
+  static interpolationSearch(arr: number[], target: number): SearchingStep[] {
+    const steps: SearchingStep[] = [];
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right && target >= arr[left] && target <= arr[right]) {
+      if (left === right) {
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: left,
+          found: arr[left] === target,
+          left,
+          right
+        });
+        break;
+      }
+
+      // Interpolation formula to estimate position
+      const pos = left + Math.floor(
+        ((right - left) / (arr[right] - arr[left])) * (target - arr[left])
+      );
+
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: pos,
+        found: arr[pos] === target,
+        left,
+        right,
+        mid: pos
+      });
+
+      if (arr[pos] === target) {
+        break;
+      }
+
+      if (arr[pos] < target) {
+        left = pos + 1;
+      } else {
+        right = pos - 1;
+      }
+    }
+
+    // If target is out of range
+    if (left > right || target < arr[left] || target > arr[right]) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: -1,
+        found: false
+      });
+    }
+
+    return steps;
+  }
 }
 
 // Extreme Value Algorithm Implementations with Steps
@@ -513,6 +632,84 @@ export class ExtremeValueAlgorithms {
     }
 
     tournamentHelper(0, arr.length - 1);
+    return steps;
+  }
+
+  static divideConquerMinMax(arr: number[]): ExtremeStep[] {
+    const steps: ExtremeStep[] = [];
+    
+    if (arr.length === 0) return steps;
+
+    function dcHelper(start: number, end: number): { min: number; max: number; minIndex: number; maxIndex: number } {
+      // Base case: one element
+      if (start === end) {
+        steps.push({
+          array: [...arr],
+          currentMin: arr[start],
+          currentMax: arr[start],
+          currentIndex: start,
+          minIndex: start,
+          maxIndex: start,
+          comparing: [start]
+        });
+        return { min: arr[start], max: arr[start], minIndex: start, maxIndex: start };
+      }
+
+      // Base case: two elements
+      if (end - start === 1) {
+        const min = Math.min(arr[start], arr[end]);
+        const max = Math.max(arr[start], arr[end]);
+        const minIndex = arr[start] <= arr[end] ? start : end;
+        const maxIndex = arr[start] >= arr[end] ? start : end;
+
+        steps.push({
+          array: [...arr],
+          currentMin: min,
+          currentMax: max,
+          currentIndex: start,
+          minIndex,
+          maxIndex,
+          comparing: [start, end]
+        });
+
+        return { min, max, minIndex, maxIndex };
+      }
+
+      // Divide and conquer
+      const mid = Math.floor((start + end) / 2);
+      
+      steps.push({
+        array: [...arr],
+        currentMin: arr[start],
+        currentMax: arr[end],
+        currentIndex: mid,
+        minIndex: start,
+        maxIndex: end,
+        comparing: Array.from({ length: end - start + 1 }, (_, i) => start + i)
+      });
+
+      const left = dcHelper(start, mid);
+      const right = dcHelper(mid + 1, end);
+
+      const finalMin = Math.min(left.min, right.min);
+      const finalMax = Math.max(left.max, right.max);
+      const finalMinIndex = left.min <= right.min ? left.minIndex : right.minIndex;
+      const finalMaxIndex = left.max >= right.max ? left.maxIndex : right.maxIndex;
+
+      steps.push({
+        array: [...arr],
+        currentMin: finalMin,
+        currentMax: finalMax,
+        currentIndex: mid,
+        minIndex: finalMinIndex,
+        maxIndex: finalMaxIndex,
+        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex]
+      });
+
+      return { min: finalMin, max: finalMax, minIndex: finalMinIndex, maxIndex: finalMaxIndex };
+    }
+
+    dcHelper(0, arr.length - 1);
     return steps;
   }
 }
