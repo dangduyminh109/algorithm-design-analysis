@@ -206,7 +206,7 @@ export const algorithms: Record<string, Algorithm[]> = {
         worst: 'O(n)'
       },
       spaceComplexity: 'O(1)',
-      description: 'Thuật toán Linear Min/Max quét qua toàn bộ mảng một lần để tìm giá trị nhỏ nhất và lớn nhất. Nó đơn giản và hiệu quả cho nhiệm vụ cụ thể này.',
+      description: 'Thuật toán Linear Min/Max quét qua toàn bộ mảng một lần để tìm giá trị nhỏ nhất và lớn nhất. Đây là cách tiếp cận trực quan và tối ưu nhất về độ phức tạp thời gian, vì mọi phần tử đều phải được kiểm tra ít nhất một lần để đảm bảo tìm được giá trị cực trị chính xác.',
       applications: [
         'Phân tích thống kê',
         'Tiền xử lý dữ liệu',

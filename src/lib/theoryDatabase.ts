@@ -5,6 +5,309 @@
 import { AlgorithmTheory } from '@/types/theory';
 
 export const algorithmTheories: Record<string, AlgorithmTheory> = {
+  'selection-sort': {
+    id: 'selection-sort',
+    name: 'Selection Sort',
+    category: 'sorting',
+    
+    timeComplexity: {
+      best: {
+        formula: '$O(n^2)$',
+        bigO: 'O(n²)',
+        explanation: 'Luôn phải tìm phần tử nhỏ nhất trong phần còn lại, ngay cả khi mảng đã sắp xếp.',
+        proof: 'Tổng số so sánh: $\\sum_{i=1}^{n-1}(n-i) = \\frac{n(n-1)}{2} = O(n^2)$'
+      },
+      average: {
+        formula: '$O(n^2)$',
+        bigO: 'O(n²)',
+        explanation: 'Vẫn cần n-1 lượt, mỗi lượt tìm min trong n-i phần tử còn lại.',
+        proof: 'Số so sánh không phụ thuộc vào dữ liệu đầu vào: luôn là $\\frac{n(n-1)}{2}$'
+      },
+      worst: {
+        formula: '$O(n^2)$',
+        bigO: 'O(n²)',
+        explanation: 'Giống như best case, thuật toán không adaptive - không tận dụng dữ liệu đã sắp xếp.',
+        proof: 'Luôn cần $\\frac{n(n-1)}{2}$ phép so sánh bất kể thứ tự ban đầu.'
+      }
+    },
+    
+    spaceComplexity: {
+      auxiliary: {
+        formula: '$O(1)$',
+        bigO: 'O(1)',
+        explanation: 'Chỉ cần một vài biến để lưu index của min và biến tạm để swap.',
+      },
+      total: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Bao gồm không gian lưu trữ của mảng đầu vào.',
+      }
+    },
+    
+    properties: {
+      stable: false,
+      inPlace: true,
+      adaptive: false,
+      online: false,
+      recursive: false,
+      comparison: true,
+    },
+    
+    description: {
+      overview: 'Selection Sort chia mảng thành phần đã sắp xếp và chưa sắp xếp, liên tục chọn phần tử nhỏ nhất từ phần chưa sắp xếp và đưa vào cuối phần đã sắp xếp.',
+      howItWorks: [
+        'Tìm phần tử nhỏ nhất trong mảng',
+        'Hoán đổi nó với phần tử đầu tiên',
+        'Tìm phần tử nhỏ nhất trong n-1 phần tử còn lại',
+        'Hoán đổi nó với phần tử thứ hai',
+        'Lặp lại cho đến khi mảng được sắp xếp hoàn toàn',
+        'Mỗi lượt đảm bảo 1 phần tử ở đúng vị trí cuối cùng'
+      ],
+      keyInsights: [
+        'Số phép so sánh luôn cố định: n(n-1)/2',
+        'Số lần swap tối thiểu: chỉ n-1 lần (tối ưu)',
+        'Không stable - có thể thay đổi thứ tự tương đối',
+        'Không adaptive - không nhanh hơn với dữ liệu đã sắp xếp'
+      ]
+    },
+    
+    mathematics: {
+      recurrenceRelation: '$T(n) = T(n-1) + O(n)$',
+      invariants: [
+        'Sau lượt thứ i, i phần tử đầu tiên đã ở đúng vị trí cuối cùng',
+        'Mọi phần tử trong phần đã sắp xếp <= mọi phần tử trong phần chưa sắp xếp'
+      ]
+    },
+    
+    practical: {
+      bestUseCase: [
+        'Mảng nhỏ (< 20 phần tử)',
+        'Khi số lần swap phải tối thiểu (swap operation đắt)',
+        'Bộ nhớ hạn chế (in-place, O(1) auxiliary)',
+        'Mục đích giáo dục'
+      ],
+      worstUseCase: [
+        'Mảng lớn (> 1000 phần tử)',
+        'Khi cần stable sort',
+        'Mảng gần như đã sắp xếp (không adaptive)',
+        'Ứng dụng production yêu cầu hiệu suất'
+      ],
+      optimizations: [
+        'Bidirectional selection: tìm cả min và max mỗi lượt',
+        'Heap Selection Sort: sử dụng heap để tìm min nhanh hơn (Heap Sort)'
+      ],
+      realWorldApplications: [
+        'Sắp xếp khi swap operation rất đắt',
+        'Embedded systems với bộ nhớ hạn chế',
+        'Teaching tool cho sorting algorithms'
+      ]
+    },
+    
+    metrics: {
+      averageComparisons: '$\\frac{n(n-1)}{2}$',
+      averageSwaps: '$n-1$ (minimum swaps)',
+      cacheFriendly: 'medium',
+      parallelizable: false
+    },
+    
+    tradeoffs: {
+      pros: [
+        'Rất đơn giản để hiểu và implement',
+        'In-place - không cần bộ nhớ phụ',
+        'Tối thiểu số lần swap (n-1)',
+        'Hoạt động tốt khi swap đắt',
+        'Predictable performance'
+      ],
+      cons: [
+        'Luôn O(n²) - không có best case tốt hơn',
+        'Không stable',
+        'Không adaptive',
+        'Nhiều so sánh không cần thiết với dữ liệu đã sắp xếp',
+        'Chậm với mảng lớn'
+      ],
+      vsAlternatives: {
+        'insertion-sort': 'Insertion Sort nhanh hơn nhiều với dữ liệu gần sắp xếp (adaptive)',
+        'bubble-sort': 'Selection Sort ít swap hơn nhưng không adaptive như Bubble Sort',
+        'heap-sort': 'Heap Sort cải tiến Selection Sort với O(n log n)'
+      }
+    },
+    
+    tags: ['simple', 'quadratic', 'comparison-based', 'in-place', 'unstable'],
+    difficulty: 'Dễ',
+    
+    history: {
+      inventor: 'Không rõ (ancient algorithm)',
+      year: undefined,
+      motivation: 'Một trong những thuật toán sắp xếp cổ điển và trực quan nhất',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Selection_sort'
+    },
+    
+    resources: {
+      papers: [
+        'Knuth, D. (1998). The Art of Computer Programming, Vol. 3: Sorting and Searching, Section 5.2.3'
+      ],
+      visualizations: [
+        'https://visualgo.net/en/sorting',
+        'https://www.toptal.com/developers/sorting-algorithms'
+      ]
+    }
+  },
+
+  'insertion-sort': {
+    id: 'insertion-sort',
+    name: 'Insertion Sort',
+    category: 'sorting',
+    
+    timeComplexity: {
+      best: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Đạt được khi mảng đã được sắp xếp, mỗi phần tử chỉ cần 1 phép so sánh.',
+        proof: 'Với mảng đã sắp xếp, chỉ cần n-1 so sánh, không có shift nào: O(n)'
+      },
+      average: {
+        formula: '$O(n^2)$',
+        bigO: 'O(n²)',
+        explanation: 'Trung bình mỗi phần tử cần shift khoảng một nửa các phần tử trước nó.',
+        proof: 'Tổng số so sánh và shift trung bình: $\\sum_{i=1}^{n}\\frac{i}{2} = \\frac{n^2}{4} = O(n^2)$'
+      },
+      worst: {
+        formula: '$O(n^2)$',
+        bigO: 'O(n²)',
+        explanation: 'Xảy ra khi mảng sắp xếp ngược, mỗi phần tử phải shift qua tất cả phần tử trước.',
+        proof: 'Tổng số shift: $\\sum_{i=1}^{n-1}i = \\frac{n(n-1)}{2} = O(n^2)$'
+      }
+    },
+    
+    spaceComplexity: {
+      auxiliary: {
+        formula: '$O(1)$',
+        bigO: 'O(1)',
+        explanation: 'Chỉ cần một biến tạm để lưu phần tử đang chèn.',
+      },
+      total: {
+        formula: '$O(n)$',
+        bigO: 'O(n)',
+        explanation: 'Bao gồm không gian lưu trữ của mảng đầu vào.',
+      }
+    },
+    
+    properties: {
+      stable: true,
+      inPlace: true,
+      adaptive: true,
+      online: true,
+      recursive: false,
+      comparison: true,
+    },
+    
+    description: {
+      overview: 'Insertion Sort xây dựng mảng đã sắp xếp từng phần tử một, bằng cách lấy mỗi phần tử và chèn vào đúng vị trí trong phần đã sắp xếp.',
+      howItWorks: [
+        'Bắt đầu với phần tử thứ hai (coi phần tử đầu là đã sắp xếp)',
+        'Lưu phần tử hiện tại vào biến tạm (key)',
+        'So sánh key với các phần tử trước nó (đã sắp xếp)',
+        'Shift các phần tử lớn hơn key sang phải',
+        'Chèn key vào vị trí đúng',
+        'Lặp lại cho tất cả phần tử còn lại'
+      ],
+      keyInsights: [
+        'Tương tự cách sắp xếp bài trong tay',
+        'Rất hiệu quả với dữ liệu gần như đã sắp xếp',
+        'Stable - giữ thứ tự tương đối của phần tử bằng nhau',
+        'Online - có thể sắp xếp khi dữ liệu đang đến',
+        'Adaptive - nhanh hơn nhiều với dữ liệu có thứ tự'
+      ]
+    },
+    
+    mathematics: {
+      recurrenceRelation: '$T(n) = T(n-1) + O(n)$',
+      invariants: [
+        'Sau vòng lặp thứ i, i phần tử đầu tiên đã được sắp xếp',
+        'Các phần tử trong phần đã sắp xếp luôn duy trì thứ tự'
+      ]
+    },
+    
+    practical: {
+      bestUseCase: [
+        'Mảng nhỏ (< 50 phần tử)',
+        'Mảng gần như đã sắp xếp',
+        'Dữ liệu đến từng phần (online sorting)',
+        'Làm phần của hybrid algorithms (Timsort, Introsort)',
+        'Khi stable sort là bắt buộc'
+      ],
+      worstUseCase: [
+        'Mảng lớn với dữ liệu ngẫu nhiên',
+        'Mảng sắp xếp ngược',
+        'Khi cần đảm bảo O(n log n)'
+      ],
+      optimizations: [
+        'Binary Insertion Sort: dùng binary search để tìm vị trí chèn (giảm so sánh)',
+        'Shell Sort: cải tiến với gap sequence',
+        'Sentinel: đặt phần tử canh gác để giảm số lần kiểm tra bound',
+        'Shift thay vì swap: giảm số phép gán'
+      ],
+      realWorldApplications: [
+        'Timsort (Python, Java) - hybrid với Merge Sort',
+        'Introsort (C++ STL) - fallback cho Quick Sort',
+        'Sắp xếp trong card games',
+        'Online sorting cho streaming data',
+        'Sắp xếp trong databases cho small tables'
+      ]
+    },
+    
+    metrics: {
+      averageComparisons: '$\\frac{n^2}{4}$',
+      averageSwaps: '$\\frac{n^2}{4}$',
+      cacheFriendly: 'high',
+      parallelizable: false
+    },
+    
+    tradeoffs: {
+      pros: [
+        'Đơn giản và trực quan (như sắp bài)',
+        'Stable sort',
+        'In-place - O(1) bộ nhớ phụ',
+        'Adaptive - O(n) cho dữ liệu gần sắp xếp',
+        'Online - xử lý được streaming data',
+        'Rất nhanh với mảng nhỏ',
+        'Cache-friendly - locality tốt'
+      ],
+      cons: [
+        'O(n²) với dữ liệu lớn hoặc ngẫu nhiên',
+        'Chậm với mảng sắp xếp ngược',
+        'Không phù hợp cho mảng lớn',
+        'Nhiều shift operations'
+      ],
+      vsAlternatives: {
+        'bubble-sort': 'Insertion Sort nhanh hơn và adaptive hơn Bubble Sort',
+        'selection-sort': 'Insertion Sort adaptive và stable, nhưng Selection Sort có ít swap hơn',
+        'merge-sort': 'Merge Sort O(n log n) nhưng Insertion Sort tốt hơn cho mảng nhỏ',
+        'quick-sort': 'Quick Sort nhanh hơn cho mảng lớn, nhưng Insertion Sort tốt cho mảng nhỏ'
+      }
+    },
+    
+    tags: ['simple', 'stable', 'adaptive', 'online', 'in-place'],
+    difficulty: 'Dễ',
+    
+    history: {
+      inventor: 'Không rõ (ancient algorithm)',
+      year: undefined,
+      motivation: 'Mô phỏng cách con người tự nhiên sắp xếp (như sắp bài trong tay)',
+      wikipediaUrl: 'https://en.wikipedia.org/wiki/Insertion_sort'
+    },
+    
+    resources: {
+      papers: [
+        'Knuth, D. (1998). The Art of Computer Programming, Vol. 3: Sorting and Searching, Section 5.2.1'
+      ],
+      visualizations: [
+        'https://visualgo.net/en/sorting',
+        'https://www.toptal.com/developers/sorting-algorithms'
+      ]
+    }
+  },
+
   'bubble-sort': {
     id: 'bubble-sort',
     name: 'Bubble Sort',
