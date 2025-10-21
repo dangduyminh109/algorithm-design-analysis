@@ -34,6 +34,7 @@ export interface SearchingStep {
   left?: number;
   right?: number;
   mid?: number;
+  isJumpPoint?: boolean;  // For Jump Search visualization
 }
 
 export interface ExtremeStep {

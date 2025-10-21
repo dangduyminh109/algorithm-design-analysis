@@ -72,6 +72,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           // Array should already be sorted from initializeArray
           algorithmSteps = SearchingAlgorithms.binarySearch(array, target);
           break;
+        case 'jump-search':
+          algorithmSteps = SearchingAlgorithms.jumpSearch(array, target);
+          break;
+        case 'interpolation-search':
+          algorithmSteps = SearchingAlgorithms.interpolationSearch(array, target);
+          break;
         default:
           algorithmSteps = SearchingAlgorithms.linearSearch(array, target);
       }
@@ -232,13 +238,25 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
 
   // Get element color based on state
   const getElementColor = (index: number) => {
-    const { currentIndex, found, left, right, mid } = currentStepData;
+    const { currentIndex, found, left, right, mid, isJumpPoint } = currentStepData;
 
     if (found && currentIndex === index) return 'bg-green-500';
+    
+    // Jump point visualization for Jump Search
+    if (algorithm === 'jump-search' && isJumpPoint && currentIndex === index) {
+      return 'bg-white border-2 border-blue-400';
+    }
+    
     if (currentIndex === index) return 'bg-yellow-500';
     
     if (algorithm === 'binary-search') {
       if (mid === index) return 'bg-purple-500';
+      if (left !== undefined && right !== undefined) {
+        if (index < left || index > right) return 'bg-gray-300';
+      }
+    }
+    
+    if (algorithm === 'jump-search') {
       if (left !== undefined && right !== undefined) {
         if (index < left || index > right) return 'bg-gray-300';
       }
@@ -249,14 +267,24 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
 
   // Get element text color
   const getElementTextColor = (index: number) => {
-    const { currentIndex, found } = currentStepData;
+    const { currentIndex, found, left, right, isJumpPoint } = currentStepData;
+    
+    // Jump point with white background needs dark text
+    if (algorithm === 'jump-search' && isJumpPoint && currentIndex === index && !found) {
+      return 'text-blue-600 font-bold';
+    }
     
     if ((found && currentIndex === index) || currentIndex === index) {
       return 'text-white';
     }
     
     if (algorithm === 'binary-search') {
-      const { left, right } = currentStepData;
+      if (left !== undefined && right !== undefined && (index < left || index > right)) {
+        return 'text-gray-500';
+      }
+    }
+    
+    if (algorithm === 'jump-search') {
       if (left !== undefined && right !== undefined && (index < left || index > right)) {
         return 'text-gray-500';
       }
@@ -452,12 +480,17 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           ))}
         </div>
 
-        {/* Binary Search Range Indicator */}
-        {algorithm === 'binary-search' && currentStepData.left !== undefined && currentStepData.right !== undefined && (
+        {/* Search Range Indicator */}
+        {(algorithm === 'binary-search' || algorithm === 'jump-search' || algorithm === 'interpolation-search') && 
+         currentStepData.left !== undefined && currentStepData.right !== undefined && (
           <div className="mt-4 text-center text-sm text-gray-600">
             <div className="flex items-center justify-center space-x-4">
               <span>Left: {currentStepData.left}</span>
-              <span className="font-bold">Mid: {currentStepData.mid}</span>
+              {currentStepData.mid !== undefined && (
+                <span className="font-bold">
+                  {algorithm === 'interpolation-search' ? 'Pos' : 'Mid'}: {currentStepData.mid}
+                </span>
+              )}
               <span>Right: {currentStepData.right}</span>
             </div>
           </div>
@@ -469,6 +502,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
             <span>Unsearched</span>
           </div>
+          {algorithm === 'jump-search' && (
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-white border-2 border-blue-400 rounded"></div>
+              <span>Jump Point</span>
+            </div>
+          )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
             <span>Current</span>
@@ -484,6 +523,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
                 <span>Eliminated</span>
               </div>
             </>
+          )}
+          {(algorithm === 'jump-search') && (
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-gray-300 rounded"></div>
+              <span>Eliminated</span>
+            </div>
           )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
@@ -522,6 +567,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         )}
         {algorithm === 'binary-search' && (
           <p>Binary Search divides the sorted array in half at each step, eliminating half of the remaining elements.</p>
+        )}
+        {algorithm === 'jump-search' && (
+          <p>Jump Search jumps ahead by fixed steps (√n), then performs linear search in the identified block. Works on sorted arrays.</p>
+        )}
+        {algorithm === 'interpolation-search' && (
+          <p>Interpolation Search estimates the position of the target using interpolation formula. Most efficient on uniformly distributed sorted arrays.</p>
         )}
       </div>
     </div>

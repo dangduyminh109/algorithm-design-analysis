@@ -84,6 +84,7 @@ export interface SearchingStepWithCounters {
   left?: number;
   right?: number;
   mid?: number;
+  isJumpPoint?: boolean;  // For Jump Search visualization
   counters: PerformanceCounters;
 }
 

@@ -695,11 +695,12 @@ export function jumpSearchInstrumented(
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
   const n = arr.length;
-  const step = Math.floor(Math.sqrt(n));
+  const jumpSize = Math.floor(Math.sqrt(n));
   let prev = 0;
+  let curr = jumpSize;
 
   // Jump through blocks
-  while (arr[Math.min(step, n) - 1] < target) {
+  while (curr < n && arr[curr] < target) {
     counters.iterations++;
     counters.comparisons++;
     counters.arrayAccesses++;
@@ -708,22 +709,40 @@ export function jumpSearchInstrumented(
       steps.push({
         array: [...arr],
         target,
-        currentIndex: Math.min(step, n) - 1,
+        currentIndex: curr,
         found: false,
         left: prev,
-        right: Math.min(step, n) - 1,
+        right: curr,
+        isJumpPoint: true,  // Mark as jump point
         counters: cloneCounters(counters)
       });
     }
 
-    prev = step;
-    if (prev >= n) {
-      return { found: false, index: -1, counters, steps: withSteps ? steps : undefined };
+    prev = curr;
+    curr += jumpSize;
+  }
+
+  // Check the last block boundary if within array bounds
+  if (curr < n) {
+    counters.comparisons++;
+    counters.arrayAccesses++;
+    
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: curr,
+        found: false,
+        left: prev,
+        right: curr,
+        isJumpPoint: true,  // Mark as jump point
+        counters: cloneCounters(counters)
+      });
     }
   }
 
   // Linear search in the identified block
-  const blockEnd = Math.min(step, n);
+  const blockEnd = Math.min(curr + 1, n);
   for (let i = prev; i < blockEnd; i++) {
     counters.iterations++;
     counters.comparisons++;
@@ -737,6 +756,7 @@ export function jumpSearchInstrumented(
         found: arr[i] === target,
         left: prev,
         right: blockEnd - 1,
+        isJumpPoint: false,  // Not a jump point, linear search
         counters: cloneCounters(counters)
       });
     }

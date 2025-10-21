@@ -398,47 +398,41 @@ export class SearchingAlgorithms {
   static jumpSearch(arr: number[], target: number): SearchingStep[] {
     const steps: SearchingStep[] = [];
     const n = arr.length;
-    const step = Math.floor(Math.sqrt(n));
+    const jumpSize = Math.floor(Math.sqrt(n));
     let prev = 0;
+    let curr = jumpSize;
 
     // Jump through blocks
-    while (arr[Math.min(step, n) - 1] < target) {
+    while (curr < n && arr[curr] < target) {
       steps.push({
         array: [...arr],
         target,
-        currentIndex: Math.min(step, n) - 1,
+        currentIndex: curr,
         found: false,
         left: prev,
-        right: Math.min(step, n) - 1
+        right: curr,
+        isJumpPoint: true  // Mark as jump point
       });
 
-      prev = step;
-      if (prev >= n) {
-        steps.push({
-          array: [...arr],
-          target,
-          currentIndex: -1,
-          found: false
-        });
-        return steps;
-      }
-      
-      // Update step for next jump
-      const nextStep = step + Math.floor(Math.sqrt(n));
-      if (nextStep < n) {
-        steps.push({
-          array: [...arr],
-          target,
-          currentIndex: nextStep - 1,
-          found: false,
-          left: prev,
-          right: nextStep - 1
-        });
-      }
+      prev = curr;
+      curr += jumpSize;
+    }
+
+    // Check the last block boundary if within array bounds
+    if (curr < n) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: curr,
+        found: false,
+        left: prev,
+        right: curr,
+        isJumpPoint: true  // Mark as jump point
+      });
     }
 
     // Linear search in the identified block
-    const blockEnd = Math.min(step, n);
+    const blockEnd = Math.min(curr + 1, n);
     for (let i = prev; i < blockEnd; i++) {
       steps.push({
         array: [...arr],
@@ -446,11 +440,26 @@ export class SearchingAlgorithms {
         currentIndex: i,
         found: arr[i] === target,
         left: prev,
-        right: blockEnd - 1
+        right: blockEnd - 1,
+        isJumpPoint: false  // Not a jump point, linear search
       });
 
       if (arr[i] === target) {
         break;
+      }
+    }
+
+    // If not found, add final step
+    if (steps.length === 0 || !steps[steps.length - 1].found) {
+      if (steps.length > 0 && !steps[steps.length - 1].found) {
+        // Already have a not-found step at the end
+      } else {
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: -1,
+          found: false
+        });
       }
     }
 
