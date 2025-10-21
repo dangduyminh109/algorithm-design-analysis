@@ -252,13 +252,15 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     if (algorithm === 'binary-search') {
       if (mid === index) return 'bg-purple-500';
       if (left !== undefined && right !== undefined) {
-        if (index < left || index > right) return 'bg-gray-300';
+        if (index < left || index > right) return 'bg-gray-400';
       }
     }
     
-    if (algorithm === 'jump-search') {
-      if (left !== undefined && right !== undefined) {
-        if (index < left || index > right) return 'bg-gray-300';
+    // Jump Search: only show eliminated (full gray) for elements before and including previous jump point
+    if (algorithm === 'jump-search' && state.currentStep > 0) {
+      if (left !== undefined) {
+        // Gray out elements up to and including the previous jump point (left)
+        if (index <= left) return 'bg-gray-400';
       }
     }
     
@@ -267,7 +269,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
 
   // Get element text color
   const getElementTextColor = (index: number) => {
-    const { currentIndex, found, left, right, isJumpPoint } = currentStepData;
+    const { currentIndex, found, left, isJumpPoint } = currentStepData;
     
     // Jump point with white background needs dark text
     if (algorithm === 'jump-search' && isJumpPoint && currentIndex === index && !found) {
@@ -278,15 +280,18 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       return 'text-white';
     }
     
+    // Hide text for eliminated elements (same color as background)
     if (algorithm === 'binary-search') {
+      const { left, right } = currentStepData;
       if (left !== undefined && right !== undefined && (index < left || index > right)) {
-        return 'text-gray-500';
+        return 'text-gray-400';
       }
     }
     
-    if (algorithm === 'jump-search') {
-      if (left !== undefined && right !== undefined && (index < left || index > right)) {
-        return 'text-gray-500';
+    // Jump Search: hide text for elements up to and including previous jump point (eliminated)
+    if (algorithm === 'jump-search' && state.currentStep > 0) {
+      if (left !== undefined && index <= left) {
+        return 'text-gray-400';
       }
     }
     
@@ -526,7 +531,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           )}
           {(algorithm === 'jump-search') && (
             <div className="flex items-center space-x-1">
-              <div className="w-3 h-3 bg-gray-300 rounded"></div>
+              <div className="w-3 h-3 bg-gray-400 rounded"></div>
               <span>Eliminated</span>
             </div>
           )}

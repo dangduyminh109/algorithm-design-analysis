@@ -402,6 +402,17 @@ export class SearchingAlgorithms {
     let prev = 0;
     let curr = jumpSize;
 
+    // Initial state: highlight starting position (index 0)
+    steps.push({
+      array: [...arr],
+      target,
+      currentIndex: 0,
+      found: false,
+      left: 0,
+      right: 0,
+      isJumpPoint: false
+    });
+
     // Jump through blocks
     while (curr < n && arr[curr] < target) {
       steps.push({

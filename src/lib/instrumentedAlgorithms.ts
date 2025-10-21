@@ -699,6 +699,20 @@ export function jumpSearchInstrumented(
   let prev = 0;
   let curr = jumpSize;
 
+  // Initial state: highlight starting position (index 0)
+  if (withSteps) {
+    steps.push({
+      array: [...arr],
+      target,
+      currentIndex: 0,
+      found: false,
+      left: 0,
+      right: 0,
+      isJumpPoint: false,
+      counters: cloneCounters(counters)
+    });
+  }
+
   // Jump through blocks
   while (curr < n && arr[curr] < target) {
     counters.iterations++;
