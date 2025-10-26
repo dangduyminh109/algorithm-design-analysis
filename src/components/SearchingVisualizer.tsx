@@ -124,7 +124,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         progress: (i / (steps.length - 1)) * 100
       }));
 
-      const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
+      const speedMultiplier = Math.max(0.1, Math.min(20, stateRef.current.speed));
       await delay(500 / speedMultiplier);
 
       // Check if paused
@@ -351,13 +351,13 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           <input
             type="range"
             min="0.25"
-            max="3"
+            max="20"
             step="0.25"
             value={state.speed}
             onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-            className="w-20"
+            className="w-24"
           />
-          <span className="text-sm text-gray-600 w-8">{state.speed}x</span>
+          <span className="text-sm text-gray-600 w-12">{state.speed}x</span>
         </div>
       </div>
 

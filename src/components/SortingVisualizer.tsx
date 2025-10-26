@@ -139,7 +139,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       onStepChange?.(i, steps.length - 1);
 
       // Adaptive delay based on device performance
-      const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
+      const speedMultiplier = Math.max(0.1, Math.min(20, stateRef.current.speed));
       const baseDelay = isSlowDevice ? 400 : 300;
       await delay(baseDelay / speedMultiplier);
 
@@ -273,13 +273,13 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
           <input
             type="range"
             min="0.25"
-            max="3"
+            max="20"
             step="0.25"
             value={state.speed}
             onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-            className="w-20"
+            className="w-24"
           />
-          <span className="text-sm text-gray-600 w-8">{state.speed}x</span>
+          <span className="text-sm text-gray-600 w-12">{state.speed}x</span>
         </div>
       </div>
 
