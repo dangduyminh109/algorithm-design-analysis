@@ -434,20 +434,29 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       </div>
 
       {/* Algorithm Status */}
-      <div className="mt-4 text-center text-sm text-gray-600">
+      <div className="mt-4 text-center">
         {state.isPlaying && !state.isPaused && (
-          <span className="text-blue-600">● Finding extreme values...</span>
+          <div className="text-blue-600 text-sm">● Finding extreme values...</div>
         )}
         {state.isPaused && (
-          <span className="text-yellow-600">⏸ Paused</span>
+          <div className="text-yellow-600 text-sm">⏸ Paused</div>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
-          <span className="text-green-600">
+          <div className="text-green-600 text-sm">
              Complete! Min: {currentStepData.currentMin}, Max: {currentStepData.currentMax}
-          </span>
+          </div>
         )}
-        {!state.isPlaying && state.currentStep === 0 && (
-          <span className="text-gray-500">Ready to find extreme values</span>
+        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
+          <div className="text-gray-500 text-sm">Ready to find extreme values</div>
+        )}
+        
+        {/* Step Explanation */}
+        {steps.length > 0 && currentStepData.explanation && (
+          <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+            <div className="text-sm font-medium text-blue-800">
+              {currentStepData.explanation}
+            </div>
+          </div>
         )}
       </div>
 

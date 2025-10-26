@@ -378,18 +378,27 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       </div>
 
       {/* Algorithm Status */}
-      <div className="mt-4 text-center text-sm text-gray-600">
+      <div className="mt-4 text-center">
         {state.isPlaying && !state.isPaused && (
-          <span className="text-blue-600">● Running...</span>
+          <div className="text-blue-600 text-sm">● Running...</div>
         )}
         {state.isPaused && (
-          <span className="text-yellow-600">⏸ Paused</span>
+          <div className="text-yellow-600 text-sm">⏸ Paused</div>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
-          <span className="text-green-600"> Sorting Complete!</span>
+          <div className="text-green-600 text-sm"> Sorting Complete!</div>
         )}
-        {!state.isPlaying && state.currentStep === 0 && (
-          <span className="text-gray-500">Ready to start</span>
+        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
+          <div className="text-gray-500 text-sm">Ready to start</div>
+        )}
+        
+        {/* Step Explanation */}
+        {steps.length > 0 && currentStepData.explanation && (
+          <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+            <div className="text-sm font-medium text-blue-800">
+              {currentStepData.explanation}
+            </div>
+          </div>
         )}
       </div>
     </div>

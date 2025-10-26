@@ -24,6 +24,7 @@ export interface SortingStep {
   pivot?: number;
   sorted: number[];
   currentIndex?: number;
+  explanation?: string;
 }
 
 export interface SearchingStep {
@@ -35,6 +36,7 @@ export interface SearchingStep {
   right?: number;
   mid?: number;
   isJumpPoint?: boolean;  // For Jump Search visualization
+  explanation?: string;
 }
 
 export interface ExtremeStep {
@@ -45,6 +47,7 @@ export interface ExtremeStep {
   minIndex?: number;
   maxIndex?: number;
   comparing: number[];
+  explanation?: string;
 }
 
 export interface VisualizationState {

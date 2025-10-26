@@ -547,21 +547,30 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       </div>
 
       {/* Algorithm Status */}
-      <div className="mt-4 text-center text-sm text-gray-600">
+      <div className="mt-4 text-center">
         {state.isPlaying && !state.isPaused && (
-          <span className="text-blue-600">● Searching...</span>
+          <div className="text-blue-600 text-sm">● Searching...</div>
         )}
         {state.isPaused && (
-          <span className="text-yellow-600">⏸ Paused</span>
+          <div className="text-yellow-600 text-sm">⏸ Paused</div>
         )}
         {!state.isPlaying && currentStepData.found && (
-          <span className="text-green-600"> Target found at position {currentStepData.currentIndex}!</span>
+          <div className="text-green-600 text-sm"> Target found at position {currentStepData.currentIndex}!</div>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && !currentStepData.found && (
-          <span className="text-red-600">✗ Target not found in array</span>
+          <div className="text-red-600 text-sm">✗ Target not found in array</div>
         )}
-        {!state.isPlaying && state.currentStep === 0 && (
-          <span className="text-gray-500">Ready to search</span>
+        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
+          <div className="text-gray-500 text-sm">Ready to search</div>
+        )}
+        
+        {/* Step Explanation */}
+        {steps.length > 0 && currentStepData.explanation && (
+          <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+            <div className="text-sm font-medium text-blue-800">
+              {currentStepData.explanation}
+            </div>
+          </div>
         )}
       </div>
 

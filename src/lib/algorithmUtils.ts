@@ -36,7 +36,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: []
+      sorted: [],
+      explanation: 'Bắt đầu sắp xếp nổi bọt'
     });
 
     for (let i = 0; i < n - 1; i++) {
@@ -45,16 +46,20 @@ export class SortingAlgorithms {
           array: [...array],
           comparing: [j, j + 1],
           swapping: [],
-          sorted: Array.from({ length: i }, (_, k) => n - 1 - k)
+          sorted: Array.from({ length: i }, (_, k) => n - 1 - k),
+          explanation: `So sánh ${array[j]} và ${array[j + 1]}`
         });
 
         if (array[j] > array[j + 1]) {
+          const temp1 = array[j];
+          const temp2 = array[j + 1];
           [array[j], array[j + 1]] = [array[j + 1], array[j]];
           steps.push({
             array: [...array],
             comparing: [j, j + 1],
             swapping: [j, j + 1],
-            sorted: Array.from({ length: i }, (_, k) => n - 1 - k)
+            sorted: Array.from({ length: i }, (_, k) => n - 1 - k),
+            explanation: `Hoán đổi vì ${temp1} > ${temp2}`
           });
         }
       }
@@ -64,7 +69,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: Array.from({ length: n }, (_, k) => k)
+      sorted: Array.from({ length: n }, (_, k) => k),
+      explanation: 'Hoàn thành sắp xếp'
     });
 
     return steps;
@@ -79,7 +85,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: []
+      sorted: [],
+      explanation: 'Bắt đầu sắp xếp chọn'
     });
 
     for (let i = 0; i < n - 1; i++) {
@@ -90,7 +97,8 @@ export class SortingAlgorithms {
           array: [...array],
           comparing: [minIndex, j],
           swapping: [],
-          sorted: Array.from({ length: i }, (_, k) => k)
+          sorted: Array.from({ length: i }, (_, k) => k),
+          explanation: `So sánh ${array[minIndex]} với ${array[j]}`
         });
 
         if (array[j] < array[minIndex]) {
@@ -99,12 +107,14 @@ export class SortingAlgorithms {
       }
 
       if (minIndex !== i) {
+        const minValue = array[minIndex];
         [array[i], array[minIndex]] = [array[minIndex], array[i]];
         steps.push({
           array: [...array],
           comparing: [],
           swapping: [i, minIndex],
-          sorted: Array.from({ length: i + 1 }, (_, k) => k)
+          sorted: Array.from({ length: i + 1 }, (_, k) => k),
+          explanation: `Đặt ${minValue} vào vị trí ${i}`
         });
       }
     }
@@ -113,7 +123,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: Array.from({ length: n }, (_, k) => k)
+      sorted: Array.from({ length: n }, (_, k) => k),
+      explanation: 'Hoàn thành sắp xếp'
     });
 
     return steps;
@@ -127,7 +138,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: [0]
+      sorted: [0],
+      explanation: 'Bắt đầu sắp xếp chèn'
     });
 
     for (let i = 1; i < array.length; i++) {
@@ -139,7 +151,8 @@ export class SortingAlgorithms {
         comparing: [i],
         swapping: [],
         sorted: Array.from({ length: i }, (_, k) => k),
-        currentIndex: i
+        currentIndex: i,
+        explanation: `Chọn phần tử ${key} để chèn vào đúng vị trí`
       });
 
       while (j >= 0 && array[j] > key) {
@@ -148,9 +161,11 @@ export class SortingAlgorithms {
           comparing: [j, j + 1],
           swapping: [],
           sorted: Array.from({ length: i }, (_, k) => k),
-          currentIndex: i
+          currentIndex: i,
+          explanation: `${array[j]} > ${key}: dịch ${array[j]} sang phải`
         });
 
+        const movedValue = array[j];
         array[j + 1] = array[j];
         
         steps.push({
@@ -158,7 +173,8 @@ export class SortingAlgorithms {
           comparing: [j, j + 1],
           swapping: [j, j + 1],
           sorted: Array.from({ length: i }, (_, k) => k),
-          currentIndex: i
+          currentIndex: i,
+          explanation: `Dịch ${movedValue} sang vị trí ${j + 1}`
         });
 
         j--;
@@ -169,7 +185,8 @@ export class SortingAlgorithms {
         array: [...array],
         comparing: [],
         swapping: [],
-        sorted: Array.from({ length: i + 1 }, (_, k) => k)
+        sorted: Array.from({ length: i + 1 }, (_, k) => k),
+        explanation: `Chèn ${key} vào vị trí ${j + 1}`
       });
     }
 
@@ -197,7 +214,8 @@ export class SortingAlgorithms {
         comparing: [],
         swapping: [],
         sorted: [],
-        pivot: high
+        pivot: high,
+        explanation: `Chọn pivot = ${pivot} tại vị trí ${high}`
       });
 
       for (let j = low; j < high; j++) {
@@ -206,31 +224,37 @@ export class SortingAlgorithms {
           comparing: [j, high],
           swapping: [],
           sorted: [],
-          pivot: high
+          pivot: high,
+          explanation: `So sánh ${array[j]} với pivot ${pivot}`
         });
 
         if (array[j] <= pivot) {
           i++;
           if (i !== j) {
+            const val1 = array[i];
+            const val2 = array[j];
             [array[i], array[j]] = [array[j], array[i]];
             steps.push({
               array: [...array],
               comparing: [i, j],
               swapping: [i, j],
               sorted: [],
-              pivot: high
+              pivot: high,
+              explanation: `${val2} ≤ ${pivot}: hoán đổi ${val1} và ${val2}`
             });
           }
         }
       }
 
+      const pivotValue = array[high];
       [array[i + 1], array[high]] = [array[high], array[i + 1]];
       steps.push({
         array: [...array],
         comparing: [],
         swapping: [i + 1, high],
         sorted: [],
-        pivot: i + 1
+        pivot: i + 1,
+        explanation: `Đặt pivot ${pivotValue} vào vị trí ${i + 1}`
       });
 
       return i + 1;
@@ -240,7 +264,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: []
+      sorted: [],
+      explanation: 'Bắt đầu sắp xếp nhanh'
     });
 
     quickSortHelper(0, array.length - 1);
@@ -249,7 +274,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: Array.from({ length: array.length }, (_, k) => k)
+      sorted: Array.from({ length: array.length }, (_, k) => k),
+      explanation: 'Hoàn thành sắp xếp'
     });
 
     return steps;
@@ -279,13 +305,17 @@ export class SortingAlgorithms {
           array: [...array],
           comparing: [left + i, mid + 1 + j],
           swapping: [],
-          sorted: []
+          sorted: [],
+          explanation: `So sánh ${leftArr[i]} và ${rightArr[j]}`
         });
 
+        let mergedValue;
         if (leftArr[i] <= rightArr[j]) {
+          mergedValue = leftArr[i];
           array[k] = leftArr[i];
           i++;
         } else {
+          mergedValue = rightArr[j];
           array[k] = rightArr[j];
           j++;
         }
@@ -295,29 +325,34 @@ export class SortingAlgorithms {
           array: [...array],
           comparing: [],
           swapping: [k - 1],
-          sorted: []
+          sorted: [],
+          explanation: `Chọn ${mergedValue} để trộn vào vị trí ${k - 1}`
         });
       }
 
       while (i < leftArr.length) {
+        const value = leftArr[i];
         array[k] = leftArr[i];
         steps.push({
           array: [...array],
           comparing: [],
           swapping: [k],
-          sorted: []
+          sorted: [],
+          explanation: `Sao chép ${value} từ mảng trái`
         });
         i++;
         k++;
       }
 
       while (j < rightArr.length) {
+        const value = rightArr[j];
         array[k] = rightArr[j];
         steps.push({
           array: [...array],
           comparing: [],
           swapping: [k],
-          sorted: []
+          sorted: [],
+          explanation: `Sao chép ${value} từ mảng phải`
         });
         j++;
         k++;
@@ -328,7 +363,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: []
+      sorted: [],
+      explanation: 'Bắt đầu sắp xếp trộn'
     });
 
     mergeSortHelper(0, array.length - 1);
@@ -337,7 +373,8 @@ export class SortingAlgorithms {
       array: [...array],
       comparing: [],
       swapping: [],
-      sorted: Array.from({ length: array.length }, (_, k) => k)
+      sorted: Array.from({ length: array.length }, (_, k) => k),
+      explanation: 'Hoàn thành sắp xếp'
     });
 
     return steps;
@@ -350,11 +387,13 @@ export class SearchingAlgorithms {
     const steps: SearchingStep[] = [];
 
     for (let i = 0; i < arr.length; i++) {
+      const found = arr[i] === target;
       steps.push({
         array: [...arr],
         target,
         currentIndex: i,
-        found: arr[i] === target
+        found,
+        explanation: found ? `Tìm thấy ${target} tại vị trí ${i}` : `Kiểm tra vị trí ${i}: ${arr[i]} ≠ ${target}`
       });
 
       if (arr[i] === target) {
@@ -372,15 +411,26 @@ export class SearchingAlgorithms {
 
     while (left <= right) {
       const mid = Math.floor((left + right) / 2);
+      const found = arr[mid] === target;
+      
+      let explanation = '';
+      if (found) {
+        explanation = `Tìm thấy ${target} tại vị trí ${mid}`;
+      } else if (arr[mid] < target) {
+        explanation = `${arr[mid]} < ${target}: tìm bên phải`;
+      } else {
+        explanation = `${arr[mid]} > ${target}: tìm bên trái`;
+      }
 
       steps.push({
         array: [...arr],
         target,
         currentIndex: mid,
-        found: arr[mid] === target,
+        found,
         left,
         right,
-        mid
+        mid,
+        explanation
       });
 
       if (arr[mid] === target) {
@@ -410,7 +460,8 @@ export class SearchingAlgorithms {
       found: false,
       left: 0,
       right: 0,
-      isJumpPoint: false
+      isJumpPoint: false,
+      explanation: `Bắt đầu Jump Search với bước nhảy ${jumpSize}`
     });
 
     // Jump through blocks
@@ -422,7 +473,8 @@ export class SearchingAlgorithms {
         found: false,
         left: prev,
         right: curr,
-        isJumpPoint: true  // Mark as jump point
+        isJumpPoint: true,
+        explanation: `Nhảy đến vị trí ${curr}: ${arr[curr]} < ${target}`
       });
 
       prev = curr;
@@ -438,21 +490,24 @@ export class SearchingAlgorithms {
         found: false,
         left: prev,
         right: curr,
-        isJumpPoint: true  // Mark as jump point
+        isJumpPoint: true,
+        explanation: `Kiểm tra vị trí ${curr}: ${arr[curr]} ≥ ${target}, tìm trong khối`
       });
     }
 
     // Linear search in the identified block
     const blockEnd = Math.min(curr + 1, n);
     for (let i = prev; i < blockEnd; i++) {
+      const found = arr[i] === target;
       steps.push({
         array: [...arr],
         target,
         currentIndex: i,
-        found: arr[i] === target,
+        found,
         left: prev,
         right: blockEnd - 1,
-        isJumpPoint: false  // Not a jump point, linear search
+        isJumpPoint: false,
+        explanation: found ? `Tìm thấy ${target} tại vị trí ${i}` : `Tìm tuyến tính: ${arr[i]} ≠ ${target}`
       });
 
       if (arr[i] === target) {
@@ -469,7 +524,8 @@ export class SearchingAlgorithms {
           array: [...arr],
           target,
           currentIndex: -1,
-          found: false
+          found: false,
+          explanation: `Không tìm thấy ${target} trong mảng`
         });
       }
     }
@@ -484,13 +540,15 @@ export class SearchingAlgorithms {
 
     while (left <= right && target >= arr[left] && target <= arr[right]) {
       if (left === right) {
+        const found = arr[left] === target;
         steps.push({
           array: [...arr],
           target,
           currentIndex: left,
-          found: arr[left] === target,
+          found,
           left,
-          right
+          right,
+          explanation: found ? `Tìm thấy ${target} tại vị trí ${left}` : `Không tìm thấy ${target}`
         });
         break;
       }
@@ -500,14 +558,25 @@ export class SearchingAlgorithms {
         ((right - left) / (arr[right] - arr[left])) * (target - arr[left])
       );
 
+      const found = arr[pos] === target;
+      let explanation = '';
+      if (found) {
+        explanation = `Tìm thấy ${target} tại vị trí ${pos}`;
+      } else if (arr[pos] < target) {
+        explanation = `Ước lượng vị trí ${pos}: ${arr[pos]} < ${target}, tìm bên phải`;
+      } else {
+        explanation = `Ước lượng vị trí ${pos}: ${arr[pos]} > ${target}, tìm bên trái`;
+      }
+
       steps.push({
         array: [...arr],
         target,
         currentIndex: pos,
-        found: arr[pos] === target,
+        found,
         left,
         right,
-        mid: pos
+        mid: pos,
+        explanation
       });
 
       if (arr[pos] === target) {
@@ -527,7 +596,8 @@ export class SearchingAlgorithms {
         array: [...arr],
         target,
         currentIndex: -1,
-        found: false
+        found: false,
+        explanation: `${target} nằm ngoài phạm vi mảng`
       });
     }
 
@@ -554,7 +624,8 @@ export class ExtremeValueAlgorithms {
       currentIndex: 0,
       minIndex: 0,
       maxIndex: 0,
-      comparing: [0]
+      comparing: [0],
+      explanation: `Khởi tạo: min = max = ${arr[0]}`
     });
 
     for (let i = 1; i < arr.length; i++) {
@@ -565,9 +636,13 @@ export class ExtremeValueAlgorithms {
         currentIndex: i,
         minIndex,
         maxIndex,
-        comparing: [i]
+        comparing: [i],
+        explanation: `Kiểm tra phần tử ${arr[i]} tại vị trí ${i}`
       });
 
+      const oldMin = min;
+      const oldMax = max;
+      
       if (arr[i] < min) {
         min = arr[i];
         minIndex = i;
@@ -577,6 +652,19 @@ export class ExtremeValueAlgorithms {
         maxIndex = i;
       }
 
+      let explanation = '';
+      if (arr[i] < oldMin && arr[i] > oldMax) {
+        explanation = `${arr[i]} là min mới`;
+      } else if (arr[i] > oldMax && arr[i] >= oldMin) {
+        explanation = `${arr[i]} là max mới`;
+      } else if (arr[i] < oldMin) {
+        explanation = `${arr[i]} là min mới`;
+      } else if (arr[i] > oldMax) {
+        explanation = `${arr[i]} là max mới`;
+      } else {
+        explanation = `${arr[i]} không thay đổi min/max`;
+      }
+
       steps.push({
         array: [...arr],
         currentMin: min,
@@ -584,7 +672,8 @@ export class ExtremeValueAlgorithms {
         currentIndex: i,
         minIndex,
         maxIndex,
-        comparing: []
+        comparing: [],
+        explanation
       });
     }
 
@@ -605,7 +694,8 @@ export class ExtremeValueAlgorithms {
           currentIndex: start,
           minIndex: start,
           maxIndex: start,
-          comparing: [start]
+          comparing: [start],
+          explanation: `Phần tử đơn tại vị trí ${start}: ${arr[start]}`
         });
         return { min: arr[start], max: arr[start], minIndex: start, maxIndex: start };
       }
@@ -623,7 +713,8 @@ export class ExtremeValueAlgorithms {
           currentIndex: start,
           minIndex,
           maxIndex,
-          comparing: [start, end]
+          comparing: [start, end],
+          explanation: `So sánh cặp [${start},${end}]: min=${min}, max=${max}`
         });
 
         return { min, max, minIndex, maxIndex };
@@ -645,7 +736,8 @@ export class ExtremeValueAlgorithms {
         currentIndex: mid,
         minIndex: finalMinIndex,
         maxIndex: finalMaxIndex,
-        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex]
+        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex],
+        explanation: `Trộn kết quả: min=${finalMin}, max=${finalMax}`
       });
 
       return { min: finalMin, max: finalMax, minIndex: finalMinIndex, maxIndex: finalMaxIndex };
@@ -670,7 +762,8 @@ export class ExtremeValueAlgorithms {
           currentIndex: start,
           minIndex: start,
           maxIndex: start,
-          comparing: [start]
+          comparing: [start],
+          explanation: `Phần tử đơn tại ${start}: ${arr[start]}`
         });
         return { min: arr[start], max: arr[start], minIndex: start, maxIndex: start };
       }
@@ -689,7 +782,8 @@ export class ExtremeValueAlgorithms {
           currentIndex: start,
           minIndex,
           maxIndex,
-          comparing: [start, end]
+          comparing: [start, end],
+          explanation: `So sánh [${start},${end}]: min=${min}, max=${max}`
         });
 
         return { min, max, minIndex, maxIndex };
@@ -705,7 +799,8 @@ export class ExtremeValueAlgorithms {
         currentIndex: mid,
         minIndex: start,
         maxIndex: end,
-        comparing: Array.from({ length: end - start + 1 }, (_, i) => start + i)
+        comparing: Array.from({ length: end - start + 1 }, (_, i) => start + i),
+        explanation: `Chia đoạn [${start},${end}] tại vị trí ${mid}`
       });
 
       const left = dcHelper(start, mid);
@@ -723,7 +818,8 @@ export class ExtremeValueAlgorithms {
         currentIndex: mid,
         minIndex: finalMinIndex,
         maxIndex: finalMaxIndex,
-        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex]
+        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex],
+        explanation: `Kết hợp: min=${finalMin}, max=${finalMax}`
       });
 
       return { min: finalMin, max: finalMax, minIndex: finalMinIndex, maxIndex: finalMaxIndex };
