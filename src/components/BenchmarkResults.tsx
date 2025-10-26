@@ -20,6 +20,7 @@ import { Download, TrendingUp, Activity, Clock } from 'lucide-react';
 import { AggregatedMetrics, ComparisonData } from '@/lib/benchmarkEngine';
 import { DataDistribution } from '@/types/instrumentation';
 import { formatTime, formatCount } from '@/lib/instrumentation';
+import DetailedTimingTable from './DetailedTimingTable';
 
 interface BenchmarkResultsProps {
   aggregated: AggregatedMetrics[];
@@ -131,16 +132,16 @@ export default function BenchmarkResults({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-          <p className="font-semibold mb-2">Input Size: {label}</p>
+        <div className="bg-white p-4 rounded-lg shadow-xl border-2 border-blue-300">
+          <p className="font-bold text-gray-800 mb-2 text-base">Kích thước: {label}</p>
           {payload.map((entry: any, index: number) => (
-            <div key={index} className="flex items-center gap-2 text-sm">
+            <div key={index} className="flex items-center gap-2 text-sm mb-1">
               <div 
-                className="w-3 h-3 rounded-full" 
+                className="w-3 h-3 rounded-full shadow-sm" 
                 style={{ backgroundColor: entry.color }}
               />
-              <span className="font-medium">{entry.name}:</span>
-              <span>
+              <span className="font-semibold text-gray-800">{entry.name}:</span>
+              <span className="font-bold text-blue-700">
                 {selectedMetric === 'time' 
                   ? formatTime(entry.value)
                   : formatCount(entry.value)
@@ -243,33 +244,33 @@ export default function BenchmarkResults({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3"
+        className="bg-white rounded-lg shadow-md border border-gray-200 p-3"
       >
         <div className="flex items-center justify-around gap-4">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-blue-600" />
             <div className="flex items-baseline gap-1.5">
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Tests:</span>
+              <span className="text-xs font-medium text-gray-700">Số test:</span>
               <span className="text-lg font-bold text-blue-600">{aggregated.length}</span>
             </div>
           </div>
           
-          <div className="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
+          <div className="h-6 w-px bg-gray-300"></div>
           
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-cyan-600" />
             <div className="flex items-baseline gap-1.5">
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Algorithms:</span>
+              <span className="text-xs font-medium text-gray-700">Thuật toán:</span>
               <span className="text-lg font-bold text-cyan-600">{algorithms.length}</span>
             </div>
           </div>
           
-          <div className="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
+          <div className="h-6 w-px bg-gray-300"></div>
           
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-green-600" />
             <div className="flex items-baseline gap-1.5">
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Distributions:</span>
+              <span className="text-xs font-medium text-gray-700">Phân phối:</span>
               <span className="text-lg font-bold text-green-600">{distributions.length}</span>
             </div>
           </div>
@@ -281,16 +282,17 @@ export default function BenchmarkResults({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
+        className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Distribution Selector */}
           <div>
-            <label className="block text-sm font-medium mb-2">Data Distribution</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Phân phối dữ liệu</label>
             <select
               value={selectedDistribution}
               onChange={(e) => setSelectedDistribution(e.target.value as DataDistribution)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-gray-800 font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              aria-label="Chọn phân phối dữ liệu"
             >
               {distributions.map(dist => (
                 <option key={dist} value={dist}>{dist}</option>
@@ -300,29 +302,31 @@ export default function BenchmarkResults({
 
           {/* Metric Selector */}
           <div>
-            <label className="block text-sm font-medium mb-2">Metric</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Chỉ số</label>
             <select
               value={selectedMetric}
               onChange={(e) => setSelectedMetric(e.target.value as any)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-gray-800 font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              aria-label="Chọn chỉ số"
             >
-              <option value="time">Execution Time</option>
-              <option value="comparisons">Comparisons</option>
-              <option value="operations">Total Operations</option>
+              <option value="time">Thời gian thực thi</option>
+              <option value="comparisons">Số lần so sánh</option>
+              <option value="operations">Tổng phép toán</option>
             </select>
           </div>
 
           {/* Chart Type Selector */}
           <div>
-            <label className="block text-sm font-medium mb-2">Chart Type</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Loại biểu đồ</label>
             <select
               value={chartType}
               onChange={(e) => setChartType(e.target.value as any)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-gray-800 font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              aria-label="Chọn loại biểu đồ"
             >
-              <option value="line">Line Chart</option>
-              <option value="bar">Bar Chart</option>
-              <option value="area">Area Chart</option>
+              <option value="line">Biểu đồ đường</option>
+              <option value="bar">Biểu đồ cột</option>
+              <option value="area">Biểu đồ vùng</option>
             </select>
           </div>
         </div>
@@ -333,68 +337,71 @@ export default function BenchmarkResults({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
+        className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
       >
         <div className="mb-4">
-          <h3 className="text-lg font-semibold">
-            Performance Chart - {selectedMetric === 'time' ? 'Execution Time' : selectedMetric === 'comparisons' ? 'Comparisons' : 'Total Operations'}
+          <h3 className="text-lg font-bold text-gray-800">
+            Biểu đồ hiệu suất - {selectedMetric === 'time' ? 'Thời gian thực thi' : selectedMetric === 'comparisons' ? 'Số lần so sánh' : 'Tổng phép toán'}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Distribution: {selectedDistribution} | Data points: {chartData.length} | Algorithms: {algorithms.length}
+          <p className="text-sm text-gray-600">
+            Phân phối: {selectedDistribution} | Điểm dữ liệu: {chartData.length} | Thuật toán: {algorithms.length}
           </p>
         </div>
         {chartData.length > 0 && algorithms.length > 0 ? (
-          <div className="relative">
-            <div className="absolute left-12 top-0 text-sm font-medium text-gray-600 dark:text-gray-400">
-              {selectedMetric === 'time' ? 'Time (ms)' : 'Operations'}
+          <div className="relative bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div className="absolute left-16 top-6 text-sm font-semibold text-gray-700">
+              {selectedMetric === 'time' ? 'Thời gian (ms)' : 'Phép toán'}
             </div>
             <div className="w-full overflow-x-auto flex justify-center" style={{ minHeight: '400px' }}>
               {renderChart()}
             </div>
           </div>
         ) : (
-          <div className="h-[500px] flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900">
-            <div className="text-center text-gray-500">
-              <p className="text-lg font-semibold mb-2">No data to display</p>
+          <div className="h-[500px] flex items-center justify-center border-2 border-gray-300 rounded-lg bg-gray-50">
+            <div className="text-center text-gray-600">
+              <p className="text-lg font-bold text-gray-700 mb-2">Không có dữ liệu để hiển thị</p>
               <p className="text-sm">
-                Selected distribution: {selectedDistribution}
+                Phân phối đã chọn: {selectedDistribution}
                 <br />
-                Metric: {selectedMetric}
+                Chỉ số: {selectedMetric}
                 <br />
-                Algorithms found: {algorithms.length} ({algorithms.join(', ')})
+                Thuật toán: {algorithms.length} ({algorithms.join(', ')})
                 <br />
-                Chart data points: {chartData.length}
+                Điểm dữ liệu biểu đồ: {chartData.length}
                 <br />
-                Total aggregated data: {aggregated.length}
+                Tổng dữ liệu: {aggregated.length}
               </p>
             </div>
           </div>
         )}
       </motion.div>
 
+      {/* Detailed Timing Table */}
+      <DetailedTimingTable aggregated={aggregated} />
+
       {/* Algorithm Statistics Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
+        className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
       >
-        <h3 className="text-xl font-semibold mb-4">Algorithm Statistics</h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">Thống kê thuật toán</h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <th className="text-left py-3 px-4">Algorithm</th>
-                <th className="text-right py-3 px-4">Avg Time</th>
-                <th className="text-right py-3 px-4">Total Operations</th>
-                <th className="text-right py-3 px-4">Data Points</th>
+              <tr className="border-b-2 border-gray-300 bg-gray-50">
+                <th className="text-left py-3 px-4 font-semibold text-gray-700">Thuật toán</th>
+                <th className="text-right py-3 px-4 font-semibold text-gray-700">Thời gian TB</th>
+                <th className="text-right py-3 px-4 font-semibold text-gray-700">Tổng phép toán</th>
+                <th className="text-right py-3 px-4 font-semibold text-gray-700">Điểm dữ liệu</th>
               </tr>
             </thead>
             <tbody>
               {summaryStats.map((stat) => (
                 <tr 
                   key={stat.algorithm}
-                  className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                  className="border-b border-gray-200 hover:bg-blue-50 transition-colors"
                 >
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
@@ -402,12 +409,12 @@ export default function BenchmarkResults({
                         className="w-4 h-4 rounded-full" 
                         style={{ backgroundColor: stat.color }}
                       />
-                      <span className="font-medium">{stat.algorithm}</span>
+                      <span className="font-semibold text-gray-800">{stat.algorithm}</span>
                     </div>
                   </td>
-                  <td className="text-right py-3 px-4">{formatTime(stat.avgTime)}</td>
-                  <td className="text-right py-3 px-4">{formatCount(stat.totalOps)}</td>
-                  <td className="text-right py-3 px-4">{stat.dataPoints}</td>
+                  <td className="text-right py-3 px-4 text-gray-700 font-medium">{formatTime(stat.avgTime)}</td>
+                  <td className="text-right py-3 px-4 text-gray-700 font-medium">{formatCount(stat.totalOps)}</td>
+                  <td className="text-right py-3 px-4 text-gray-700 font-medium">{stat.dataPoints}</td>
                 </tr>
               ))}
             </tbody>
