@@ -377,6 +377,45 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
         </div>
       </div>
 
+      {/* Statistics Panel */}
+      {steps.length > 0 && currentStepData.statistics && (
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+            <div className="text-xs text-blue-600 font-medium mb-1">Thời gian</div>
+            <div className="text-2xl font-bold text-blue-900">
+              {currentStepData.statistics.executionTime?.toFixed(2) || 0}
+            </div>
+            <div className="text-xs text-blue-600">ms</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+            <div className="text-xs text-purple-600 font-medium mb-1">So sánh</div>
+            <div className="text-2xl font-bold text-purple-900">
+              {currentStepData.statistics.comparisons}
+            </div>
+            <div className="text-xs text-purple-600">lần</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+            <div className="text-xs text-orange-600 font-medium mb-1">
+              {currentStepData.statistics.swaps !== undefined ? 'Hoán đổi' : 'Gán'}
+            </div>
+            <div className="text-2xl font-bold text-orange-900">
+              {currentStepData.statistics.swaps ?? currentStepData.statistics.assignments ?? 0}
+            </div>
+            <div className="text-xs text-orange-600">lần</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+            <div className="text-xs text-green-600 font-medium mb-1">Bộ nhớ phụ</div>
+            <div className="text-2xl font-bold text-green-900">
+              {currentStepData.statistics.auxiliarySpace}
+            </div>
+            <div className="text-xs text-green-600">phần tử</div>
+          </div>
+        </div>
+      )}
+
       {/* Algorithm Status */}
       <div className="mt-4 text-center">
         {state.isPlaying && !state.isPaused && (
