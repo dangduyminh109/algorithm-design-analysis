@@ -242,19 +242,20 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
 
     if (found && currentIndex === index) return 'bg-green-500';
     
-    // Jump point visualization for Jump Search
-    if (algorithm === 'jump-search' && isJumpPoint && currentIndex === index) {
-      return 'bg-white border-2 border-blue-400';
-    }
-    
-    if (currentIndex === index) return 'bg-yellow-500';
-    
+    // Binary Search: Check mid FIRST before currentIndex (vì currentIndex === mid)
     if (algorithm === 'binary-search') {
       if (mid === index) return 'bg-purple-500';
       if (left !== undefined && right !== undefined) {
         if (index < left || index > right) return 'bg-gray-400';
       }
     }
+    
+    // Jump point visualization for Jump Search
+    if (algorithm === 'jump-search' && isJumpPoint && currentIndex === index) {
+      return 'bg-white border-2 border-blue-400';
+    }
+    
+    if (currentIndex === index) return 'bg-yellow-500';
     
     // Jump Search: only show eliminated (full gray) for elements before and including previous jump point
     if (algorithm === 'jump-search' && state.currentStep > 0) {
@@ -491,7 +492,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           <div className="mt-4 text-center text-sm text-gray-600">
             <div className="flex items-center justify-center space-x-4">
               <span>Left: {currentStepData.left}</span>
-              {currentStepData.mid !== undefined && (
+              {algorithm === 'jump-search' && currentStepData.currentIndex >= 0 && (
+                <span className="font-bold text-blue-600">
+                  Jump Point: {currentStepData.currentIndex}
+                </span>
+              )}
+              {currentStepData.mid !== undefined && algorithm !== 'jump-search' && (
                 <span className="font-bold">
                   {algorithm === 'interpolation-search' ? 'Pos' : 'Mid'}: {currentStepData.mid}
                 </span>
@@ -505,43 +511,43 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         <div className="flex flex-wrap justify-center space-x-4 mt-4 text-xs">
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
-            <span>Unsearched</span>
+            <span>Chưa tìm</span>
           </div>
           {algorithm === 'jump-search' && (
             <div className="flex items-center space-x-1">
               <div className="w-3 h-3 bg-white border-2 border-blue-400 rounded"></div>
-              <span>Jump Point</span>
+              <span>Điểm nhảy</span>
             </div>
           )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span>Current</span>
+            <span>Đang xét</span>
           </div>
           {algorithm === 'binary-search' && (
             <>
               <div className="flex items-center space-x-1">
                 <div className="w-3 h-3 bg-purple-500 rounded"></div>
-                <span>Middle</span>
+                <span>Điểm giữa</span>
               </div>
               <div className="flex items-center space-x-1">
                 <div className="w-3 h-3 bg-gray-300 rounded"></div>
-                <span>Eliminated</span>
+                <span>Đã loại</span>
               </div>
             </>
           )}
           {(algorithm === 'jump-search') && (
             <div className="flex items-center space-x-1">
               <div className="w-3 h-3 bg-gray-400 rounded"></div>
-              <span>Eliminated</span>
+              <span>Đã loại</span>
             </div>
           )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span>Found</span>
+            <span>Đã tìm thấy</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 border-2 border-yellow-400 bg-transparent rounded"></div>
-            <span>Target</span>
+            <span>Mục tiêu</span>
           </div>
         </div>
       </div>
@@ -606,16 +612,16 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       {/* Algorithm Info */}
       <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
         {algorithm === 'linear-search' && (
-          <p>Linear Search checks each element sequentially until the target is found or the end is reached.</p>
+          <p>Linear Search kiểm tra từng phần tử tuần tự cho đến khi tìm thấy mục tiêu hoặc đến cuối mảng.</p>
         )}
         {algorithm === 'binary-search' && (
-          <p>Binary Search divides the sorted array in half at each step, eliminating half of the remaining elements.</p>
+          <p>Binary Search chia mảng đã sắp xếp làm đôi ở mỗi bước, loại bỏ một nửa số phần tử còn lại.</p>
         )}
         {algorithm === 'jump-search' && (
-          <p>Jump Search jumps ahead by fixed steps (√n), then performs linear search in the identified block. Works on sorted arrays.</p>
+          <p>Jump Search tiến tới theo bước cố định (√n), sau đó thực hiện tìm kiếm tuyến tính trong khối đã xác định. Hoạt động trên mảng đã sắp xếp.</p>
         )}
         {algorithm === 'interpolation-search' && (
-          <p>Interpolation Search estimates the position of the target using interpolation formula. Most efficient on uniformly distributed sorted arrays.</p>
+          <p>Interpolation Search ước tính vị trí của mục tiêu bằng công thức nội suy. Hiệu quả nhất trên mảng đã sắp xếp phân bố đều.</p>
         )}
       </div>
     </div>

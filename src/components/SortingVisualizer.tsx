@@ -354,15 +354,15 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
         <div className="flex flex-wrap justify-center space-x-4 mt-4 text-xs">
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
-            <span>Unsorted</span>
+            <span>Chưa sắp xếp</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span>Comparing</span>
+            <span>Đang so sánh</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span>Swapping</span>
+            <span>Đang hoán đổi</span>
           </div>
           {algorithm === 'quick-sort' && (
             <div className="flex items-center space-x-1">
@@ -372,7 +372,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
           )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span>Sorted</span>
+            <span>Đã sắp xếp</span>
           </div>
         </div>
       </div>

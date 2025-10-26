@@ -408,23 +408,23 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
         <div className="flex flex-wrap justify-center space-x-4 mt-4 text-xs">
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
-            <span>Unprocessed</span>
+            <span>Chưa xử lý</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span>Current</span>
+            <span>Đang xét</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-orange-500 rounded"></div>
-            <span>Comparing</span>
+            <span>Đang so sánh</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span>Minimum</span>
+            <span>Nhỏ nhất</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span>Maximum</span>
+            <span>Lớn nhất</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-purple-500 rounded"></div>
@@ -492,10 +492,10 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       {/* Algorithm Info */}
       <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
         {algorithm === 'linear-min-max' && (
-          <p>Linear Min/Max scans through the array once, keeping track of the smallest and largest values encountered.</p>
+          <p>Linear Min/Max quét qua mảng một lần, theo dõi giá trị nhỏ nhất và lớn nhất gặp phải.</p>
         )}
         {algorithm === 'tournament-method' && (
-          <p>Tournament Method uses a divide-and-conquer approach, comparing elements in pairs to find min/max values efficiently.</p>
+          <p>Tournament Method sử dụng cách tiếp cận chia để trị, so sánh các phần tử theo cặp để tìm giá trị min/max hiệu quả.</p>
         )}
       </div>
     </div>
