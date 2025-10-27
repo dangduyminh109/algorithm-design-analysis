@@ -32,6 +32,16 @@
 - **Tournament Method**: Phương pháp đấu loại trực tiếp để tìm giá trị cực trị - O(n)
 - **Divide & Conquer Min/Max**: Thuật toán chia để trị tối ưu số lần so sánh - O(n)
 
+### Test Case & Dữ Liệu Tùy Chỉnh
+- **Test Case Thông Minh**: Hệ thống test case tự động cho mỗi thuật toán
+  - **Best Case**: Dữ liệu tối ưu cho thuật toán (VD: mảng đã sắp xếp cho Insertion Sort)
+  - **Average Case**: Dữ liệu ngẫu nhiên điển hình
+  - **Worst Case**: Dữ liệu tệ nhất (VD: mảng đảo ngược cho Bubble Sort)
+- **Nhập Mảng Tùy Chỉnh**: Nhập mảng của riêng bạn để test với dữ liệu cụ thể
+  - Hỗ trợ nhiều định dạng: dấu phẩy, khoảng trắng, dấu chấm phẩy
+  - Validation tự động: kiểm tra số hợp lệ, phạm vi giá trị
+  - Thông báo lỗi rõ ràng
+
 ### Benchmark Hiệu Suất
 - **So Sánh Nhiều Thuật Toán**: Chạy và so sánh hiệu suất của nhiều thuật toán cùng lúc
 - **Đo Lường Chi Tiết**: Theo dõi thời gian thực thi, số lần so sánh, và bộ nhớ sử dụng
@@ -48,15 +58,19 @@
 
 ### Tính Năng Minh Họa
 - **Phát/Tạm Dừng/Đặt Lại**: Toàn quyền kiểm soát việc thực thi thuật toán
-- **Điều Khiển Tốc Độ**: Điều chỉnh tốc độ hoạt hình từ 0.25x đến 3x
+- **Điều Khiển Tốc Độ**: Điều chỉnh tốc độ hoạt hình từ 0.25x đến 20x
 - **Điều Hướng Từng Bước**: Thực hiện thủ công từng bước của thuật toán
-- **Mảng Tùy Chỉnh**: Tạo mảng ngẫu nhiên mới hoặc điều chỉnh kích thước mảng
+- **Nhập Mảng Tùy Chỉnh**: Nhập mảng riêng để test thuật toán với dữ liệu cụ thể
+- **Mảng Ngẫu Nhiên**: Tạo mảng ngẫu nhiên mới hoặc điều chỉnh kích thước mảng
+- **Test Case Thông Minh**: Chọn test case best/average/worst để so sánh hiệu suất
 - **Chọn Mục Tiêu**: Đối với thuật toán tìm kiếm, chọn giá trị cần tìm
 
 ### Yếu Tố Giáo Dục
 - **Mã Với Cú Pháp Nổi Bật**: Xem code implementation bằng 6 ngôn ngữ lập trình
 - **Phân Tích Độ Phức Tạp**: Hiểu độ phức tạp thời gian và không gian chi tiết
 - **Minh Họa Mã Màu**: Màu sắc khác nhau cho các trạng thái khác nhau (đang so sánh, tìm thấy, đã loại bỏ)
+- **Test Case Thông Minh**: So sánh best case, average case, và worst case của từng thuật toán
+- **Đếm Phép Toán Chính Xác**: Đếm số lần so sánh, hoán đổi, gán một cách chính xác theo lý thuyết
 - **Ứng Dụng Thực Tế**: Học khi nào sử dụng thuật toán nào trong thực tế
 - **Thống Kê Thời Gian Thực**: Theo dõi số lần so sánh, thời gian thực thi, và bộ nhớ sử dụng
 
@@ -137,7 +151,6 @@ src/
 │   │           └── page.tsx     # Trang chi tiết thuật toán
 │   ├── benchmark/
 │   │   └── page.tsx             # Trang benchmark hiệu suất
-│   ├── diagram/                 # Sơ đồ thuật toán
 │   ├── theory/
 │   │   └── page.tsx             # Trang lý thuyết thuật toán
 │   ├── error.tsx                # Trang lỗi
@@ -150,6 +163,7 @@ src/
 │   ├── AlgorithmBubble.tsx      # Bong bóng thuật toán trên trang chủ
 │   ├── AlgorithmInfo.tsx        # Hiển thị thông tin thuật toán
 │   ├── AnimatedBubble.tsx       # Component bong bóng hoạt hình
+│   ├── ArrayInput.tsx           # Component nhập mảng tùy chỉnh
 │   ├── BackgroundEffects.tsx    # Hiệu ứng nền
 │   ├── BenchmarkLab.tsx         # Lab thử nghiệm benchmark
 │   ├── BenchmarkResults.tsx     # Hiển thị kết quả benchmark
@@ -164,7 +178,8 @@ src/
 │   ├── OptimizedBackgroundEffects.tsx # Hiệu ứng nền tối ưu
 │   ├── OptimizedBar.tsx         # Thanh bar tối ưu hiệu suất
 │   ├── SearchingVisualizer.tsx  # Trình minh họa thuật toán tìm kiếm
-│   └── SortingVisualizer.tsx    # Trình minh họa thuật toán sắp xếp
+│   ├── SortingVisualizer.tsx    # Trình minh họa thuật toán sắp xếp
+│   └── TestCaseSelector.tsx     # Component chọn test case
 ├── hooks/                       # Custom React Hooks
 │   └── usePerformanceOptimization.ts # Hook tối ưu hiệu suất
 ├── lib/                         # Hàm tiện ích và dữ liệu
@@ -175,6 +190,7 @@ src/
 │   ├── codeSamples.ts           # Code mẫu cho 6 ngôn ngữ lập trình
 │   ├── instrumentation.ts       # Công cụ đo lường và theo dõi
 │   ├── instrumentedAlgorithms.ts # Thuật toán với instrumentation
+│   ├── testCases.ts             # Test cases cho best/average/worst scenarios
 │   └── theoryDatabase.ts        # Cơ sở dữ liệu lý thuyết
 └── types/                       # Định nghĩa kiểu TypeScript
     ├── algorithm.ts             # Các kiểu liên quan đến thuật toán
@@ -219,8 +235,9 @@ Nền tảng này giúp sinh viên và lập trình viên:
 1. **Định nghĩa thuật toán** trong `src/lib/algorithms.ts`
 2. **Triển khai logic từng bước** trong `src/lib/algorithmUtils.ts`
 3. **Thêm code samples** cho 6 ngôn ngữ trong `src/lib/codeSamples.ts`
-4. **Thêm logic minh họa** vào component visualizer thích hợp
-5. **Cập nhật routing** nếu cần
+4. **Thêm test cases** (best/average/worst) trong `src/lib/testCases.ts`
+5. **Thêm logic minh họa** vào component visualizer thích hợp
+6. **Cập nhật routing** nếu cần
 
 ### Chỉnh Sửa Minh Họa
 
