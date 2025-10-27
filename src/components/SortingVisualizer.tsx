@@ -9,6 +9,8 @@ import { usePerformanceOptimization, useAnimationDebounce } from '@/hooks/usePer
 import OptimizedAnimation from './OptimizedAnimation';
 import OptimizedBar from './OptimizedBar';
 import ArrayInput from './ArrayInput';
+import TestCaseSelector from './TestCaseSelector';
+import { SORTING_TEST_CASES, TestCaseType } from '@/lib/testCases';
 
 interface SortingVisualizerProps {
   algorithm: string;
@@ -78,6 +80,29 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       steps: []
     }));
   }, []);
+
+  // Handle test case selection
+  const handleTestCase = useCallback((testCaseType: TestCaseType) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+
+    const testCases = SORTING_TEST_CASES[algorithm];
+    if (!testCases) return;
+
+    const testCase = testCases[testCaseType];
+    const newArray = testCase.generate(arraySize);
+    
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, [algorithm, arraySize]);
 
   useEffect(() => {
     initializeArray();
@@ -285,6 +310,18 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
             maxLength={100}
             placeholder="Ví dụ: 45, 23, 78, 12, 56"
           />
+
+          {SORTING_TEST_CASES[algorithm] && (
+            <TestCaseSelector
+              onSelectTestCase={handleTestCase}
+              disabled={state.isPlaying}
+              testCases={{
+                best: SORTING_TEST_CASES[algorithm].best,
+                average: SORTING_TEST_CASES[algorithm].average,
+                worst: SORTING_TEST_CASES[algorithm].worst
+              }}
+            />
+          )}
 
           <button
             onClick={() => setShowSettings(!showSettings)}

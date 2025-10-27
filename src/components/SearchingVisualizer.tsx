@@ -7,6 +7,8 @@ import { SearchingStep, VisualizationState } from '@/types/algorithm';
 import { SearchingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 import ArrayInput from './ArrayInput';
+import TestCaseSelector from './TestCaseSelector';
+import { SEARCHING_TEST_CASES, TestCaseType, getAlgorithmSpecificTarget } from '@/lib/testCases';
 
 interface SearchingVisualizerProps {
   algorithm: string;
@@ -80,6 +82,35 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       steps: []
     }));
   }, []);
+
+  // Handle test case selection
+  const handleTestCase = useCallback((testCaseType: TestCaseType) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+
+    const testCases = SEARCHING_TEST_CASES[algorithm];
+    if (!testCases) return;
+
+    const testCase = testCases[testCaseType];
+    const newArray = testCase.generate(arraySize);
+    
+    // Get algorithm-specific target
+    const newTarget = getAlgorithmSpecificTarget(algorithm, newArray, testCaseType);
+    
+    setArray(newArray);
+    setTarget(newTarget);
+    setTargetInput(newTarget.toString());
+    setTargetWarning('');
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, [algorithm, arraySize]);
 
   useEffect(() => {
     initializeArray();
@@ -372,6 +403,18 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
             maxLength={50}
             placeholder="Ví dụ: 12, 23, 45, 56, 78"
           />
+
+          {SEARCHING_TEST_CASES[algorithm] && (
+            <TestCaseSelector
+              onSelectTestCase={handleTestCase}
+              disabled={state.isPlaying}
+              testCases={{
+                best: SEARCHING_TEST_CASES[algorithm].best,
+                average: SEARCHING_TEST_CASES[algorithm].average,
+                worst: SEARCHING_TEST_CASES[algorithm].worst
+              }}
+            />
+          )}
 
           <button
             onClick={() => setShowSettings(!showSettings)}

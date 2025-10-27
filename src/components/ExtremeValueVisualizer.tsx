@@ -8,6 +8,8 @@ import { ExtremeValueAlgorithms, generateUniqueRandomArray, delay } from '@/lib/
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 import OptimizedBar from './OptimizedBar';
 import ArrayInput from './ArrayInput';
+import TestCaseSelector from './TestCaseSelector';
+import { EXTREME_TEST_CASES, TestCaseType } from '@/lib/testCases';
 
 interface ExtremeValueVisualizerProps {
   algorithm: string;
@@ -71,6 +73,31 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       steps: []
     }));
   }, []);
+
+  // Handle test case selection
+  const handleTestCase = useCallback((testCaseType: TestCaseType) => {
+    // Stop any ongoing animation
+    if (typeof animationRef !== 'undefined' && animationRef.current) {
+      animationRef.current = false;
+    }
+
+    const testCases = EXTREME_TEST_CASES[algorithm];
+    if (!testCases) return;
+
+    const testCase = testCases[testCaseType];
+    const newArray = testCase.generate(arraySize);
+    
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, [algorithm, arraySize]);
 
   useEffect(() => {
     initializeArray();
@@ -284,6 +311,18 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
             maxLength={30}
             placeholder="Ví dụ: 15, 42, 78, 23, 56"
           />
+
+          {EXTREME_TEST_CASES[algorithm] && (
+            <TestCaseSelector
+              onSelectTestCase={handleTestCase}
+              disabled={state.isPlaying}
+              testCases={{
+                best: EXTREME_TEST_CASES[algorithm].best,
+                average: EXTREME_TEST_CASES[algorithm].average,
+                worst: EXTREME_TEST_CASES[algorithm].worst
+              }}
+            />
+          )}
 
           <button
             onClick={() => setShowSettings(!showSettings)}
