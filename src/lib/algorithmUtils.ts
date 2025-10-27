@@ -799,11 +799,20 @@ export class ExtremeValueAlgorithms {
       }
 
       if (end - start === 1) {
-        comparisons += 2; // So sánh để tìm min và max
-        const min = Math.min(arr[start], arr[end]);
-        const max = Math.max(arr[start], arr[end]);
-        const minIndex = arr[start] <= arr[end] ? start : end;
-        const maxIndex = arr[start] >= arr[end] ? start : end;
+        comparisons += 1; // Chỉ cần 1 phép so sánh để tìm cả min và max
+        let min, max, minIndex, maxIndex;
+        
+        if (arr[start] <= arr[end]) {
+          min = arr[start];
+          max = arr[end];
+          minIndex = start;
+          maxIndex = end;
+        } else {
+          min = arr[end];
+          max = arr[start];
+          minIndex = end;
+          maxIndex = start;
+        }
 
         steps.push({
           array: [...arr],
@@ -875,11 +884,20 @@ export class ExtremeValueAlgorithms {
 
       // Base case: two elements
       if (end - start === 1) {
-        comparisons += 2; // So sánh để tìm min và max
-        const min = Math.min(arr[start], arr[end]);
-        const max = Math.max(arr[start], arr[end]);
-        const minIndex = arr[start] <= arr[end] ? start : end;
-        const maxIndex = arr[start] >= arr[end] ? start : end;
+        comparisons += 1; // Chỉ cần 1 phép so sánh để tìm cả min và max
+        let min, max, minIndex, maxIndex;
+        
+        if (arr[start] <= arr[end]) {
+          min = arr[start];
+          max = arr[end];
+          minIndex = start;
+          maxIndex = end;
+        } else {
+          min = arr[end];
+          max = arr[start];
+          minIndex = end;
+          maxIndex = start;
+        }
 
         steps.push({
           array: [...arr],
