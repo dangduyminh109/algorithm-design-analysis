@@ -502,6 +502,33 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
         </div>
       </div>
 
+      {/* Algorithm Status */}
+      <div className="mt-4 text-center">
+        {/* Step Explanation */}
+        {steps.length > 0 && currentStepData.explanation && (
+          <div className="mb-2 p-3 bg-blue-50 rounded-lg">
+            <div className="text-sm font-medium text-blue-800">
+              {currentStepData.explanation}
+            </div>
+          </div>
+        )}
+        
+        {state.isPlaying && !state.isPaused && (
+          <div className="text-blue-600 text-sm">● Finding extreme values...</div>
+        )}
+        {state.isPaused && (
+          <div className="text-yellow-600 text-sm">⏸ Paused</div>
+        )}
+        {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
+          <div className="text-green-600 text-sm">
+             Complete! Min: {currentStepData.currentMin}, Max: {currentStepData.currentMax}
+          </div>
+        )}
+        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
+          <div className="text-gray-500 text-sm">Ready to find extreme values</div>
+        )}
+      </div>
+
       {/* Statistics Panel */}
       {steps.length > 0 && currentStepData.statistics && (
         <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -530,33 +557,6 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
           </div>
         </div>
       )}
-
-      {/* Algorithm Status */}
-      <div className="mt-4 text-center">
-        {state.isPlaying && !state.isPaused && (
-          <div className="text-blue-600 text-sm">● Finding extreme values...</div>
-        )}
-        {state.isPaused && (
-          <div className="text-yellow-600 text-sm">⏸ Paused</div>
-        )}
-        {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
-          <div className="text-green-600 text-sm">
-             Complete! Min: {currentStepData.currentMin}, Max: {currentStepData.currentMax}
-          </div>
-        )}
-        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
-          <div className="text-gray-500 text-sm">Ready to find extreme values</div>
-        )}
-        
-        {/* Step Explanation */}
-        {steps.length > 0 && currentStepData.explanation && (
-          <div className="mt-2 p-3 bg-blue-50 rounded-lg">
-            <div className="text-sm font-medium text-blue-800">
-              {currentStepData.explanation}
-            </div>
-          </div>
-        )}
-      </div>
 
       {/* Algorithm Info */}
       <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
