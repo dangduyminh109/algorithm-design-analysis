@@ -22,12 +22,27 @@
 - **Merge Sort**: Thuật toán sắp xếp ổn định với hiệu suất đảm bảo O(n log n)
 
 ### Thuật Toán Tìm Kiếm
-- **Linear Search**: Tìm kiếm tuần tự qua mảng chưa sắp xếp
-- **Binary Search**: Tìm kiếm hiệu quả cho mảng đã sắp xếp với độ phức tạp O(log n)
+- **Linear Search**: Tìm kiếm tuần tự qua mảng chưa sắp xếp - O(n)
+- **Binary Search**: Tìm kiếm hiệu quả cho mảng đã sắp xếp - O(log n)
+- **Jump Search**: Tìm kiếm nhảy bước với độ phức tạp - O(√n)
+- **Interpolation Search**: Tìm kiếm nội suy cho dữ liệu phân bố đều - O(log log n)
 
 ### Tìm Giá Trị Cực Trị
-- **Linear Min/Max**: Quét đơn giản để tìm giá trị nhỏ nhất và lớn nhất
-- **Tournament Method**: Phương pháp chia để trị để tìm giá trị cực trị
+- **Linear Min/Max**: Quét đơn giản để tìm giá trị nhỏ nhất và lớn nhất - O(n)
+- **Tournament Method**: Phương pháp đấu loại trực tiếp để tìm giá trị cực trị - O(n)
+- **Divide & Conquer Min/Max**: Thuật toán chia để trị tối ưu số lần so sánh - O(n)
+
+### Benchmark Hiệu Suất
+- **So Sánh Nhiều Thuật Toán**: Chạy và so sánh hiệu suất của nhiều thuật toán cùng lúc
+- **Đo Lường Chi Tiết**: Theo dõi thời gian thực thi, số lần so sánh, và bộ nhớ sử dụng
+- **Biểu Đồ Trực Quan**: Xem kết quả benchmark qua biểu đồ và bảng thống kê
+- **Tùy Chỉnh Input**: Chọn kích thước dữ liệu và loại dữ liệu (ngẫu nhiên, đã sắp xếp, đảo ngược)
+
+### Lý Thuyết Thuật Toán
+- **Cơ Sở Lý Thuyết**: Học các khái niệm cơ bản về phân tích thuật toán
+- **Công Thức Toán Học**: Hiển thị công thức với LaTeX rendering
+- **Ví Dụ Chi Tiết**: Các ví dụ minh họa cụ thể cho từng khái niệm
+- **Kiến Thức Nền Tảng**: Big-O notation, độ phức tạp, phân tích worst/best/average case
 
 ## Điều Khiển Tương Tác
 
@@ -39,19 +54,49 @@
 - **Chọn Mục Tiêu**: Đối với thuật toán tìm kiếm, chọn giá trị cần tìm
 
 ### Yếu Tố Giáo Dục
-- **Mã Với Cú Pháp Nổi Bật**: Xem việc triển khai thực tế
-- **Phân Tích Độ Phức Tạp**: Hiểu độ phức tạp thời gian và không gian
-- **Minh Họa Mã Màu**: Màu sắc khác nhau cho các trạng thái khác nhau
-- **Ứng Dụng Thực Tế**: Học khi nào sử dụng thuật toán nào
+- **Mã Với Cú Pháp Nổi Bật**: Xem code implementation bằng 6 ngôn ngữ lập trình
+- **Phân Tích Độ Phức Tạp**: Hiểu độ phức tạp thời gian và không gian chi tiết
+- **Minh Họa Mã Màu**: Màu sắc khác nhau cho các trạng thái khác nhau (đang so sánh, tìm thấy, đã loại bỏ)
+- **Ứng Dụng Thực Tế**: Học khi nào sử dụng thuật toán nào trong thực tế
+- **Thống Kê Thời Gian Thực**: Theo dõi số lần so sánh, thời gian thực thi, và bộ nhớ sử dụng
+
+### Hỗ Trợ Đa Ngôn Ngữ Lập Trình
+Tất cả 12 thuật toán đều có code mẫu đầy đủ bằng 6 ngôn ngữ lập trình:
+- **JavaScript**: Cú pháp hiện đại ES6+
+- **Java**: Phiên bản thân thiện với OOP
+- **C++**: Sử dụng STL và modern C++
+- **C#**: Tuân theo coding conventions của .NET
+- **C**: Implementation thuần túy, tối ưu hiệu suất
+- **Python**: Cú pháp đơn giản, dễ đọc
+
+Mỗi code sample đều:
+- ✅ Được syntax highlighting với Prism.js
+- ✅ Có comment giải thích rõ ràng
+- ✅ Tuân theo best practices của từng ngôn ngữ
+- ✅ Dễ dàng copy và sử dụng trong dự án thực tế
 
 ## Công Nghệ Sử Dụng
 
-- **Framework Frontend**: Next.js 14 với App Router
-- **Ngôn Ngữ**: TypeScript để đảm bảo an toàn kiểu
-- **Styling**: TailwindCSS cho thiết kế responsive
-- **Hoạt Hình**: Framer Motion cho hoạt hình mượt mà
-- **Làm Nổi Bật Mã**: Prism.js cho cú pháp nổi bật
-- **Biểu Tượng**: Lucide React cho biểu tượng nhất quán
+### Core Technologies
+- **Next.js 14** - Framework React với App Router và tối ưu hóa hiệu suất
+- **React 18** - Thư viện UI với hooks và concurrent features
+- **TypeScript 5** - Type-safe development
+
+### Styling & Animation
+- **TailwindCSS 3.4** - Utility-first CSS framework cho thiết kế responsive
+- **Framer Motion** - Thư viện animation mượt mà và tương tác
+- **Anime.js** - Animation engine cho hiệu ứng phức tạp
+
+### Visualization & Display
+- **Prism.js** - Syntax highlighting cho code samples đa ngôn ngữ
+- **KaTeX** - Render công thức toán học LaTeX
+- **Recharts** - Biểu đồ và charts cho kết quả benchmark
+- **Lucide React** - Bộ icon hiện đại và nhất quán
+
+### Performance Optimization
+- **SWC Compiler** - Rust-based compiler siêu nhanh
+- **React Intersection Observer** - Lazy loading và viewport detection
+- **Code Splitting** - Tự động chia nhỏ bundle theo route
 
 ## Bắt Đầu
 
@@ -90,21 +135,51 @@ src/
 │   │       ├── page.tsx         # Trang danh sách danh mục
 │   │       └── [algorithm]/
 │   │           └── page.tsx     # Trang chi tiết thuật toán
+│   ├── benchmark/
+│   │   └── page.tsx             # Trang benchmark hiệu suất
+│   ├── diagram/                 # Sơ đồ thuật toán
+│   ├── theory/
+│   │   └── page.tsx             # Trang lý thuyết thuật toán
+│   ├── error.tsx                # Trang lỗi
+│   ├── loading.tsx              # Trang loading
 │   ├── globals.css              # Styles toàn cục
 │   ├── layout.tsx               # Layout gốc
+│   ├── icon.svg                 # Favicon
 │   └── page.tsx                 # Trang chủ
 ├── components/                   # Các component React có thể tái sử dụng
+│   ├── AlgorithmBubble.tsx      # Bong bóng thuật toán trên trang chủ
 │   ├── AlgorithmInfo.tsx        # Hiển thị thông tin thuật toán
+│   ├── AnimatedBubble.tsx       # Component bong bóng hoạt hình
+│   ├── BackgroundEffects.tsx    # Hiệu ứng nền
+│   ├── BenchmarkLab.tsx         # Lab thử nghiệm benchmark
+│   ├── BenchmarkResults.tsx     # Hiển thị kết quả benchmark
+│   ├── CanvasBackgroundEffects.tsx # Hiệu ứng nền canvas
 │   ├── CodeBlock.tsx            # Trình xem mã với cú pháp nổi bật
+│   ├── DetailedTimingTable.tsx  # Bảng thống kê chi tiết
 │   ├── ExtremeValueVisualizer.tsx # Trình minh họa thuật toán Min/Max
 │   ├── Header.tsx               # Header điều hướng
+│   ├── LaTeX.tsx                # Render công thức toán học LaTeX
+│   ├── LazyLoad.tsx             # Component lazy loading
+│   ├── OptimizedAnimation.tsx   # Hoạt hình tối ưu
+│   ├── OptimizedBackgroundEffects.tsx # Hiệu ứng nền tối ưu
+│   ├── OptimizedBar.tsx         # Thanh bar tối ưu hiệu suất
 │   ├── SearchingVisualizer.tsx  # Trình minh họa thuật toán tìm kiếm
 │   └── SortingVisualizer.tsx    # Trình minh họa thuật toán sắp xếp
+├── hooks/                       # Custom React Hooks
+│   └── usePerformanceOptimization.ts # Hook tối ưu hiệu suất
 ├── lib/                         # Hàm tiện ích và dữ liệu
 │   ├── algorithms.ts            # Định nghĩa và metadata thuật toán
-│   └── algorithmUtils.ts        # Triển khai thuật toán với các bước
+│   ├── algorithmUtils.ts        # Triển khai thuật toán với các bước
+│   ├── benchmarkEngine.ts       # Engine đo lường hiệu suất
+│   ├── codeLanguages.ts         # Định nghĩa ngôn ngữ lập trình
+│   ├── codeSamples.ts           # Code mẫu cho 6 ngôn ngữ lập trình
+│   ├── instrumentation.ts       # Công cụ đo lường và theo dõi
+│   ├── instrumentedAlgorithms.ts # Thuật toán với instrumentation
+│   └── theoryDatabase.ts        # Cơ sở dữ liệu lý thuyết
 └── types/                       # Định nghĩa kiểu TypeScript
-    └── algorithm.ts             # Các kiểu liên quan đến thuật toán
+    ├── algorithm.ts             # Các kiểu liên quan đến thuật toán
+    ├── instrumentation.ts       # Các kiểu cho instrumentation
+    └── theory.ts                # Các kiểu cho lý thuyết
 ```
 
 ## Hệ Thống Thiết Kế
@@ -143,8 +218,9 @@ Nền tảng này giúp sinh viên và lập trình viên:
 
 1. **Định nghĩa thuật toán** trong `src/lib/algorithms.ts`
 2. **Triển khai logic từng bước** trong `src/lib/algorithmUtils.ts`
-3. **Thêm logic minh họa** vào component visualizer thích hợp
-4. **Cập nhật routing** nếu cần
+3. **Thêm code samples** cho 6 ngôn ngữ trong `src/lib/codeSamples.ts`
+4. **Thêm logic minh họa** vào component visualizer thích hợp
+5. **Cập nhật routing** nếu cần
 
 ### Chỉnh Sửa Minh Họa
 
