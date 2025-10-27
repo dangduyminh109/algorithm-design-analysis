@@ -1021,6 +1021,45 @@ int jumpSearch(const std::vector<int>& arr, int target) {
   
   if (arr[prev] == target) return prev;
   return -1;
+}`,
+    csharp: `public static int JumpSearch(int[] arr, int target) {
+  int n = arr.Length;
+  int step = (int)Math.Sqrt(n);
+  int prev = 0;
+  
+  while (arr[Math.Min(step, n) - 1] < target) {
+    prev = step;
+    step += (int)Math.Sqrt(n);
+    if (prev >= n) return -1;
+  }
+  
+  while (arr[prev] < target) {
+    prev++;
+    if (prev == Math.Min(step, n)) return -1;
+  }
+  
+  if (arr[prev] == target) return prev;
+  return -1;
+}`,
+    c: `#include <math.h>
+
+int jumpSearch(const int arr[], int n, int target) {
+  int step = (int)sqrt(n);
+  int prev = 0;
+  
+  while (arr[(step < n ? step : n) - 1] < target) {
+    prev = step;
+    step += (int)sqrt(n);
+    if (prev >= n) return -1;
+  }
+  
+  while (arr[prev] < target) {
+    prev++;
+    if (prev == (step < n ? step : n)) return -1;
+  }
+  
+  if (arr[prev] == target) return prev;
+  return -1;
 }`
   },
   'interpolation-search': {
@@ -1100,6 +1139,46 @@ int jumpSearch(const std::vector<int>& arr, int target) {
     
     int pos = low + static_cast<int>(
       (static_cast<double>(high - low) / (arr[high] - arr[low])) * (target - arr[low])
+    );
+    
+    if (arr[pos] == target) return pos;
+    if (arr[pos] < target) low = pos + 1;
+    else high = pos - 1;
+  }
+  return -1;
+}`,
+    csharp: `public static int InterpolationSearch(int[] arr, int target) {
+  int low = 0;
+  int high = arr.Length - 1;
+  
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low == high) {
+      if (arr[low] == target) return low;
+      return -1;
+    }
+    
+    int pos = low + (int)(
+      ((double)(high - low) / (arr[high] - arr[low])) * (target - arr[low])
+    );
+    
+    if (arr[pos] == target) return pos;
+    if (arr[pos] < target) low = pos + 1;
+    else high = pos - 1;
+  }
+  return -1;
+}`,
+    c: `int interpolationSearch(const int arr[], int n, int target) {
+  int low = 0;
+  int high = n - 1;
+  
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low == high) {
+      if (arr[low] == target) return low;
+      return -1;
+    }
+    
+    int pos = low + (int)(
+      ((double)(high - low) / (arr[high] - arr[low])) * (target - arr[low])
     );
     
     if (arr[pos] == target) return pos;
@@ -1222,6 +1301,77 @@ MinMaxResult divideConquerMinMax(const std::vector<int>& arr, int low, int high)
     std::min(left.min, right.min),
     std::max(left.max, right.max)
   };
+}`,
+    csharp: `public class MinMaxResult {
+  public int Min { get; set; }
+  public int Max { get; set; }
+  
+  public MinMaxResult(int min, int max) {
+    Min = min;
+    Max = max;
+  }
+}
+
+public static MinMaxResult DivideConquerMinMax(int[] arr, int low, int high) {
+  // Base case: one element
+  if (low == high) {
+    return new MinMaxResult(arr[low], arr[low]);
+  }
+  
+  // Base case: two elements
+  if (high == low + 1) {
+    if (arr[low] < arr[high]) {
+      return new MinMaxResult(arr[low], arr[high]);
+    } else {
+      return new MinMaxResult(arr[high], arr[low]);
+    }
+  }
+  
+  // Divide and conquer
+  int mid = (low + high) / 2;
+  MinMaxResult left = DivideConquerMinMax(arr, low, mid);
+  MinMaxResult right = DivideConquerMinMax(arr, mid + 1, high);
+  
+  return new MinMaxResult(
+    Math.Min(left.Min, right.Min),
+    Math.Max(left.Max, right.Max)
+  );
+}`,
+    c: `struct MinMaxResult {
+  int min;
+  int max;
+};
+
+struct MinMaxResult divideConquerMinMax(const int arr[], int low, int high) {
+  struct MinMaxResult result;
+  
+  // Base case: one element
+  if (low == high) {
+    result.min = arr[low];
+    result.max = arr[low];
+    return result;
+  }
+  
+  // Base case: two elements
+  if (high == low + 1) {
+    if (arr[low] < arr[high]) {
+      result.min = arr[low];
+      result.max = arr[high];
+    } else {
+      result.min = arr[high];
+      result.max = arr[low];
+    }
+    return result;
+  }
+  
+  // Divide and conquer
+  int mid = (low + high) / 2;
+  struct MinMaxResult left = divideConquerMinMax(arr, low, mid);
+  struct MinMaxResult right = divideConquerMinMax(arr, mid + 1, high);
+  
+  result.min = left.min < right.min ? left.min : right.min;
+  result.max = left.max > right.max ? left.max : right.max;
+  return result;
 }`
   }
 };
