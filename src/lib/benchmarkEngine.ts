@@ -17,8 +17,11 @@ import {
   mergeSortInstrumented,
   linearSearchInstrumented,
   binarySearchInstrumented,
+  jumpSearchInstrumented,
+  interpolationSearchInstrumented,
   linearMinMaxInstrumented,
-  tournamentMethodInstrumented
+  tournamentMethodInstrumented,
+  divideConquerMinMaxInstrumented
 } from './instrumentedAlgorithms';
 import { generateTestData, measureTime } from './instrumentation';
 import { algorithms } from './algorithms';
@@ -98,6 +101,22 @@ async function runSingleAlgorithm(
       ));
       break;
     
+    case 'jump-search':
+      const jumpSortedData = [...data].sort((a, b) => a - b);
+      const jumpTarget = jumpSortedData[Math.floor(Math.random() * jumpSortedData.length)];
+      ({ result, time: executionTime } = measureTime(() => 
+        jumpSearchInstrumented(jumpSortedData, jumpTarget, false)
+      ));
+      break;
+    
+    case 'interpolation-search':
+      const interpSortedData = [...data].sort((a, b) => a - b);
+      const interpTarget = interpSortedData[Math.floor(Math.random() * interpSortedData.length)];
+      ({ result, time: executionTime } = measureTime(() => 
+        interpolationSearchInstrumented(interpSortedData, interpTarget, false)
+      ));
+      break;
+    
     // Extreme value algorithms
     case 'linear-min-max':
       ({ result, time: executionTime } = measureTime(() => 
@@ -108,6 +127,12 @@ async function runSingleAlgorithm(
     case 'tournament-method':
       ({ result, time: executionTime } = measureTime(() => 
         tournamentMethodInstrumented(data, false)
+      ));
+      break;
+    
+    case 'divide-conquer-minmax':
+      ({ result, time: executionTime } = measureTime(() => 
+        divideConquerMinMaxInstrumented(data, false)
       ));
       break;
     

@@ -45,12 +45,27 @@ export default function BenchmarkResults({
   onExportJSON 
 }: BenchmarkResultsProps) {
   const [selectedMetric, setSelectedMetric] = useState<'time' | 'comparisons' | 'operations'>('time');
-  const [selectedDistribution, setSelectedDistribution] = useState<DataDistribution>('random');
+  const [selectedDistribution, setSelectedDistribution] = useState<DataDistribution | null>(null);
   const [chartType, setChartType] = useState<'line' | 'bar' | 'area'>('line');
+
+  // Get available distributions from data
+  const availableDistributions = React.useMemo(() => {
+    if (aggregated.length === 0) return [];
+    return Array.from(new Set(aggregated.map(a => a.distribution)));
+  }, [aggregated]);
+
+  // Auto-select first distribution if none is selected or current selection is not available
+  React.useEffect(() => {
+    if (availableDistributions.length > 0) {
+      if (selectedDistribution === null || !availableDistributions.includes(selectedDistribution)) {
+        setSelectedDistribution(availableDistributions[0]);
+      }
+    }
+  }, [availableDistributions, selectedDistribution]);
 
   // Memoize expensive computations - must be before early return
   const { distributions, algorithms, filteredData, inputSizes, chartData } = React.useMemo(() => {
-    if (aggregated.length === 0) {
+    if (aggregated.length === 0 || !selectedDistribution) {
       return {
         distributions: [],
         algorithms: [],
@@ -132,7 +147,14 @@ export default function BenchmarkResults({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-4 rounded-lg shadow-xl border-2 border-blue-300">
+        <div 
+          className="bg-white p-4 rounded-lg shadow-xl border-2 border-blue-300"
+          style={{ 
+            zIndex: 9999,
+            position: 'relative',
+            pointerEvents: 'none'
+          }}
+        >
           <p className="font-bold text-gray-800 mb-2 text-base">Kích thước: {label}</p>
           {payload.map((entry: any, index: number) => (
             <div key={index} className="flex items-center gap-2 text-sm mb-1">
@@ -181,7 +203,10 @@ export default function BenchmarkResults({
             <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
             <XAxis {...xAxisProps} />
             <YAxis {...yAxisProps} />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip 
+              content={<CustomTooltip />} 
+              wrapperStyle={{ zIndex: 9999 }}
+            />
             <Legend wrapperStyle={{ paddingTop: '20px' }} />
             {algorithms.map((algo, idx) => (
               <Line
@@ -203,7 +228,11 @@ export default function BenchmarkResults({
             <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
             <XAxis {...xAxisProps} />
             <YAxis {...yAxisProps} />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip 
+              content={<CustomTooltip />} 
+              wrapperStyle={{ zIndex: 9999 }}
+              cursor={{ fill: 'rgba(59, 130, 246, 0.1)' }}
+            />
             <Legend />
             {algorithms.map((algo, idx) => (
               <Bar
@@ -221,7 +250,10 @@ export default function BenchmarkResults({
             <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
             <XAxis {...xAxisProps} />
             <YAxis {...yAxisProps} />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip 
+              content={<CustomTooltip />} 
+              wrapperStyle={{ zIndex: 9999 }}
+            />
             <Legend />
             {algorithms.map((algo, idx) => (
               <Area
@@ -289,7 +321,7 @@ export default function BenchmarkResults({
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Phân phối dữ liệu</label>
             <select
-              value={selectedDistribution}
+              value={selectedDistribution || ''}
               onChange={(e) => setSelectedDistribution(e.target.value as DataDistribution)}
               className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-gray-800 font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               aria-label="Chọn phân phối dữ liệu"
@@ -338,21 +370,29 @@ export default function BenchmarkResults({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
         className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
+        style={{ position: 'relative', zIndex: 1, overflow: 'visible' }}
       >
         <div className="mb-4">
           <h3 className="text-lg font-bold text-gray-800">
             Biểu đồ hiệu suất - {selectedMetric === 'time' ? 'Thời gian thực thi' : selectedMetric === 'comparisons' ? 'Số lần so sánh' : 'Tổng phép toán'}
           </h3>
           <p className="text-sm text-gray-600">
-            Phân phối: {selectedDistribution} | Điểm dữ liệu: {chartData.length} | Thuật toán: {algorithms.length}
+            Phân phối: {selectedDistribution || 'N/A'} | Điểm dữ liệu: {chartData.length} | Thuật toán: {algorithms.length}
           </p>
         </div>
         {chartData.length > 0 && algorithms.length > 0 ? (
           <div className="relative bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <div className="absolute left-16 top-6 text-sm font-semibold text-gray-700">
+            <div className="absolute left-16 top-6 text-sm font-semibold text-gray-700" style={{ zIndex: 1 }}>
               {selectedMetric === 'time' ? 'Thời gian (ms)' : 'Phép toán'}
             </div>
-            <div className="w-full overflow-x-auto flex justify-center" style={{ minHeight: '400px' }}>
+            <div 
+              className="w-full overflow-visible flex justify-center" 
+              style={{ 
+                minHeight: '400px',
+                position: 'relative',
+                zIndex: 10
+              }}
+            >
               {renderChart()}
             </div>
           </div>
@@ -361,7 +401,7 @@ export default function BenchmarkResults({
             <div className="text-center text-gray-600">
               <p className="text-lg font-bold text-gray-700 mb-2">Không có dữ liệu để hiển thị</p>
               <p className="text-sm">
-                Phân phối đã chọn: {selectedDistribution}
+                Phân phối đã chọn: {selectedDistribution || 'Chưa chọn'}
                 <br />
                 Chỉ số: {selectedMetric}
                 <br />
