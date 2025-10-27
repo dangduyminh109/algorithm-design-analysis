@@ -9,7 +9,7 @@ import {
   SearchingStepWithCounters,
   ExtremeStepWithCounters 
 } from '@/types/instrumentation';
-import { createCounters, cloneCounters } from './instrumentation';
+import { createCounters, cloneCounters, estimateMemoryUsage } from './instrumentation';
 
 // ============================================================================
 // SORTING ALGORITHMS WITH INSTRUMENTATION
@@ -30,6 +30,9 @@ export function bubbleSortInstrumented(
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
   const n = array.length;
+
+  // Bubble Sort: O(1) space - only needs a few variables (i, j, swapped)
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   for (let i = 0; i < n - 1; i++) {
     counters.iterations++;
@@ -90,6 +93,9 @@ export function selectionSortInstrumented(
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
   const n = array.length;
+
+  // Selection Sort: O(1) space - only needs variables (i, j, minIdx)
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   for (let i = 0; i < n - 1; i++) {
     counters.iterations++;
@@ -154,6 +160,9 @@ export function insertionSortInstrumented(
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
   const n = array.length;
+
+  // Insertion Sort: O(1) space - only needs variables (i, j, key)
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   for (let i = 1; i < n; i++) {
     counters.iterations++;
@@ -220,6 +229,12 @@ export function quickSortInstrumented(
   const array = [...arr];
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
+  const n = array.length;
+
+  // Quick Sort: O(log n) space - recursion stack depth
+  // Average case: log2(n) recursion depth
+  const avgRecursionDepth = Math.ceil(Math.log2(n));
+  counters.memoryUsage = estimateMemoryUsage(n, 0, avgRecursionDepth, 4);
 
   function partition(low: number, high: number): number {
     counters.recursiveCalls++;
@@ -299,6 +314,12 @@ export function mergeSortInstrumented(
   const array = [...arr];
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
+  const n = array.length;
+
+  // Merge Sort: O(n) space - needs auxiliary arrays for merging
+  // Plus O(log n) recursion stack
+  const recursionDepth = Math.ceil(Math.log2(n));
+  counters.memoryUsage = estimateMemoryUsage(n, 1, recursionDepth, 6);
 
   function merge(left: number, mid: number, right: number): void {
     const n1 = mid - left + 1;
@@ -400,6 +421,10 @@ export function linearSearchInstrumented(
 } {
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Linear Search: O(1) space - only needs index variable
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 2);
 
   for (let i = 0; i < arr.length; i++) {
     counters.iterations++;
@@ -448,8 +473,12 @@ export function binarySearchInstrumented(
 } {
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
+  const n = arr.length;
   let left = 0;
   let right = arr.length - 1;
+
+  // Binary Search: O(1) space - only needs left, right, mid variables
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   while (left <= right) {
     counters.iterations++;
@@ -519,6 +548,10 @@ export function linearMinMaxInstrumented(
 } {
   const counters = createCounters();
   const steps: ExtremeStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Linear Min/Max: O(1) space - only needs min, max, indexes, loop counter
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 5);
 
   if (arr.length === 0) {
     return {
@@ -591,6 +624,10 @@ export function tournamentMethodInstrumented(
 } {
   const counters = createCounters();
   const steps: ExtremeStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Tournament Method: O(1) space - needs min, max, indexes, local variables
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 8);
 
   if (arr.length === 0) {
     return {
@@ -699,6 +736,9 @@ export function jumpSearchInstrumented(
   let prev = 0;
   let curr = jumpSize;
 
+  // Jump Search: O(1) space - needs prev, curr, jumpSize, i variables
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 5);
+
   // Initial state: highlight starting position (index 0)
   if (withSteps) {
     steps.push({
@@ -798,8 +838,12 @@ export function interpolationSearchInstrumented(
 } {
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
+  const n = arr.length;
   let left = 0;
   let right = arr.length - 1;
+
+  // Interpolation Search: O(1) space - needs left, right, pos variables
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   while (left <= right && target >= arr[left] && target <= arr[right]) {
     counters.iterations++;
@@ -895,6 +939,11 @@ export function divideConquerMinMaxInstrumented(
 } {
   const counters = createCounters();
   const steps: ExtremeStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Divide & Conquer Min/Max: O(log n) space - recursion stack
+  const recursionDepth = Math.ceil(Math.log2(n));
+  counters.memoryUsage = estimateMemoryUsage(n, 0, recursionDepth, 8);
 
   if (arr.length === 0) {
     return {

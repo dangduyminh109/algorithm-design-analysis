@@ -147,6 +147,7 @@ async function runSingleAlgorithm(
     dataDistribution: distribution,
     counters: result.counters,
     executionTime,
+    memoryUsage: result.counters.memoryUsage,
     timestamp: Date.now()
   };
 }
@@ -230,6 +231,7 @@ export interface AggregatedMetrics {
   avgRecursiveCalls: number;
   avgIterations: number;
   avgAssignments: number;
+  avgMemoryUsage: number;
   totalOperations: number;
   runs: number;
 }
@@ -261,6 +263,7 @@ export function aggregateBenchmarkResults(result: BenchmarkResult): AggregatedMe
       recursiveCalls: number;
       iterations: number;
       assignments: number;
+      memoryUsage: number;
     }, run: BenchmarkRun) => ({
       executionTime: acc.executionTime + run.executionTime,
       comparisons: acc.comparisons + run.counters.comparisons,
@@ -269,6 +272,7 @@ export function aggregateBenchmarkResults(result: BenchmarkResult): AggregatedMe
       recursiveCalls: acc.recursiveCalls + run.counters.recursiveCalls,
       iterations: acc.iterations + run.counters.iterations,
       assignments: acc.assignments + run.counters.assignments,
+      memoryUsage: acc.memoryUsage + run.memoryUsage,
     }), {
       executionTime: 0,
       comparisons: 0,
@@ -277,6 +281,7 @@ export function aggregateBenchmarkResults(result: BenchmarkResult): AggregatedMe
       recursiveCalls: 0,
       iterations: 0,
       assignments: 0,
+      memoryUsage: 0,
     });
 
     const totalOps = 
@@ -295,6 +300,7 @@ export function aggregateBenchmarkResults(result: BenchmarkResult): AggregatedMe
       avgRecursiveCalls: sum.recursiveCalls / n,
       avgIterations: sum.iterations / n,
       avgAssignments: sum.assignments / n,
+      avgMemoryUsage: sum.memoryUsage / n,
       totalOperations: totalOps / n,
       runs: n
     });
@@ -362,6 +368,7 @@ export function exportToCSV(result: BenchmarkResult): string {
     'Avg Recursive Calls',
     'Avg Iterations',
     'Avg Assignments',
+    'Avg Memory (bytes)',
     'Total Operations',
     'Runs'
   ].join(',');
@@ -377,6 +384,7 @@ export function exportToCSV(result: BenchmarkResult): string {
     m.avgRecursiveCalls.toFixed(0),
     m.avgIterations.toFixed(0),
     m.avgAssignments.toFixed(0),
+    m.avgMemoryUsage.toFixed(0),
     m.totalOperations.toFixed(0),
     m.runs
   ].join(','));

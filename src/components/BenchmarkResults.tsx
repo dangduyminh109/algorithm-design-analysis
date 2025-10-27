@@ -19,7 +19,7 @@ import {
 import { Download, TrendingUp, Activity, Clock } from 'lucide-react';
 import { AggregatedMetrics, ComparisonData } from '@/lib/benchmarkEngine';
 import { DataDistribution } from '@/types/instrumentation';
-import { formatTime, formatCount } from '@/lib/instrumentation';
+import { formatTime, formatCount, formatMemory } from '@/lib/instrumentation';
 import DetailedTimingTable from './DetailedTimingTable';
 
 interface BenchmarkResultsProps {
@@ -44,7 +44,7 @@ export default function BenchmarkResults({
   onExportCSV, 
   onExportJSON 
 }: BenchmarkResultsProps) {
-  const [selectedMetric, setSelectedMetric] = useState<'time' | 'comparisons' | 'operations'>('time');
+  const [selectedMetric, setSelectedMetric] = useState<'time' | 'comparisons' | 'operations' | 'memory'>('time');
   const [selectedDistribution, setSelectedDistribution] = useState<DataDistribution | null>(null);
   const [chartType, setChartType] = useState<'line' | 'bar' | 'area'>('line');
 
@@ -93,6 +93,8 @@ export default function BenchmarkResults({
             dataPoint[a.algorithmName] = a.avgExecutionTime;
           } else if (selectedMetric === 'comparisons') {
             dataPoint[a.algorithmName] = a.avgComparisons;
+          } else if (selectedMetric === 'memory') {
+            dataPoint[a.algorithmName] = a.avgMemoryUsage;
           } else {
             dataPoint[a.algorithmName] = a.totalOperations;
           }
@@ -133,12 +135,15 @@ export default function BenchmarkResults({
     const algoData = filteredData.filter(a => a.algorithmName === algo);
     const totalTime = algoData.reduce((sum, a) => sum + a.avgExecutionTime, 0);
     const totalOps = algoData.reduce((sum, a) => sum + a.totalOperations, 0);
+    const totalMemory = algoData.reduce((sum, a) => sum + a.avgMemoryUsage, 0);
     const avgTime = totalTime / algoData.length;
+    const avgMemory = totalMemory / algoData.length;
 
     return {
       algorithm: algo,
       color: COLORS[idx % COLORS.length],
       avgTime,
+      avgMemory,
       totalOps,
       dataPoints: algoData.length
     };
@@ -166,6 +171,8 @@ export default function BenchmarkResults({
               <span className="font-bold text-blue-700">
                 {selectedMetric === 'time' 
                   ? formatTime(entry.value)
+                  : selectedMetric === 'memory'
+                  ? formatMemory(entry.value)
                   : formatCount(entry.value)
                 }
               </span>
@@ -343,6 +350,7 @@ export default function BenchmarkResults({
             >
               <option value="time">Thời gian thực thi</option>
               <option value="comparisons">Số lần so sánh</option>
+              <option value="memory">Bộ nhớ sử dụng</option>
               <option value="operations">Tổng phép toán</option>
             </select>
           </div>
@@ -374,7 +382,12 @@ export default function BenchmarkResults({
       >
         <div className="mb-4">
           <h3 className="text-lg font-bold text-gray-800">
-            Biểu đồ hiệu suất - {selectedMetric === 'time' ? 'Thời gian thực thi' : selectedMetric === 'comparisons' ? 'Số lần so sánh' : 'Tổng phép toán'}
+            Biểu đồ hiệu suất - {
+              selectedMetric === 'time' ? 'Thời gian thực thi' : 
+              selectedMetric === 'comparisons' ? 'Số lần so sánh' : 
+              selectedMetric === 'memory' ? 'Bộ nhớ sử dụng' :
+              'Tổng phép toán'
+            }
           </h3>
           <p className="text-sm text-gray-600">
             Phân phối: {selectedDistribution || 'N/A'} | Điểm dữ liệu: {chartData.length} | Thuật toán: {algorithms.length}
@@ -383,7 +396,9 @@ export default function BenchmarkResults({
         {chartData.length > 0 && algorithms.length > 0 ? (
           <div className="relative bg-gray-50 rounded-lg p-4 border border-gray-200">
             <div className="absolute left-16 top-6 text-sm font-semibold text-gray-700" style={{ zIndex: 1 }}>
-              {selectedMetric === 'time' ? 'Thời gian (ms)' : 'Phép toán'}
+              {selectedMetric === 'time' ? 'Thời gian (ms)' : 
+               selectedMetric === 'memory' ? 'Bộ nhớ (bytes)' : 
+               'Phép toán'}
             </div>
             <div 
               className="w-full overflow-visible flex justify-center" 
@@ -433,6 +448,7 @@ export default function BenchmarkResults({
               <tr className="border-b-2 border-gray-300 bg-gray-50">
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Thuật toán</th>
                 <th className="text-right py-3 px-4 font-semibold text-gray-700">Thời gian TB</th>
+                <th className="text-right py-3 px-4 font-semibold text-gray-700">Bộ nhớ TB</th>
                 <th className="text-right py-3 px-4 font-semibold text-gray-700">Tổng phép toán</th>
                 <th className="text-right py-3 px-4 font-semibold text-gray-700">Điểm dữ liệu</th>
               </tr>
@@ -453,6 +469,7 @@ export default function BenchmarkResults({
                     </div>
                   </td>
                   <td className="text-right py-3 px-4 text-gray-700 font-medium">{formatTime(stat.avgTime)}</td>
+                  <td className="text-right py-3 px-4 text-gray-700 font-medium">{formatMemory(stat.avgMemory)}</td>
                   <td className="text-right py-3 px-4 text-gray-700 font-medium">{formatCount(stat.totalOps)}</td>
                   <td className="text-right py-3 px-4 text-gray-700 font-medium">{stat.dataPoints}</td>
                 </tr>

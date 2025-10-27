@@ -11,7 +11,7 @@ interface DetailedTimingTableProps {
 }
 
 export default function DetailedTimingTable({ aggregated }: DetailedTimingTableProps) {
-  const [selectedMetric, setSelectedMetric] = useState<'time' | 'comparisons' | 'swaps' | 'operations'>('time');
+  const [selectedMetric, setSelectedMetric] = useState<'time' | 'comparisons' | 'swaps' | 'operations' | 'memory'>('time');
   
   if (aggregated.length === 0) {
     return null;
@@ -31,6 +31,8 @@ export default function DetailedTimingTable({ aggregated }: DetailedTimingTableP
         return metric.avgComparisons;
       case 'swaps':
         return metric.avgSwaps;
+      case 'memory':
+        return metric.avgMemoryUsage;
       case 'operations':
         return metric.totalOperations;
       default:
@@ -47,6 +49,14 @@ export default function DetailedTimingTable({ aggregated }: DetailedTimingTableP
         return `${value.toFixed(3)}ms`;
       } else {
         return `${(value / 1000).toFixed(2)}s`;
+      }
+    } else if (selectedMetric === 'memory') {
+      if (value < 1024) {
+        return `${value.toFixed(0)} B`;
+      } else if (value < 1024 * 1024) {
+        return `${(value / 1024).toFixed(2)} KB`;
+      } else {
+        return `${(value / (1024 * 1024)).toFixed(2)} MB`;
       }
     }
     return value.toFixed(0);
@@ -113,8 +123,8 @@ export default function DetailedTimingTable({ aggregated }: DetailedTimingTableP
       </div>
 
       {/* Metric Selector */}
-      <div className="flex gap-2">
-        {(['time', 'comparisons', 'swaps', 'operations'] as const).map((metric) => (
+      <div className="flex gap-2 flex-wrap">
+        {(['time', 'comparisons', 'swaps', 'memory', 'operations'] as const).map((metric) => (
           <button
             key={metric}
             onClick={() => setSelectedMetric(metric)}
@@ -126,7 +136,8 @@ export default function DetailedTimingTable({ aggregated }: DetailedTimingTableP
           >
             {metric === 'time' ? 'Thời gian' : 
              metric === 'comparisons' ? 'So sánh' : 
-             metric === 'swaps' ? 'Hoán đổi' : 'Phép toán'}
+             metric === 'swaps' ? 'Hoán đổi' : 
+             metric === 'memory' ? 'Bộ nhớ' : 'Phép toán'}
           </button>
         ))}
       </div>
