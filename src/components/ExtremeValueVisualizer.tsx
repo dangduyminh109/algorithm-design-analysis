@@ -7,6 +7,7 @@ import { ExtremeStep, VisualizationState } from '@/types/algorithm';
 import { ExtremeValueAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 import OptimizedBar from './OptimizedBar';
+import ArrayInput from './ArrayInput';
 
 interface ExtremeValueVisualizerProps {
   algorithm: string;
@@ -51,6 +52,25 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       steps: []
     }));
   }, [arraySize]);
+
+  // Handle custom array input
+  const handleCustomArray = useCallback((newArray: number[]) => {
+    // Stop any ongoing animation
+    if (typeof animationRef !== 'undefined' && animationRef.current) {
+      animationRef.current = false;
+    }
+    
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, []);
 
   useEffect(() => {
     initializeArray();
@@ -256,9 +276,19 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
             <span>Mảng Mới</span>
           </button>
 
+          <ArrayInput
+            onArrayChange={handleCustomArray}
+            disabled={state.isPlaying}
+            minValue={10}
+            maxValue={90}
+            maxLength={30}
+            placeholder="Ví dụ: 15, 42, 78, 23, 56"
+          />
+
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary flex items-center space-x-2"
+            title="Cài đặt"
           >
             <Settings className="w-4 h-4" />
           </button>

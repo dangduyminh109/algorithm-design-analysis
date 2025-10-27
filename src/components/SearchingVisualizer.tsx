@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw, Shuffle, Search, Settings, Dices } from 'lucide
 import { SearchingStep, VisualizationState } from '@/types/algorithm';
 import { SearchingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
+import ArrayInput from './ArrayInput';
 
 interface SearchingVisualizerProps {
   algorithm: string;
@@ -54,6 +55,31 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       steps: []
     }));
   }, [arraySize]);
+
+  // Handle custom array input
+  const handleCustomArray = useCallback((newArray: number[]) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+    
+    // Sort array for search algorithms (required for binary, jump, interpolation search)
+    const sortedArray = [...newArray].sort((a, b) => a - b);
+    setArray(sortedArray);
+    
+    // Set target to first element by default
+    const defaultTarget = sortedArray[0];
+    setTarget(defaultTarget);
+    setTargetInput(defaultTarget.toString());
+    setTargetWarning('');
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, []);
 
   useEffect(() => {
     initializeArray();
@@ -338,9 +364,19 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
             <span>Mảng Mới</span>
           </button>
 
+          <ArrayInput
+            onArrayChange={handleCustomArray}
+            disabled={state.isPlaying}
+            minValue={10}
+            maxValue={100}
+            maxLength={50}
+            placeholder="Ví dụ: 12, 23, 45, 56, 78"
+          />
+
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary flex items-center space-x-2"
+            title="Cài đặt"
           >
             <Settings className="w-4 h-4" />
           </button>

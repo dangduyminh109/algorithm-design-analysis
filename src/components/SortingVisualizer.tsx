@@ -8,6 +8,7 @@ import { SortingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algor
 import { usePerformanceOptimization, useAnimationDebounce } from '@/hooks/usePerformanceOptimization';
 import OptimizedAnimation from './OptimizedAnimation';
 import OptimizedBar from './OptimizedBar';
+import ArrayInput from './ArrayInput';
 
 interface SortingVisualizerProps {
   algorithm: string;
@@ -60,6 +61,23 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       steps: []
     }));
   }, [arraySize]);
+
+  // Handle custom array input
+  const handleCustomArray = useCallback((newArray: number[]) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+    
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, []);
 
   useEffect(() => {
     initializeArray();
@@ -259,9 +277,19 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
             <span>Mảng Mới</span>
           </button>
 
+          <ArrayInput
+            onArrayChange={handleCustomArray}
+            disabled={state.isPlaying}
+            minValue={5}
+            maxValue={95}
+            maxLength={100}
+            placeholder="Ví dụ: 45, 23, 78, 12, 56"
+          />
+
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary flex items-center space-x-2"
+            title="Cài đặt"
           >
             <Settings className="w-4 h-4" />
           </button>
