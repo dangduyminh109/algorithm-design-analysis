@@ -27,6 +27,8 @@
 - **Jump Search**: Tìm kiếm nhảy bước với độ phức tạp - O(√n)
 - **Interpolation Search**: Tìm kiếm nội suy cho dữ liệu phân bố đều - O(log log n)
 
+**Lưu ý**: Jump Search và Interpolation Search yêu cầu dữ liệu đã được sắp xếp để hoạt động chính xác.
+
 ### Tìm Giá Trị Cực Trị
 - **Linear Min/Max**: Quét đơn giản để tìm giá trị nhỏ nhất và lớn nhất - O(n)
 - **Tournament Method**: Phương pháp đấu loại trực tiếp để tìm giá trị cực trị - O(n)
@@ -45,8 +47,10 @@
 ### Benchmark Hiệu Suất
 - **So Sánh Nhiều Thuật Toán**: Chạy và so sánh hiệu suất của nhiều thuật toán cùng lúc
 - **Đo Lường Chi Tiết**: Theo dõi thời gian thực thi, số lần so sánh, và bộ nhớ sử dụng
+- **Ước Lượng Bộ Nhớ**: Tính toán memory usage dựa trên input size, auxiliary arrays, recursion depth
 - **Biểu Đồ Trực Quan**: Xem kết quả benchmark qua biểu đồ và bảng thống kê
 - **Tùy Chỉnh Input**: Chọn kích thước dữ liệu và loại dữ liệu (ngẫu nhiên, đã sắp xếp, đảo ngược)
+- **Export Dữ Liệu**: Xuất kết quả benchmark ra CSV/JSON để phân tích sâu hơn
 
 ### Lý Thuyết Thuật Toán
 - **Cơ Sở Lý Thuyết**: Học các khái niệm cơ bản về phân tích thuật toán
@@ -73,6 +77,7 @@
 - **Đếm Phép Toán Chính Xác**: Đếm số lần so sánh, hoán đổi, gán một cách chính xác theo lý thuyết
 - **Ứng Dụng Thực Tế**: Học khi nào sử dụng thuật toán nào trong thực tế
 - **Thống Kê Thời Gian Thực**: Theo dõi số lần so sánh, thời gian thực thi, và bộ nhớ sử dụng
+- **Memory Analysis**: Hiểu cách thuật toán sử dụng bộ nhớ và tối ưu hóa không gian
 
 ### Hỗ Trợ Đa Ngôn Ngữ Lập Trình
 Tất cả 12 thuật toán đều có code mẫu đầy đủ bằng 6 ngôn ngữ lập trình:
@@ -166,10 +171,10 @@ src/
 │   ├── ArrayInput.tsx           # Component nhập mảng tùy chỉnh
 │   ├── BackgroundEffects.tsx    # Hiệu ứng nền
 │   ├── BenchmarkLab.tsx         # Lab thử nghiệm benchmark
-│   ├── BenchmarkResults.tsx     # Hiển thị kết quả benchmark
+│   ├── BenchmarkResults.tsx     # Hiển thị kết quả benchmark với biểu đồ
 │   ├── CanvasBackgroundEffects.tsx # Hiệu ứng nền canvas
 │   ├── CodeBlock.tsx            # Trình xem mã với cú pháp nổi bật
-│   ├── DetailedTimingTable.tsx  # Bảng thống kê chi tiết
+│   ├── DetailedTimingTable.tsx  # Bảng thống kê chi tiết với memory tracking
 │   ├── ExtremeValueVisualizer.tsx # Trình minh họa thuật toán Min/Max
 │   ├── Header.tsx               # Header điều hướng
 │   ├── LaTeX.tsx                # Render công thức toán học LaTeX
@@ -185,16 +190,16 @@ src/
 ├── lib/                         # Hàm tiện ích và dữ liệu
 │   ├── algorithms.ts            # Định nghĩa và metadata thuật toán
 │   ├── algorithmUtils.ts        # Triển khai thuật toán với các bước
-│   ├── benchmarkEngine.ts       # Engine đo lường hiệu suất
+│   ├── benchmarkEngine.ts       # Engine đo lường hiệu suất với memory tracking
 │   ├── codeLanguages.ts         # Định nghĩa ngôn ngữ lập trình
 │   ├── codeSamples.ts           # Code mẫu cho 6 ngôn ngữ lập trình
-│   ├── instrumentation.ts       # Công cụ đo lường và theo dõi
-│   ├── instrumentedAlgorithms.ts # Thuật toán với instrumentation
+│   ├── instrumentation.ts       # Công cụ đo lường, theo dõi và memory estimation
+│   ├── instrumentedAlgorithms.ts # Thuật toán với instrumentation và memory tracking
 │   ├── testCases.ts             # Test cases cho best/average/worst scenarios
 │   └── theoryDatabase.ts        # Cơ sở dữ liệu lý thuyết
 └── types/                       # Định nghĩa kiểu TypeScript
     ├── algorithm.ts             # Các kiểu liên quan đến thuật toán
-    ├── instrumentation.ts       # Các kiểu cho instrumentation
+    ├── instrumentation.ts       # Các kiểu cho instrumentation và memory tracking
     └── theory.ts                # Các kiểu cho lý thuyết
 ```
 
@@ -224,8 +229,10 @@ Nền tảng này giúp sinh viên và lập trình viên:
 ## Kết Quả Học Tập Chính
 
 - **Phân Tích Thuật Toán**: Hiểu độ phức tạp thời gian và không gian
+- **Memory Analysis**: Hiểu cách thuật toán sử dụng bộ nhớ và tối ưu hóa không gian
 - **Mẫu Giải Quyết Vấn Đề**: Nhận biết chia để trị, cách tiếp cận tham lam
 - **Đánh Đổi Hiệu Suất**: Khi nào ưu tiên thời gian vs không gian vs tính ổn định
+- **Benchmark Analysis**: So sánh hiệu suất thực tế giữa các thuật toán
 - **Ứng Dụng Thực Tế**: Nơi các thuật toán này được sử dụng trong thực tế
 
 ## Tùy Chỉnh
@@ -234,10 +241,12 @@ Nền tảng này giúp sinh viên và lập trình viên:
 
 1. **Định nghĩa thuật toán** trong `src/lib/algorithms.ts`
 2. **Triển khai logic từng bước** trong `src/lib/algorithmUtils.ts`
-3. **Thêm code samples** cho 6 ngôn ngữ trong `src/lib/codeSamples.ts`
-4. **Thêm test cases** (best/average/worst) trong `src/lib/testCases.ts`
-5. **Thêm logic minh họa** vào component visualizer thích hợp
-6. **Cập nhật routing** nếu cần
+3. **Thêm instrumented version** trong `src/lib/instrumentedAlgorithms.ts` với memory tracking
+4. **Thêm case handling** trong `src/lib/benchmarkEngine.ts` cho benchmark
+5. **Thêm code samples** cho 6 ngôn ngữ trong `src/lib/codeSamples.ts`
+6. **Thêm test cases** (best/average/worst) trong `src/lib/testCases.ts`
+7. **Thêm logic minh họa** vào component visualizer thích hợp
+8. **Cập nhật routing** nếu cần
 
 ### Chỉnh Sửa Minh Họa
 
@@ -259,3 +268,19 @@ Các component visualizer có tính module và có thể dễ dàng tùy chỉnh
 - **Lazy loading**: Components tải khi cần
 - **Hoạt hình tối ưu**: Hoạt hình dựa trên RAF cho hiệu suất mượt mà
 - **Quản lý bộ nhớ**: Dọn dẹp timer hoạt hình đúng cách
+- **Memory Tracking**: Ước lượng và theo dõi memory usage của các thuật toán
+- **Benchmark Optimization**: Batch processing và progress tracking cho benchmark lớn
+
+## Tính Năng Mới
+
+### Memory Usage Tracking
+- **Ước lượng bộ nhớ**: Tính toán memory usage dựa trên input size, auxiliary arrays, recursion depth
+- **Memory visualization**: Hiển thị memory usage trong biểu đồ và bảng thống kê
+- **Format memory**: Chuyển đổi bytes sang B/KB/MB/GB cho dễ đọc
+- **Memory comparison**: So sánh memory usage giữa các thuật toán
+
+### Enhanced Benchmark
+- **Memory metrics**: Thu thập và hiển thị memory usage trong benchmark
+- **Export memory data**: Xuất memory data ra CSV/JSON
+- **Memory-aware algorithms**: Tất cả 11 thuật toán đều có memory tracking
+- **Space complexity analysis**: Hiểu độ phức tạp không gian thực tế
