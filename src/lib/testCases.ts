@@ -278,6 +278,34 @@ export const EXTREME_TEST_CASES: Record<string, Record<TestCaseType, TestCase>> 
     }
   },
 
+  'tournament-method': {
+    best: {
+      name: 'Mảng Lũy Thừa 2',
+      description: 'Kích thước lũy thừa 2 - cây tournament hoàn hảo - O(n)',
+      generate: (size: number) => {
+        // Làm tròn xuống lũy thừa 2 gần nhất để có cây cân bằng hoàn hảo
+        const powerOf2 = Math.pow(2, Math.floor(Math.log2(size)));
+        return generateUniqueRandomArray(powerOf2, 10, 90);
+      }
+    },
+    average: {
+      name: 'Mảng Ngẫu Nhiên',
+      description: 'Mảng kích thước bất kỳ - O(n)',
+      generate: (size: number) => {
+        return generateUniqueRandomArray(size, 10, 90);
+      }
+    },
+    worst: {
+      name: 'Mảng Lẻ',
+      description: 'Kích thước lẻ - cây không cân bằng hoàn toàn - O(n)',
+      generate: (size: number) => {
+        // Đảm bảo kích thước lẻ
+        const oddSize = size % 2 === 0 ? size - 1 : size;
+        return generateUniqueRandomArray(oddSize, 10, 90);
+      }
+    }
+  },
+
   'divide-conquer-minmax': {
     best: {
       name: 'Mảng Cân Bằng',

@@ -747,13 +747,15 @@ export class ExtremeValueAlgorithms {
       }
 
       let explanation = '';
-      if (arr[i] < oldMin && arr[i] > oldMax) {
+      const isNewMin = arr[i] < oldMin;
+      const isNewMax = arr[i] > oldMax;
+
+      if (isNewMin && isNewMax) {
+        // Trường hợp đặc biệt: mảng chỉ có 1 phần tử trước đó
+        explanation = `${arr[i]} là cả min và max mới`;
+      } else if (isNewMin && !isNewMax) {
         explanation = `${arr[i]} là min mới`;
-      } else if (arr[i] > oldMax && arr[i] >= oldMin) {
-        explanation = `${arr[i]} là max mới`;
-      } else if (arr[i] < oldMin) {
-        explanation = `${arr[i]} là min mới`;
-      } else if (arr[i] > oldMax) {
+      } else if (!isNewMin && isNewMax) {
         explanation = `${arr[i]} là max mới`;
       } else {
         explanation = `${arr[i]} không thay đổi min/max`;

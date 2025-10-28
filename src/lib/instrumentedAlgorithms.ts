@@ -609,7 +609,7 @@ export function linearMinMaxInstrumented(
 }
 
 /**
- * Tournament Method with instrumentation
+ * Tournament Method with instrumentation (Divide & Conquer approach)
  */
 export function tournamentMethodInstrumented(
   arr: number[],
@@ -626,8 +626,9 @@ export function tournamentMethodInstrumented(
   const steps: ExtremeStepWithCounters[] = [];
   const n = arr.length;
 
-  // Tournament Method: O(1) space - needs min, max, indexes, local variables
-  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 8);
+  // Tournament Method: O(log n) space - recursion stack
+  const recursionDepth = Math.ceil(Math.log2(n || 1));
+  counters.memoryUsage = estimateMemoryUsage(n, 0, recursionDepth, 8);
 
   if (arr.length === 0) {
     return {
@@ -640,80 +641,92 @@ export function tournamentMethodInstrumented(
     };
   }
 
-  let min = arr[0];
-  let max = arr[0];
-  let minIndex = 0;
-  let maxIndex = 0;
-  counters.arrayAccesses += 2;
-
-  // Process pairs
-  for (let i = 1; i < arr.length; i += 2) {
+  function tournamentHelper(start: number, end: number): { 
+    min: number; 
+    max: number; 
+    minIndex: number; 
+    maxIndex: number 
+  } {
     counters.iterations++;
-    
-    if (i + 1 < arr.length) {
+
+    // Base case: one element
+    if (start === end) {
+      counters.arrayAccesses++;
+      counters.assignments += 4;
+
+      if (withSteps) {
+        steps.push({
+          array: [...arr],
+          currentMin: arr[start],
+          currentMax: arr[start],
+          currentIndex: start,
+          minIndex: start,
+          maxIndex: start,
+          comparing: [start],
+          counters: cloneCounters(counters)
+        });
+      }
+
+      return { min: arr[start], max: arr[start], minIndex: start, maxIndex: start };
+    }
+
+    // Base case: two elements - chỉ cần 1 so sánh để tìm cả min và max
+    if (end - start === 1) {
       counters.comparisons++;
       counters.arrayAccesses += 2;
 
-      let localMin, localMax, localMinIdx, localMaxIdx;
-
-      if (arr[i] < arr[i + 1]) {
-        localMin = arr[i];
-        localMax = arr[i + 1];
-        localMinIdx = i;
-        localMaxIdx = i + 1;
-      } else {
-        localMin = arr[i + 1];
-        localMax = arr[i];
-        localMinIdx = i + 1;
-        localMaxIdx = i;
-      }
+      const min = Math.min(arr[start], arr[end]);
+      const max = Math.max(arr[start], arr[end]);
+      const minIndex = arr[start] <= arr[end] ? start : end;
+      const maxIndex = arr[start] >= arr[end] ? start : end;
+      counters.assignments += 4;
 
       if (withSteps) {
         steps.push({
           array: [...arr],
           currentMin: min,
           currentMax: max,
-          currentIndex: i,
+          currentIndex: start,
           minIndex,
           maxIndex,
-          comparing: [i, i + 1],
+          comparing: [start, end],
           counters: cloneCounters(counters)
         });
       }
 
-      counters.comparisons++;
-      if (localMin < min) {
-        counters.assignments += 2;
-        min = localMin;
-        minIndex = localMinIdx;
-      }
-
-      counters.comparisons++;
-      if (localMax > max) {
-        counters.assignments += 2;
-        max = localMax;
-        maxIndex = localMaxIdx;
-      }
-    } else {
-      // Handle odd element
-      counters.arrayAccesses++;
-      counters.comparisons += 2;
-
-      if (arr[i] < min) {
-        counters.assignments += 2;
-        min = arr[i];
-        minIndex = i;
-      }
-
-      if (arr[i] > max) {
-        counters.assignments += 2;
-        max = arr[i];
-        maxIndex = i;
-      }
+      return { min, max, minIndex, maxIndex };
     }
+
+    // Divide and conquer
+    const mid = Math.floor((start + end) / 2);
+    const left = tournamentHelper(start, mid);
+    const right = tournamentHelper(mid + 1, end);
+
+    counters.comparisons += 2; // Compare min and max from both halves
+    const finalMin = Math.min(left.min, right.min);
+    const finalMax = Math.max(left.max, right.max);
+    const finalMinIndex = left.min <= right.min ? left.minIndex : right.minIndex;
+    const finalMaxIndex = left.max >= right.max ? left.maxIndex : right.maxIndex;
+    counters.assignments += 4;
+
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        currentMin: finalMin,
+        currentMax: finalMax,
+        currentIndex: mid,
+        minIndex: finalMinIndex,
+        maxIndex: finalMaxIndex,
+        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex],
+        counters: cloneCounters(counters)
+      });
+    }
+
+    return { min: finalMin, max: finalMax, minIndex: finalMinIndex, maxIndex: finalMaxIndex };
   }
 
-  return { min, max, minIndex, maxIndex, counters, steps: withSteps ? steps : undefined };
+  const result = tournamentHelper(0, arr.length - 1);
+  return { ...result, counters, steps: withSteps ? steps : undefined };
 }
 
 /**

@@ -119,6 +119,9 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       case 'tournament-method':
         algorithmSteps = ExtremeValueAlgorithms.tournamentMinMax([...array]);
         break;
+      case 'divide-conquer-minmax':
+        algorithmSteps = ExtremeValueAlgorithms.divideConquerMinMax([...array]);
+        break;
       default:
         algorithmSteps = ExtremeValueAlgorithms.linearMinMax([...array]);
     }
@@ -565,6 +568,9 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
         )}
         {algorithm === 'tournament-method' && (
           <p>Tournament Method sử dụng cách tiếp cận chia để trị, so sánh các phần tử theo cặp để tìm giá trị min/max hiệu quả.</p>
+        )}
+        {algorithm === 'divide-conquer-minmax' && (
+          <p>Divide & Conquer Min/Max chia mảng thành hai nửa đệ quy, tìm min/max của mỗi nửa rồi kết hợp lại để có kết quả cuối cùng.</p>
         )}
       </div>
     </div>
