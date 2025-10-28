@@ -9,6 +9,7 @@ export interface PerformanceCounters {
   recursiveCalls: number;
   iterations: number;
   assignments: number;
+  memoryUsage: number; // in bytes
 }
 
 export interface InstrumentationResult<T = any> {
@@ -25,6 +26,7 @@ export interface BenchmarkRun {
   dataDistribution: DataDistribution;
   counters: PerformanceCounters;
   executionTime: number;
+  memoryUsage: number; // in bytes
   timestamp: number;
 }
 
@@ -84,6 +86,7 @@ export interface SearchingStepWithCounters {
   left?: number;
   right?: number;
   mid?: number;
+  isJumpPoint?: boolean;  // For Jump Search visualization
   counters: PerformanceCounters;
 }
 

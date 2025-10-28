@@ -7,6 +7,9 @@ import { ExtremeStep, VisualizationState } from '@/types/algorithm';
 import { ExtremeValueAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 import OptimizedBar from './OptimizedBar';
+import ArrayInput from './ArrayInput';
+import TestCaseSelector from './TestCaseSelector';
+import { EXTREME_TEST_CASES, TestCaseType } from '@/lib/testCases';
 
 interface ExtremeValueVisualizerProps {
   algorithm: string;
@@ -32,14 +35,21 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
   const [arraySize, setArraySize] = useState(isSlowDevice ? 15 : 20);
   const [showSettings, setShowSettings] = useState(false);
 
+  // Animation control with ref for state access
+  const stateRef = useRef(state);
+  const animationRef = useRef<boolean>(false);
+  
+  // Update ref when state changes
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   // Initialize array
   const initializeArray = useCallback(() => {
     // Stop any ongoing animation
-    if (typeof animationRef !== 'undefined' && animationRef.current) {
-      animationRef.current = false;
-    }
+    animationRef.current = false;
     
-    const newArray = generateUniqueRandomArray(arraySize, 10, 90);
+    const newArray = generateUniqueRandomArray(arraySize, 1, 100);
     setArray(newArray);
     setSteps([]);
     setState(prev => ({
@@ -51,6 +61,48 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       steps: []
     }));
   }, [arraySize]);
+
+  // Handle custom array input
+  const handleCustomArray = useCallback((newArray: number[]) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+    
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, []);
+
+  // Handle test case selection
+  const handleTestCase = useCallback((testCaseType: TestCaseType) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+
+    const testCases = EXTREME_TEST_CASES[algorithm];
+    if (!testCases) return;
+
+    const testCase = testCases[testCaseType];
+    const newArray = testCase.generate(arraySize);
+    
+    // Update array size to match the actual test case size
+    setArraySize(newArray.length);
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, [algorithm, arraySize]);
 
   useEffect(() => {
     initializeArray();
@@ -72,6 +124,9 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       case 'tournament-method':
         algorithmSteps = ExtremeValueAlgorithms.tournamentMinMax([...array]);
         break;
+      case 'divide-conquer-minmax':
+        algorithmSteps = ExtremeValueAlgorithms.divideConquerMinMax([...array]);
+        break;
       default:
         algorithmSteps = ExtremeValueAlgorithms.linearMinMax([...array]);
     }
@@ -92,15 +147,6 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       generateSteps();
     }
   }, [generateSteps, array.length]);
-
-  // Animation control with ref for state access
-  const stateRef = useRef(state);
-  const animationRef = useRef<boolean>(false);
-  
-  // Update ref when state changes
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
 
   const animate = useCallback(async () => {
     if (steps.length === 0) return;
@@ -127,7 +173,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
 
       onStepChange?.(i, steps.length - 1);
 
-      const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
+      const speedMultiplier = Math.max(0.1, Math.min(20, stateRef.current.speed));
       await delay(500 / speedMultiplier);
 
       // Check if paused
@@ -256,9 +302,31 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
             <span>Mảng Mới</span>
           </button>
 
+          <ArrayInput
+            onArrayChange={handleCustomArray}
+            disabled={state.isPlaying}
+            minValue={1}
+            maxValue={100}
+            maxLength={30}
+            placeholder="Ví dụ: 15, 42, 78, 23, 56"
+          />
+
+          {EXTREME_TEST_CASES[algorithm] && (
+            <TestCaseSelector
+              onSelectTestCase={handleTestCase}
+              disabled={state.isPlaying}
+              testCases={{
+                best: EXTREME_TEST_CASES[algorithm].best,
+                average: EXTREME_TEST_CASES[algorithm].average,
+                worst: EXTREME_TEST_CASES[algorithm].worst
+              }}
+            />
+          )}
+
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary flex items-center space-x-2"
+            title="Cài đặt"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -270,13 +338,13 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
           <input
             type="range"
             min="0.25"
-            max="3"
+            max="20"
             step="0.25"
             value={state.speed}
             onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-            className="w-20"
+            className="w-24"
           />
-          <span className="text-sm text-gray-600 w-8">{state.speed}x</span>
+          <span className="text-sm text-gray-600 w-12">{state.speed}x</span>
         </div>
       </div>
 
@@ -408,23 +476,23 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
         <div className="flex flex-wrap justify-center space-x-4 mt-4 text-xs">
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
-            <span>Unprocessed</span>
+            <span>Chưa xử lý</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span>Current</span>
+            <span>Đang xét</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-orange-500 rounded"></div>
-            <span>Comparing</span>
+            <span>Đang so sánh</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span>Minimum</span>
+            <span>Nhỏ nhất</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span>Maximum</span>
+            <span>Lớn nhất</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-purple-500 rounded"></div>
@@ -434,30 +502,71 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       </div>
 
       {/* Algorithm Status */}
-      <div className="mt-4 text-center text-sm text-gray-600">
+      <div className="mt-4 text-center">
+        {/* Step Explanation */}
+        {steps.length > 0 && currentStepData.explanation && (
+          <div className="mb-2 p-3 bg-blue-50 rounded-lg">
+            <div className="text-sm font-medium text-blue-800">
+              {currentStepData.explanation}
+            </div>
+          </div>
+        )}
+        
         {state.isPlaying && !state.isPaused && (
-          <span className="text-blue-600">● Finding extreme values...</span>
+          <div className="text-blue-600 text-sm">● Finding extreme values...</div>
         )}
         {state.isPaused && (
-          <span className="text-yellow-600">⏸ Paused</span>
+          <div className="text-yellow-600 text-sm">⏸ Paused</div>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
-          <span className="text-green-600">
+          <div className="text-green-600 text-sm">
              Complete! Min: {currentStepData.currentMin}, Max: {currentStepData.currentMax}
-          </span>
+          </div>
         )}
-        {!state.isPlaying && state.currentStep === 0 && (
-          <span className="text-gray-500">Ready to find extreme values</span>
+        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
+          <div className="text-gray-500 text-sm">Ready to find extreme values</div>
         )}
       </div>
+
+      {/* Statistics Panel */}
+      {steps.length > 0 && currentStepData.statistics && (
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+            <div className="text-xs text-blue-600 font-medium mb-1">Thời gian</div>
+            <div className="text-2xl font-bold text-blue-900">
+              {currentStepData.statistics.executionTime?.toFixed(2) || 0}
+            </div>
+            <div className="text-xs text-blue-600">ms</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+            <div className="text-xs text-purple-600 font-medium mb-1">So sánh</div>
+            <div className="text-2xl font-bold text-purple-900">
+              {currentStepData.statistics.comparisons}
+            </div>
+            <div className="text-xs text-purple-600">lần</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+            <div className="text-xs text-green-600 font-medium mb-1">Bộ nhớ phụ</div>
+            <div className="text-2xl font-bold text-green-900">
+              {currentStepData.statistics.auxiliarySpace}
+            </div>
+            <div className="text-xs text-green-600">phần tử</div>
+          </div>
+        </div>
+      )}
 
       {/* Algorithm Info */}
       <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
         {algorithm === 'linear-min-max' && (
-          <p>Linear Min/Max scans through the array once, keeping track of the smallest and largest values encountered.</p>
+          <p>Linear Min/Max quét qua mảng một lần, theo dõi giá trị nhỏ nhất và lớn nhất gặp phải.</p>
         )}
         {algorithm === 'tournament-method' && (
-          <p>Tournament Method uses a divide-and-conquer approach, comparing elements in pairs to find min/max values efficiently.</p>
+          <p>Tournament Method sử dụng cách tiếp cận chia để trị, so sánh các phần tử theo cặp để tìm giá trị min/max hiệu quả.</p>
+        )}
+        {algorithm === 'divide-conquer-minmax' && (
+          <p>Divide & Conquer Min/Max chia mảng thành hai nửa đệ quy, tìm min/max của mỗi nửa rồi kết hợp lại để có kết quả cuối cùng.</p>
         )}
       </div>
     </div>

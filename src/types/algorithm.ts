@@ -17,6 +17,14 @@ export interface Algorithm {
   defaultLanguage?: CodeLanguage;
 }
 
+export interface AlgorithmStatistics {
+  comparisons: number;
+  swaps?: number;
+  assignments?: number;
+  auxiliarySpace: number; // in array elements
+  executionTime?: number; // in milliseconds
+}
+
 export interface SortingStep {
   array: number[];
   comparing: number[];
@@ -24,6 +32,8 @@ export interface SortingStep {
   pivot?: number;
   sorted: number[];
   currentIndex?: number;
+  explanation?: string;
+  statistics?: AlgorithmStatistics;
 }
 
 export interface SearchingStep {
@@ -34,6 +44,9 @@ export interface SearchingStep {
   left?: number;
   right?: number;
   mid?: number;
+  isJumpPoint?: boolean;  // For Jump Search visualization
+  explanation?: string;
+  statistics?: AlgorithmStatistics;
 }
 
 export interface ExtremeStep {
@@ -44,6 +57,8 @@ export interface ExtremeStep {
   minIndex?: number;
   maxIndex?: number;
   comparing: number[];
+  explanation?: string;
+  statistics?: AlgorithmStatistics;
 }
 
 export interface VisualizationState {

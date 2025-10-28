@@ -15,6 +15,7 @@ export function createCounters(): PerformanceCounters {
     recursiveCalls: 0,
     iterations: 0,
     assignments: 0,
+    memoryUsage: 0,
   };
 }
 
@@ -28,6 +29,7 @@ export function resetCounters(counters: PerformanceCounters): void {
   counters.recursiveCalls = 0;
   counters.iterations = 0;
   counters.assignments = 0;
+  counters.memoryUsage = 0;
 }
 
 /**
@@ -41,6 +43,7 @@ export function cloneCounters(counters: PerformanceCounters): PerformanceCounter
     recursiveCalls: counters.recursiveCalls,
     iterations: counters.iterations,
     assignments: counters.assignments,
+    memoryUsage: counters.memoryUsage,
   };
 }
 
@@ -255,4 +258,52 @@ export function formatTime(ms: number): string {
  */
 export function calculateOpsPerSecond(operations: number, timeMs: number): number {
   return (operations / timeMs) * 1000;
+}
+
+/**
+ * Estimate memory usage for an algorithm
+ * @param inputSize - Size of input array
+ * @param auxiliaryArrays - Number of auxiliary arrays used
+ * @param recursionDepth - Maximum recursion depth
+ * @param extraVariables - Number of extra variables used
+ * @returns Estimated memory usage in bytes
+ */
+export function estimateMemoryUsage(
+  inputSize: number,
+  auxiliaryArrays: number = 0,
+  recursionDepth: number = 0,
+  extraVariables: number = 0
+): number {
+  const BYTES_PER_NUMBER = 8; // JavaScript numbers are 64-bit floats
+  const BYTES_PER_VARIABLE = 8;
+  const BYTES_PER_STACK_FRAME = 48; // Approximate stack frame size
+  
+  // Input array memory (always counted)
+  const inputMemory = inputSize * BYTES_PER_NUMBER;
+  
+  // Auxiliary arrays (temporary arrays created during algorithm execution)
+  const auxiliaryMemory = auxiliaryArrays * inputSize * BYTES_PER_NUMBER;
+  
+  // Recursion stack memory
+  const stackMemory = recursionDepth * BYTES_PER_STACK_FRAME;
+  
+  // Extra variables (loop counters, temporary variables, etc.)
+  const variableMemory = extraVariables * BYTES_PER_VARIABLE;
+  
+  return inputMemory + auxiliaryMemory + stackMemory + variableMemory;
+}
+
+/**
+ * Format memory size in human-readable format
+ */
+export function formatMemory(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes.toFixed(0)} B`;
+  } else if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(2)} KB`;
+  } else if (bytes < 1024 * 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  } else {
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+  }
 }

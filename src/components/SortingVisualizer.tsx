@@ -8,6 +8,9 @@ import { SortingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algor
 import { usePerformanceOptimization, useAnimationDebounce } from '@/hooks/usePerformanceOptimization';
 import OptimizedAnimation from './OptimizedAnimation';
 import OptimizedBar from './OptimizedBar';
+import ArrayInput from './ArrayInput';
+import TestCaseSelector from './TestCaseSelector';
+import { SORTING_TEST_CASES, TestCaseType } from '@/lib/testCases';
 
 interface SortingVisualizerProps {
   algorithm: string;
@@ -48,7 +51,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     // Stop any ongoing animation
     animationRef.current = false;
     
-    const newArray = generateUniqueRandomArray(arraySize, 5, 95);
+    const newArray = generateUniqueRandomArray(arraySize, 1, 100);
     setArray(newArray);
     setSteps([]);
     setState(prev => ({
@@ -60,6 +63,48 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       steps: []
     }));
   }, [arraySize]);
+
+  // Handle custom array input
+  const handleCustomArray = useCallback((newArray: number[]) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+    
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, []);
+
+  // Handle test case selection
+  const handleTestCase = useCallback((testCaseType: TestCaseType) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+
+    const testCases = SORTING_TEST_CASES[algorithm];
+    if (!testCases) return;
+
+    const testCase = testCases[testCaseType];
+    const newArray = testCase.generate(arraySize);
+    
+    // Update array size to match the actual test case size
+    setArraySize(newArray.length);
+    setArray(newArray);
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, [algorithm, arraySize]);
 
   useEffect(() => {
     initializeArray();
@@ -139,7 +184,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
       onStepChange?.(i, steps.length - 1);
 
       // Adaptive delay based on device performance
-      const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
+      const speedMultiplier = Math.max(0.1, Math.min(20, stateRef.current.speed));
       const baseDelay = isSlowDevice ? 400 : 300;
       await delay(baseDelay / speedMultiplier);
 
@@ -259,9 +304,31 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
             <span>Mảng Mới</span>
           </button>
 
+          <ArrayInput
+            onArrayChange={handleCustomArray}
+            disabled={state.isPlaying}
+            minValue={1}
+            maxValue={100}
+            maxLength={100}
+            placeholder="Ví dụ: 45, 23, 78, 12, 56"
+          />
+
+          {SORTING_TEST_CASES[algorithm] && (
+            <TestCaseSelector
+              onSelectTestCase={handleTestCase}
+              disabled={state.isPlaying}
+              testCases={{
+                best: SORTING_TEST_CASES[algorithm].best,
+                average: SORTING_TEST_CASES[algorithm].average,
+                worst: SORTING_TEST_CASES[algorithm].worst
+              }}
+            />
+          )}
+
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary flex items-center space-x-2"
+            title="Cài đặt"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -273,13 +340,13 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
           <input
             type="range"
             min="0.25"
-            max="3"
+            max="20"
             step="0.25"
             value={state.speed}
             onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-            className="w-20"
+            className="w-24"
           />
-          <span className="text-sm text-gray-600 w-8">{state.speed}x</span>
+          <span className="text-sm text-gray-600 w-12">{state.speed}x</span>
         </div>
       </div>
 
@@ -354,15 +421,15 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
         <div className="flex flex-wrap justify-center space-x-4 mt-4 text-xs">
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
-            <span>Unsorted</span>
+            <span>Chưa sắp xếp</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span>Comparing</span>
+            <span>Đang so sánh</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span>Swapping</span>
+            <span>Đang hoán đổi</span>
           </div>
           {algorithm === 'quick-sort' && (
             <div className="flex items-center space-x-1">
@@ -372,26 +439,74 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
           )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span>Sorted</span>
+            <span>Đã sắp xếp</span>
           </div>
         </div>
       </div>
 
       {/* Algorithm Status */}
-      <div className="mt-4 text-center text-sm text-gray-600">
+      <div className="mt-4 text-center">
+        {/* Step Explanation */}
+        {steps.length > 0 && currentStepData.explanation && (
+          <div className="mb-2 p-3 bg-blue-50 rounded-lg">
+            <div className="text-sm font-medium text-blue-800">
+              {currentStepData.explanation}
+            </div>
+          </div>
+        )}
+        
         {state.isPlaying && !state.isPaused && (
-          <span className="text-blue-600">● Running...</span>
+          <div className="text-blue-600 text-sm">● Running...</div>
         )}
         {state.isPaused && (
-          <span className="text-yellow-600">⏸ Paused</span>
+          <div className="text-yellow-600 text-sm">⏸ Paused</div>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && steps.length > 0 && (
-          <span className="text-green-600"> Sorting Complete!</span>
+          <div className="text-green-600 text-sm"> Sorting Complete!</div>
         )}
-        {!state.isPlaying && state.currentStep === 0 && (
-          <span className="text-gray-500">Ready to start</span>
+        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
+          <div className="text-gray-500 text-sm">Ready to start</div>
         )}
       </div>
+
+      {/* Statistics Panel */}
+      {steps.length > 0 && currentStepData.statistics && (
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+            <div className="text-xs text-blue-600 font-medium mb-1">Thời gian</div>
+            <div className="text-2xl font-bold text-blue-900">
+              {currentStepData.statistics.executionTime?.toFixed(2) || 0}
+            </div>
+            <div className="text-xs text-blue-600">ms</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+            <div className="text-xs text-purple-600 font-medium mb-1">So sánh</div>
+            <div className="text-2xl font-bold text-purple-900">
+              {currentStepData.statistics.comparisons}
+            </div>
+            <div className="text-xs text-purple-600">lần</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+            <div className="text-xs text-orange-600 font-medium mb-1">
+              {currentStepData.statistics.swaps !== undefined ? 'Hoán đổi' : 'Gán'}
+            </div>
+            <div className="text-2xl font-bold text-orange-900">
+              {currentStepData.statistics.swaps ?? currentStepData.statistics.assignments ?? 0}
+            </div>
+            <div className="text-xs text-orange-600">lần</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+            <div className="text-xs text-green-600 font-medium mb-1">Bộ nhớ phụ</div>
+            <div className="text-2xl font-bold text-green-900">
+              {currentStepData.statistics.auxiliarySpace}
+            </div>
+            <div className="text-xs text-green-600">phần tử</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

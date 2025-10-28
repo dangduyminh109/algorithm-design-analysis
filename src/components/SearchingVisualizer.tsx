@@ -6,6 +6,9 @@ import { Play, Pause, RotateCcw, Shuffle, Search, Settings, Dices } from 'lucide
 import { SearchingStep, VisualizationState } from '@/types/algorithm';
 import { SearchingAlgorithms, generateUniqueRandomArray, delay } from '@/lib/algorithmUtils';
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
+import ArrayInput from './ArrayInput';
+import TestCaseSelector from './TestCaseSelector';
+import { SEARCHING_TEST_CASES, TestCaseType, getAlgorithmSpecificTarget } from '@/lib/testCases';
 
 interface SearchingVisualizerProps {
   algorithm: string;
@@ -38,7 +41,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     // Stop any ongoing animation
     animationRef.current = false;
     
-    const newArray = generateUniqueRandomArray(arraySize, 10, 100).sort((a, b) => a - b); // Keep sorted for binary search
+    const newArray = generateUniqueRandomArray(arraySize, 1, 100).sort((a, b) => a - b); // Keep sorted for binary search
     setArray(newArray);
     const randomTarget = newArray[Math.floor(Math.random() * newArray.length)];
     setTarget(randomTarget);
@@ -54,6 +57,62 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
       steps: []
     }));
   }, [arraySize]);
+
+  // Handle custom array input
+  const handleCustomArray = useCallback((newArray: number[]) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+    
+    // Sort array for search algorithms (required for binary, jump, interpolation search)
+    const sortedArray = [...newArray].sort((a, b) => a - b);
+    setArray(sortedArray);
+    
+    // Set target to first element by default
+    const defaultTarget = sortedArray[0];
+    setTarget(defaultTarget);
+    setTargetInput(defaultTarget.toString());
+    setTargetWarning('');
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, []);
+
+  // Handle test case selection
+  const handleTestCase = useCallback((testCaseType: TestCaseType) => {
+    // Stop any ongoing animation
+    animationRef.current = false;
+
+    const testCases = SEARCHING_TEST_CASES[algorithm];
+    if (!testCases) return;
+
+    const testCase = testCases[testCaseType];
+    const newArray = testCase.generate(arraySize);
+    
+    // Get algorithm-specific target
+    const newTarget = getAlgorithmSpecificTarget(algorithm, newArray, testCaseType);
+    
+    // Update array size to match the actual test case size
+    setArraySize(newArray.length);
+    setArray(newArray);
+    setTarget(newTarget);
+    setTargetInput(newTarget.toString());
+    setTargetWarning('');
+    setSteps([]);
+    setState(prev => ({
+      ...prev,
+      currentStep: 0,
+      progress: 0,
+      isPlaying: false,
+      isPaused: false,
+      steps: []
+    }));
+  }, [algorithm, arraySize]);
 
   useEffect(() => {
     initializeArray();
@@ -71,6 +130,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         case 'binary-search':
           // Array should already be sorted from initializeArray
           algorithmSteps = SearchingAlgorithms.binarySearch(array, target);
+          break;
+        case 'jump-search':
+          algorithmSteps = SearchingAlgorithms.jumpSearch(array, target);
+          break;
+        case 'interpolation-search':
+          algorithmSteps = SearchingAlgorithms.interpolationSearch(array, target);
           break;
         default:
           algorithmSteps = SearchingAlgorithms.linearSearch(array, target);
@@ -118,7 +183,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         progress: (i / (steps.length - 1)) * 100
       }));
 
-      const speedMultiplier = Math.max(0.1, Math.min(3, stateRef.current.speed));
+      const speedMultiplier = Math.max(0.1, Math.min(20, stateRef.current.speed));
       await delay(500 / speedMultiplier);
 
       // Check if paused
@@ -232,15 +297,30 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
 
   // Get element color based on state
   const getElementColor = (index: number) => {
-    const { currentIndex, found, left, right, mid } = currentStepData;
+    const { currentIndex, found, left, right, mid, isJumpPoint } = currentStepData;
 
     if (found && currentIndex === index) return 'bg-green-500';
-    if (currentIndex === index) return 'bg-yellow-500';
     
+    // Binary Search: Check mid FIRST before currentIndex (vì currentIndex === mid)
     if (algorithm === 'binary-search') {
       if (mid === index) return 'bg-purple-500';
       if (left !== undefined && right !== undefined) {
-        if (index < left || index > right) return 'bg-gray-300';
+        if (index < left || index > right) return 'bg-gray-400';
+      }
+    }
+    
+    // Jump point visualization for Jump Search
+    if (algorithm === 'jump-search' && isJumpPoint && currentIndex === index) {
+      return 'bg-white border-2 border-blue-400';
+    }
+    
+    if (currentIndex === index) return 'bg-yellow-500';
+    
+    // Jump Search: only show eliminated (full gray) for elements before and including previous jump point
+    if (algorithm === 'jump-search' && state.currentStep > 0) {
+      if (left !== undefined) {
+        // Gray out elements up to and including the previous jump point (left)
+        if (index <= left) return 'bg-gray-400';
       }
     }
     
@@ -249,16 +329,29 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
 
   // Get element text color
   const getElementTextColor = (index: number) => {
-    const { currentIndex, found } = currentStepData;
+    const { currentIndex, found, left, isJumpPoint } = currentStepData;
+    
+    // Jump point with white background needs dark text
+    if (algorithm === 'jump-search' && isJumpPoint && currentIndex === index && !found) {
+      return 'text-blue-600 font-bold';
+    }
     
     if ((found && currentIndex === index) || currentIndex === index) {
       return 'text-white';
     }
     
+    // Hide text for eliminated elements (same color as background)
     if (algorithm === 'binary-search') {
       const { left, right } = currentStepData;
       if (left !== undefined && right !== undefined && (index < left || index > right)) {
-        return 'text-gray-500';
+        return 'text-gray-400';
+      }
+    }
+    
+    // Jump Search: hide text for elements up to and including previous jump point (eliminated)
+    if (algorithm === 'jump-search' && state.currentStep > 0) {
+      if (left !== undefined && index <= left) {
+        return 'text-gray-400';
       }
     }
     
@@ -304,9 +397,31 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
             <span>Mảng Mới</span>
           </button>
 
+          <ArrayInput
+            onArrayChange={handleCustomArray}
+            disabled={state.isPlaying}
+            minValue={1}
+            maxValue={100}
+            maxLength={50}
+            placeholder="Ví dụ: 12, 23, 45, 56, 78"
+          />
+
+          {SEARCHING_TEST_CASES[algorithm] && (
+            <TestCaseSelector
+              onSelectTestCase={handleTestCase}
+              disabled={state.isPlaying}
+              testCases={{
+                best: SEARCHING_TEST_CASES[algorithm].best,
+                average: SEARCHING_TEST_CASES[algorithm].average,
+                worst: SEARCHING_TEST_CASES[algorithm].worst
+              }}
+            />
+          )}
+
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary flex items-center space-x-2"
+            title="Cài đặt"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -318,13 +433,13 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           <input
             type="range"
             min="0.25"
-            max="3"
+            max="20"
             step="0.25"
             value={state.speed}
             onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}
-            className="w-20"
+            className="w-24"
           />
-          <span className="text-sm text-gray-600 w-8">{state.speed}x</span>
+          <span className="text-sm text-gray-600 w-12">{state.speed}x</span>
         </div>
       </div>
 
@@ -452,12 +567,22 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           ))}
         </div>
 
-        {/* Binary Search Range Indicator */}
-        {algorithm === 'binary-search' && currentStepData.left !== undefined && currentStepData.right !== undefined && (
+        {/* Search Range Indicator */}
+        {(algorithm === 'binary-search' || algorithm === 'jump-search' || algorithm === 'interpolation-search') && 
+         currentStepData.left !== undefined && currentStepData.right !== undefined && (
           <div className="mt-4 text-center text-sm text-gray-600">
             <div className="flex items-center justify-center space-x-4">
               <span>Left: {currentStepData.left}</span>
-              <span className="font-bold">Mid: {currentStepData.mid}</span>
+              {algorithm === 'jump-search' && currentStepData.currentIndex >= 0 && (
+                <span className="font-bold text-blue-600">
+                  Jump Point: {currentStepData.currentIndex}
+                </span>
+              )}
+              {currentStepData.mid !== undefined && algorithm !== 'jump-search' && (
+                <span className="font-bold">
+                  {algorithm === 'interpolation-search' ? 'Pos' : 'Mid'}: {currentStepData.mid}
+                </span>
+              )}
               <span>Right: {currentStepData.right}</span>
             </div>
           </div>
@@ -467,61 +592,117 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
         <div className="flex flex-wrap justify-center space-x-4 mt-4 text-xs">
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
-            <span>Unsearched</span>
+            <span>Chưa tìm</span>
           </div>
+          {algorithm === 'jump-search' && (
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-white border-2 border-blue-400 rounded"></div>
+              <span>Điểm nhảy</span>
+            </div>
+          )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span>Current</span>
+            <span>Đang xét</span>
           </div>
           {algorithm === 'binary-search' && (
             <>
               <div className="flex items-center space-x-1">
                 <div className="w-3 h-3 bg-purple-500 rounded"></div>
-                <span>Middle</span>
+                <span>Điểm giữa</span>
               </div>
               <div className="flex items-center space-x-1">
                 <div className="w-3 h-3 bg-gray-300 rounded"></div>
-                <span>Eliminated</span>
+                <span>Đã loại</span>
               </div>
             </>
           )}
+          {(algorithm === 'jump-search') && (
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-gray-400 rounded"></div>
+              <span>Đã loại</span>
+            </div>
+          )}
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span>Found</span>
+            <span>Đã tìm thấy</span>
           </div>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 border-2 border-yellow-400 bg-transparent rounded"></div>
-            <span>Target</span>
+            <span>Mục tiêu</span>
           </div>
         </div>
       </div>
 
       {/* Algorithm Status */}
-      <div className="mt-4 text-center text-sm text-gray-600">
+      <div className="mt-4 text-center">
+        {/* Step Explanation */}
+        {steps.length > 0 && currentStepData.explanation && (
+          <div className="mb-2 p-3 bg-blue-50 rounded-lg">
+            <div className="text-sm font-medium text-blue-800">
+              {currentStepData.explanation}
+            </div>
+          </div>
+        )}
+        
         {state.isPlaying && !state.isPaused && (
-          <span className="text-blue-600">● Searching...</span>
+          <div className="text-blue-600 text-sm">● Searching...</div>
         )}
         {state.isPaused && (
-          <span className="text-yellow-600">⏸ Paused</span>
+          <div className="text-yellow-600 text-sm">⏸ Paused</div>
         )}
         {!state.isPlaying && currentStepData.found && (
-          <span className="text-green-600"> Target found at position {currentStepData.currentIndex}!</span>
+          <div className="text-green-600 text-sm"> Target found at position {currentStepData.currentIndex}!</div>
         )}
         {!state.isPlaying && state.currentStep === steps.length - 1 && !currentStepData.found && (
-          <span className="text-red-600">✗ Target not found in array</span>
+          <div className="text-red-600 text-sm">✗ Target not found in array</div>
         )}
-        {!state.isPlaying && state.currentStep === 0 && (
-          <span className="text-gray-500">Ready to search</span>
+        {!state.isPlaying && state.currentStep === 0 && steps.length === 0 && (
+          <div className="text-gray-500 text-sm">Ready to search</div>
         )}
       </div>
+
+      {/* Statistics Panel */}
+      {steps.length > 0 && currentStepData.statistics && (
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+            <div className="text-xs text-blue-600 font-medium mb-1">Thời gian</div>
+            <div className="text-2xl font-bold text-blue-900">
+              {currentStepData.statistics.executionTime?.toFixed(2) || 0}
+            </div>
+            <div className="text-xs text-blue-600">ms</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+            <div className="text-xs text-purple-600 font-medium mb-1">So sánh</div>
+            <div className="text-2xl font-bold text-purple-900">
+              {currentStepData.statistics.comparisons}
+            </div>
+            <div className="text-xs text-purple-600">lần</div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+            <div className="text-xs text-green-600 font-medium mb-1">Bộ nhớ phụ</div>
+            <div className="text-2xl font-bold text-green-900">
+              {currentStepData.statistics.auxiliarySpace}
+            </div>
+            <div className="text-xs text-green-600">phần tử</div>
+          </div>
+        </div>
+      )}
 
       {/* Algorithm Info */}
       <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
         {algorithm === 'linear-search' && (
-          <p>Linear Search checks each element sequentially until the target is found or the end is reached.</p>
+          <p>Linear Search kiểm tra từng phần tử tuần tự cho đến khi tìm thấy mục tiêu hoặc đến cuối mảng.</p>
         )}
         {algorithm === 'binary-search' && (
-          <p>Binary Search divides the sorted array in half at each step, eliminating half of the remaining elements.</p>
+          <p>Binary Search chia mảng đã sắp xếp làm đôi ở mỗi bước, loại bỏ một nửa số phần tử còn lại.</p>
+        )}
+        {algorithm === 'jump-search' && (
+          <p>Jump Search tiến tới theo bước cố định (√n), sau đó thực hiện tìm kiếm tuyến tính trong khối đã xác định. Hoạt động trên mảng đã sắp xếp.</p>
+        )}
+        {algorithm === 'interpolation-search' && (
+          <p>Interpolation Search ước tính vị trí của mục tiêu bằng công thức nội suy. Hiệu quả nhất trên mảng đã sắp xếp phân bố đều.</p>
         )}
       </div>
     </div>

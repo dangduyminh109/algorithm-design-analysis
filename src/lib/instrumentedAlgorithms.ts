@@ -9,7 +9,7 @@ import {
   SearchingStepWithCounters,
   ExtremeStepWithCounters 
 } from '@/types/instrumentation';
-import { createCounters, cloneCounters } from './instrumentation';
+import { createCounters, cloneCounters, estimateMemoryUsage } from './instrumentation';
 
 // ============================================================================
 // SORTING ALGORITHMS WITH INSTRUMENTATION
@@ -30,6 +30,9 @@ export function bubbleSortInstrumented(
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
   const n = array.length;
+
+  // Bubble Sort: O(1) space - only needs a few variables (i, j, swapped)
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   for (let i = 0; i < n - 1; i++) {
     counters.iterations++;
@@ -90,6 +93,9 @@ export function selectionSortInstrumented(
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
   const n = array.length;
+
+  // Selection Sort: O(1) space - only needs variables (i, j, minIdx)
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   for (let i = 0; i < n - 1; i++) {
     counters.iterations++;
@@ -154,6 +160,9 @@ export function insertionSortInstrumented(
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
   const n = array.length;
+
+  // Insertion Sort: O(1) space - only needs variables (i, j, key)
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   for (let i = 1; i < n; i++) {
     counters.iterations++;
@@ -220,6 +229,12 @@ export function quickSortInstrumented(
   const array = [...arr];
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
+  const n = array.length;
+
+  // Quick Sort: O(log n) space - recursion stack depth
+  // Average case: log2(n) recursion depth
+  const avgRecursionDepth = Math.ceil(Math.log2(n));
+  counters.memoryUsage = estimateMemoryUsage(n, 0, avgRecursionDepth, 4);
 
   function partition(low: number, high: number): number {
     counters.recursiveCalls++;
@@ -299,6 +314,12 @@ export function mergeSortInstrumented(
   const array = [...arr];
   const counters = createCounters();
   const steps: SortingStepWithCounters[] = [];
+  const n = array.length;
+
+  // Merge Sort: O(n) space - needs auxiliary arrays for merging
+  // Plus O(log n) recursion stack
+  const recursionDepth = Math.ceil(Math.log2(n));
+  counters.memoryUsage = estimateMemoryUsage(n, 1, recursionDepth, 6);
 
   function merge(left: number, mid: number, right: number): void {
     const n1 = mid - left + 1;
@@ -400,6 +421,10 @@ export function linearSearchInstrumented(
 } {
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Linear Search: O(1) space - only needs index variable
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 2);
 
   for (let i = 0; i < arr.length; i++) {
     counters.iterations++;
@@ -448,8 +473,12 @@ export function binarySearchInstrumented(
 } {
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
+  const n = arr.length;
   let left = 0;
   let right = arr.length - 1;
+
+  // Binary Search: O(1) space - only needs left, right, mid variables
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   while (left <= right) {
     counters.iterations++;
@@ -519,6 +548,10 @@ export function linearMinMaxInstrumented(
 } {
   const counters = createCounters();
   const steps: ExtremeStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Linear Min/Max: O(1) space - only needs min, max, indexes, loop counter
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 5);
 
   if (arr.length === 0) {
     return {
@@ -576,7 +609,7 @@ export function linearMinMaxInstrumented(
 }
 
 /**
- * Tournament Method with instrumentation
+ * Tournament Method with instrumentation (Divide & Conquer approach)
  */
 export function tournamentMethodInstrumented(
   arr: number[],
@@ -591,6 +624,11 @@ export function tournamentMethodInstrumented(
 } {
   const counters = createCounters();
   const steps: ExtremeStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Tournament Method: O(log n) space - recursion stack
+  const recursionDepth = Math.ceil(Math.log2(n || 1));
+  counters.memoryUsage = estimateMemoryUsage(n, 0, recursionDepth, 8);
 
   if (arr.length === 0) {
     return {
@@ -603,80 +641,92 @@ export function tournamentMethodInstrumented(
     };
   }
 
-  let min = arr[0];
-  let max = arr[0];
-  let minIndex = 0;
-  let maxIndex = 0;
-  counters.arrayAccesses += 2;
-
-  // Process pairs
-  for (let i = 1; i < arr.length; i += 2) {
+  function tournamentHelper(start: number, end: number): { 
+    min: number; 
+    max: number; 
+    minIndex: number; 
+    maxIndex: number 
+  } {
     counters.iterations++;
-    
-    if (i + 1 < arr.length) {
+
+    // Base case: one element
+    if (start === end) {
+      counters.arrayAccesses++;
+      counters.assignments += 4;
+
+      if (withSteps) {
+        steps.push({
+          array: [...arr],
+          currentMin: arr[start],
+          currentMax: arr[start],
+          currentIndex: start,
+          minIndex: start,
+          maxIndex: start,
+          comparing: [start],
+          counters: cloneCounters(counters)
+        });
+      }
+
+      return { min: arr[start], max: arr[start], minIndex: start, maxIndex: start };
+    }
+
+    // Base case: two elements - chỉ cần 1 so sánh để tìm cả min và max
+    if (end - start === 1) {
       counters.comparisons++;
       counters.arrayAccesses += 2;
 
-      let localMin, localMax, localMinIdx, localMaxIdx;
-
-      if (arr[i] < arr[i + 1]) {
-        localMin = arr[i];
-        localMax = arr[i + 1];
-        localMinIdx = i;
-        localMaxIdx = i + 1;
-      } else {
-        localMin = arr[i + 1];
-        localMax = arr[i];
-        localMinIdx = i + 1;
-        localMaxIdx = i;
-      }
+      const min = Math.min(arr[start], arr[end]);
+      const max = Math.max(arr[start], arr[end]);
+      const minIndex = arr[start] <= arr[end] ? start : end;
+      const maxIndex = arr[start] >= arr[end] ? start : end;
+      counters.assignments += 4;
 
       if (withSteps) {
         steps.push({
           array: [...arr],
           currentMin: min,
           currentMax: max,
-          currentIndex: i,
+          currentIndex: start,
           minIndex,
           maxIndex,
-          comparing: [i, i + 1],
+          comparing: [start, end],
           counters: cloneCounters(counters)
         });
       }
 
-      counters.comparisons++;
-      if (localMin < min) {
-        counters.assignments += 2;
-        min = localMin;
-        minIndex = localMinIdx;
-      }
-
-      counters.comparisons++;
-      if (localMax > max) {
-        counters.assignments += 2;
-        max = localMax;
-        maxIndex = localMaxIdx;
-      }
-    } else {
-      // Handle odd element
-      counters.arrayAccesses++;
-      counters.comparisons += 2;
-
-      if (arr[i] < min) {
-        counters.assignments += 2;
-        min = arr[i];
-        minIndex = i;
-      }
-
-      if (arr[i] > max) {
-        counters.assignments += 2;
-        max = arr[i];
-        maxIndex = i;
-      }
+      return { min, max, minIndex, maxIndex };
     }
+
+    // Divide and conquer
+    const mid = Math.floor((start + end) / 2);
+    const left = tournamentHelper(start, mid);
+    const right = tournamentHelper(mid + 1, end);
+
+    counters.comparisons += 2; // Compare min and max from both halves
+    const finalMin = Math.min(left.min, right.min);
+    const finalMax = Math.max(left.max, right.max);
+    const finalMinIndex = left.min <= right.min ? left.minIndex : right.minIndex;
+    const finalMaxIndex = left.max >= right.max ? left.maxIndex : right.maxIndex;
+    counters.assignments += 4;
+
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        currentMin: finalMin,
+        currentMax: finalMax,
+        currentIndex: mid,
+        minIndex: finalMinIndex,
+        maxIndex: finalMaxIndex,
+        comparing: [left.minIndex, left.maxIndex, right.minIndex, right.maxIndex],
+        counters: cloneCounters(counters)
+      });
+    }
+
+    return { min: finalMin, max: finalMax, minIndex: finalMinIndex, maxIndex: finalMaxIndex };
   }
 
-  return { min, max, minIndex, maxIndex, counters, steps: withSteps ? steps : undefined };
+  const result = tournamentHelper(0, arr.length - 1);
+  return { ...result, counters, steps: withSteps ? steps : undefined };
 }
 
 /**
@@ -695,11 +745,29 @@ export function jumpSearchInstrumented(
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
   const n = arr.length;
-  const step = Math.floor(Math.sqrt(n));
+  const jumpSize = Math.floor(Math.sqrt(n));
   let prev = 0;
+  let curr = jumpSize;
+
+  // Jump Search: O(1) space - needs prev, curr, jumpSize, i variables
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 5);
+
+  // Initial state: highlight starting position (index 0)
+  if (withSteps) {
+    steps.push({
+      array: [...arr],
+      target,
+      currentIndex: 0,
+      found: false,
+      left: 0,
+      right: 0,
+      isJumpPoint: false,
+      counters: cloneCounters(counters)
+    });
+  }
 
   // Jump through blocks
-  while (arr[Math.min(step, n) - 1] < target) {
+  while (curr < n && arr[curr] < target) {
     counters.iterations++;
     counters.comparisons++;
     counters.arrayAccesses++;
@@ -708,22 +776,40 @@ export function jumpSearchInstrumented(
       steps.push({
         array: [...arr],
         target,
-        currentIndex: Math.min(step, n) - 1,
+        currentIndex: curr,
         found: false,
         left: prev,
-        right: Math.min(step, n) - 1,
+        right: curr,
+        isJumpPoint: true,  // Mark as jump point
         counters: cloneCounters(counters)
       });
     }
 
-    prev = step;
-    if (prev >= n) {
-      return { found: false, index: -1, counters, steps: withSteps ? steps : undefined };
+    prev = curr;
+    curr += jumpSize;
+  }
+
+  // Check the last block boundary if within array bounds
+  if (curr < n) {
+    counters.comparisons++;
+    counters.arrayAccesses++;
+    
+    if (withSteps) {
+      steps.push({
+        array: [...arr],
+        target,
+        currentIndex: curr,
+        found: false,
+        left: prev,
+        right: curr,
+        isJumpPoint: true,  // Mark as jump point
+        counters: cloneCounters(counters)
+      });
     }
   }
 
   // Linear search in the identified block
-  const blockEnd = Math.min(step, n);
+  const blockEnd = Math.min(curr + 1, n);
   for (let i = prev; i < blockEnd; i++) {
     counters.iterations++;
     counters.comparisons++;
@@ -737,6 +823,7 @@ export function jumpSearchInstrumented(
         found: arr[i] === target,
         left: prev,
         right: blockEnd - 1,
+        isJumpPoint: false,  // Not a jump point, linear search
         counters: cloneCounters(counters)
       });
     }
@@ -764,8 +851,12 @@ export function interpolationSearchInstrumented(
 } {
   const counters = createCounters();
   const steps: SearchingStepWithCounters[] = [];
+  const n = arr.length;
   let left = 0;
   let right = arr.length - 1;
+
+  // Interpolation Search: O(1) space - needs left, right, pos variables
+  counters.memoryUsage = estimateMemoryUsage(n, 0, 0, 3);
 
   while (left <= right && target >= arr[left] && target <= arr[right]) {
     counters.iterations++;
@@ -795,10 +886,35 @@ export function interpolationSearchInstrumented(
     }
 
     // Interpolation formula
+    // Check for division by zero (all elements in range are equal)
+    counters.arrayAccesses += 2;
+    counters.comparisons++;
+    
+    if (arr[right] === arr[left]) {
+      // If all elements are equal, check if any equals target
+      counters.comparisons++;
+      counters.arrayAccesses++;
+      if (arr[left] === target) {
+        if (withSteps) {
+          steps.push({
+            array: [...arr],
+            target,
+            currentIndex: left,
+            found: true,
+            left,
+            right,
+            counters: cloneCounters(counters)
+          });
+        }
+        return { found: true, index: left, counters, steps: withSteps ? steps : undefined };
+      }
+      break;
+    }
+    
     const pos = left + Math.floor(
       ((right - left) / (arr[right] - arr[left])) * (target - arr[left])
     );
-    counters.arrayAccesses += 2;
+    counters.arrayAccesses -= 2; // Already counted above
 
     if (withSteps) {
       steps.push({
@@ -861,6 +977,11 @@ export function divideConquerMinMaxInstrumented(
 } {
   const counters = createCounters();
   const steps: ExtremeStepWithCounters[] = [];
+  const n = arr.length;
+
+  // Divide & Conquer Min/Max: O(log n) space - recursion stack
+  const recursionDepth = Math.ceil(Math.log2(n));
+  counters.memoryUsage = estimateMemoryUsage(n, 0, recursionDepth, 8);
 
   if (arr.length === 0) {
     return {

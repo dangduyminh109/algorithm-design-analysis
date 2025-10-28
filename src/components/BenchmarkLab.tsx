@@ -142,7 +142,7 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
           Benchmark Lab
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-gray-600">
           So sánh hiệu suất của các thuật toán với dữ liệu thực tế
         </p>
       </motion.div>
@@ -155,9 +155,9 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
       >
         {/* Category Selection - Compact Box */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" />
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+          <h2 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-blue-600" />
             Chọn Danh Mục
           </h2>
           <div className="grid grid-cols-3 gap-2">
@@ -168,10 +168,10 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
                   setSelectedCategory(category);
                   setSelectedAlgorithms([]);
                 }}
-                className={`py-3 rounded-lg font-medium text-xs transition-all flex items-center justify-center ${
+                className={`py-3 rounded-lg font-semibold text-xs transition-all flex items-center justify-center ${
                   selectedCategory === category
                     ? 'bg-blue-600 text-white shadow-lg scale-105'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
                 }`}
               >
                 <span className="text-center leading-tight">
@@ -183,9 +183,9 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
         </div>
 
         {/* Input Sizes - Compact */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+          <h2 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-cyan-600" />
             Kích Thước Đầu Vào
           </h2>
           <div className="space-y-2">
@@ -193,12 +193,12 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
               {inputSizes.map((size) => (
                 <div
                   key={size}
-                  className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 rounded text-xs flex items-center gap-1"
+                  className="px-2 py-1 bg-blue-100 border border-blue-200 rounded text-xs flex items-center gap-1"
                 >
-                  <span className="font-medium">{size.toLocaleString()}</span>
+                  <span className="font-semibold text-gray-800">{size.toLocaleString()}</span>
                   <button
                     onClick={() => removeSize(size)}
-                    className="text-red-600 hover:text-red-700 text-sm"
+                    className="text-red-600 hover:text-red-700 text-sm font-bold"
                   >
                     ×
                   </button>
@@ -212,13 +212,13 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
                 onChange={(e) => setCustomSize(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addCustomSize()}
                 placeholder="Thêm (1-100000)"
-                className="flex-1 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700"
+                className="flex-1 px-2 py-1 text-xs border-2 border-gray-300 rounded bg-white text-gray-800 font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                 min="1"
                 max="100000"
               />
               <button
                 onClick={addCustomSize}
-                className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-bold"
               >
                 +
               </button>
@@ -227,8 +227,8 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
         </div>
 
         {/* Runs Configuration - Compact */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="text-sm font-semibold mb-3">Số Lần Chạy</h2>
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+          <h2 className="text-sm font-bold text-gray-800 mb-3">Số Lần Chạy</h2>
           <div className="flex items-center gap-3">
             <input
               type="range"
@@ -237,12 +237,13 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
               value={runsPerConfig}
               onChange={(e) => setRunsPerConfig(parseInt(e.target.value))}
               className="flex-1"
+              aria-label="Chọn số lần chạy"
             />
-            <span className="text-2xl font-bold text-blue-600 w-10 text-center">
+            <span className="text-2xl font-bold text-blue-700 w-10 text-center">
               {runsPerConfig}
             </span>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-xs text-gray-700 font-medium mt-2">
             Chạy {runsPerConfig}× mỗi cấu hình
           </p>
         </div>
@@ -256,14 +257,14 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
         className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
         {/* Algorithm Selection */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold flex items-center gap-2">
-              <Zap className="w-4 h-4" />
+            <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-yellow-600" />
               Chọn Thuật Toán ({selectedAlgorithms.length})
             </h2>
             {selectedAlgorithms.length > 5 && (
-              <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded-full">
+              <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded-full font-semibold">
                 Nhiều
               </span>
             )}
@@ -275,19 +276,19 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
                 onClick={() => toggleAlgorithm(algo.id)}
                 className={`p-3 rounded-lg border-2 transition-all text-left ${
                   selectedAlgorithms.includes(algo.id)
-                    ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? 'border-blue-600 bg-blue-50 shadow-md'
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-sm">{algo.name}</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <h3 className="font-bold text-sm text-gray-800">{algo.name}</h3>
+                    <p className="text-xs text-gray-600 font-medium">
                       Avg: {algo.timeComplexity.average}
                     </p>
                   </div>
                   {selectedAlgorithms.includes(algo.id) && (
-                    <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                    <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 ml-2 shadow-sm">
                       <span className="text-white text-xs">✓</span>
                     </div>
                   )}
@@ -298,9 +299,9 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
         </div>
 
         {/* Data Distribution */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <Settings className="w-4 h-4" />
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+          <h2 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <Settings className="w-4 h-4 text-green-600" />
             Phân Phối Dữ Liệu
           </h2>
           <div className="grid grid-cols-1 gap-2">
@@ -310,19 +311,19 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
                 onClick={() => toggleDistribution(dist.value)}
                 className={`p-3 rounded-lg border-2 transition-all text-left ${
                   distributions.includes(dist.value)
-                    ? 'border-cyan-600 bg-cyan-50 dark:bg-cyan-900/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? 'border-cyan-600 bg-cyan-50 shadow-md'
+                    : 'border-gray-200 hover:border-cyan-300 hover:bg-gray-50'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-sm">{dist.label}</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <h3 className="font-bold text-sm text-gray-800">{dist.label}</h3>
+                    <p className="text-xs text-gray-600 font-medium">
                       {dist.description}
                     </p>
                   </div>
                   {distributions.includes(dist.value) && (
-                    <div className="w-5 h-5 bg-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                    <div className="w-5 h-5 bg-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 ml-2 shadow-sm">
                       <span className="text-white text-xs">✓</span>
                     </div>
                   )}
@@ -341,39 +342,39 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
       >
         {/* Benchmark Summary Stats - Compact */}
-        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg p-4 md:col-span-2">
-          <h3 className="text-sm font-semibold mb-3">Tổng Quan Benchmark</h3>
+        <div className="bg-gradient-to-r from-blue-100 to-cyan-100 border border-blue-200 rounded-lg p-4 md:col-span-2 shadow-md">
+          <h3 className="text-sm font-bold text-gray-800 mb-3">Tổng Quan Benchmark</h3>
           <div className="grid grid-cols-4 gap-3 text-center">
             <div>
-              <div className="text-2xl font-bold text-blue-600">{selectedAlgorithms.length}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">Thuật toán</div>
+              <div className="text-2xl font-bold text-blue-700">{selectedAlgorithms.length}</div>
+              <div className="text-xs text-gray-700 font-semibold">Thuật toán</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-cyan-600">{inputSizes.length}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">Kích thước</div>
+              <div className="text-2xl font-bold text-cyan-700">{inputSizes.length}</div>
+              <div className="text-xs text-gray-700 font-semibold">Kích thước</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-green-600">{distributions.length}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">Phân phối</div>
+              <div className="text-2xl font-bold text-green-700">{distributions.length}</div>
+              <div className="text-xs text-gray-700 font-semibold">Phân phối</div>
             </div>
             <div>
               <div className={`text-2xl font-bold ${
-                calculateTotalBenchmarks() > 200 ? 'text-red-600' : 
-                calculateTotalBenchmarks() > 100 ? 'text-yellow-600' : 
-                'text-orange-600'
+                calculateTotalBenchmarks() > 200 ? 'text-red-700' : 
+                calculateTotalBenchmarks() > 100 ? 'text-yellow-700' : 
+                'text-orange-700'
               }`}>
                 {calculateTotalBenchmarks()}
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">Tổng test</div>
+              <div className="text-xs text-gray-700 font-semibold">Tổng test</div>
             </div>
           </div>
           {selectedAlgorithms.length > 0 && (
-            <div className={`mt-3 p-2 rounded-lg text-center text-xs ${
+            <div className={`mt-3 p-2 rounded-lg text-center text-xs font-semibold ${
               calculateTotalBenchmarks() > 200 
-                ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' 
+                ? 'bg-red-200 text-red-800 border border-red-300' 
                 : calculateTotalBenchmarks() > 100
-                ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-                : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                ? 'bg-yellow-200 text-yellow-800 border border-yellow-300'
+                : 'bg-green-200 text-green-800 border border-green-300'
             }`}>
               {calculateTotalBenchmarks() > 200 ? (
                 <>⚠️ Quá nhiều! Giảm số lượng để tránh treo trình duyệt</>
@@ -391,10 +392,10 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
           <button
             onClick={handleRunBenchmark}
             disabled={isRunning || selectedAlgorithms.length === 0}
-            className={`flex-1 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
+            className={`flex-1 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md ${
               isRunning || selectedAlgorithms.length === 0
-                ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:shadow-lg hover:scale-[1.02]'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-400'
+                : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:shadow-lg hover:scale-[1.02] border-2 border-blue-400'
             }`}
           >
             {isRunning ? (
@@ -411,7 +412,7 @@ export default function BenchmarkLab({ onRunBenchmark }: BenchmarkLabProps) {
           </button>
           <button
             onClick={handleReset}
-            className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+            className="flex-1 bg-gray-200 border-2 border-gray-300 rounded-lg font-bold text-sm text-gray-700 flex items-center justify-center gap-2 hover:bg-gray-300 hover:border-gray-400 transition-all shadow-md"
           >
             <RotateCcw className="w-4 h-4" />
             Đặt Lại
