@@ -49,7 +49,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
     // Stop any ongoing animation
     animationRef.current = false;
     
-    const newArray = generateUniqueRandomArray(arraySize, 10, 90);
+    const newArray = generateUniqueRandomArray(arraySize, 1, 100);
     setArray(newArray);
     setSteps([]);
     setState(prev => ({
@@ -303,8 +303,8 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
           <ArrayInput
             onArrayChange={handleCustomArray}
             disabled={state.isPlaying}
-            minValue={10}
-            maxValue={90}
+            minValue={1}
+            maxValue={100}
             maxLength={30}
             placeholder="Ví dụ: 15, 42, 78, 23, 56"
           />

@@ -41,7 +41,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     // Stop any ongoing animation
     animationRef.current = false;
     
-    const newArray = generateUniqueRandomArray(arraySize, 10, 100).sort((a, b) => a - b); // Keep sorted for binary search
+    const newArray = generateUniqueRandomArray(arraySize, 1, 100).sort((a, b) => a - b); // Keep sorted for binary search
     setArray(newArray);
     const randomTarget = newArray[Math.floor(Math.random() * newArray.length)];
     setTarget(randomTarget);
@@ -398,7 +398,7 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
           <ArrayInput
             onArrayChange={handleCustomArray}
             disabled={state.isPlaying}
-            minValue={10}
+            minValue={1}
             maxValue={100}
             maxLength={50}
             placeholder="Ví dụ: 12, 23, 45, 56, 78"

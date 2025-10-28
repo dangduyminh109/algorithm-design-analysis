@@ -51,7 +51,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     // Stop any ongoing animation
     animationRef.current = false;
     
-    const newArray = generateUniqueRandomArray(arraySize, 5, 95);
+    const newArray = generateUniqueRandomArray(arraySize, 1, 100);
     setArray(newArray);
     setSteps([]);
     setState(prev => ({
@@ -305,8 +305,8 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
           <ArrayInput
             onArrayChange={handleCustomArray}
             disabled={state.isPlaying}
-            minValue={5}
-            maxValue={95}
+            minValue={1}
+            maxValue={100}
             maxLength={100}
             placeholder="Ví dụ: 45, 23, 78, 12, 56"
           />
