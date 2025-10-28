@@ -450,6 +450,16 @@ export class SearchingAlgorithms {
     const startTime = performance.now();
     let comparisons = 0;
 
+    // Initial state
+    steps.push({
+      array: [...arr],
+      target,
+      currentIndex: -1,
+      found: false,
+      explanation: `Bắt đầu tìm kiếm tuyến tính giá trị ${target}`,
+      statistics: { comparisons: 0, auxiliarySpace: 0, executionTime: 0 }
+    });
+
     for (let i = 0; i < arr.length; i++) {
       comparisons++;
       const found = arr[i] === target;
@@ -476,6 +486,18 @@ export class SearchingAlgorithms {
     let comparisons = 0;
     let left = 0;
     let right = arr.length - 1;
+
+    // Initial state
+    steps.push({
+      array: [...arr],
+      target,
+      currentIndex: -1,
+      found: false,
+      left: 0,
+      right: arr.length - 1,
+      explanation: `Bắt đầu tìm kiếm nhị phân giá trị ${target}`,
+      statistics: { comparisons: 0, auxiliarySpace: 0, executionTime: 0 }
+    });
 
     while (left <= right) {
       const mid = Math.floor((left + right) / 2);
@@ -619,6 +641,18 @@ export class SearchingAlgorithms {
     let comparisons = 0;
     let left = 0;
     let right = arr.length - 1;
+
+    // Initial state
+    steps.push({
+      array: [...arr],
+      target,
+      currentIndex: -1,
+      found: false,
+      left: 0,
+      right: arr.length - 1,
+      explanation: `Bắt đầu tìm kiếm nội suy giá trị ${target}`,
+      statistics: { comparisons: 0, auxiliarySpace: 0, executionTime: 0 }
+    });
 
     while (left <= right && target >= arr[left] && target <= arr[right]) {
       if (left === right) {
@@ -802,6 +836,19 @@ export class ExtremeValueAlgorithms {
     
     if (arr.length === 0) return steps;
 
+    // Initial state
+    steps.push({
+      array: [...arr],
+      currentMin: arr[0],
+      currentMax: arr[0],
+      currentIndex: -1,
+      minIndex: -1,
+      maxIndex: -1,
+      comparing: [],
+      explanation: 'Bắt đầu Tournament Method - chia để trị',
+      statistics: { comparisons: 0, auxiliarySpace: 0, executionTime: 0 }
+    });
+
     function tournamentHelper(start: number, end: number): { min: number; max: number; minIndex: number; maxIndex: number } {
       if (start === end) {
         steps.push({
@@ -884,6 +931,19 @@ export class ExtremeValueAlgorithms {
     let comparisons = 0;
     
     if (arr.length === 0) return steps;
+
+    // Initial state
+    steps.push({
+      array: [...arr],
+      currentMin: arr[0],
+      currentMax: arr[0],
+      currentIndex: -1,
+      minIndex: -1,
+      maxIndex: -1,
+      comparing: [],
+      explanation: 'Bắt đầu Divide & Conquer - chia để trị',
+      statistics: { comparisons: 0, auxiliarySpace: 0, executionTime: 0 }
+    });
 
     function dcHelper(start: number, end: number): { min: number; max: number; minIndex: number; maxIndex: number } {
       // Base case: one element
