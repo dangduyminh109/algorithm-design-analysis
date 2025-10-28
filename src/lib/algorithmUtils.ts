@@ -181,8 +181,10 @@ export class SortingAlgorithms {
         statistics: { comparisons, assignments, auxiliarySpace: 1, executionTime: performance.now() - startTime }
       });
 
-      while (j >= 0 && array[j] > key) {
+      while (j >= 0) {
         comparisons++;
+        if (array[j] <= key) break;
+        
         steps.push({
           array: [...array],
           comparing: [j, j + 1],
@@ -209,7 +211,6 @@ export class SortingAlgorithms {
 
         j--;
       }
-      if (j >= 0) comparisons++; // So sánh cuối cùng khi thoát vòng while
       
       array[j + 1] = key;
       assignments++;
@@ -637,6 +638,23 @@ export class SearchingAlgorithms {
       }
 
       // Interpolation formula to estimate position
+      // Check for division by zero (all elements in range are equal)
+      if (arr[right] === arr[left]) {
+        // If all elements are equal, check if any equals target
+        const found = arr[left] === target;
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: left,
+          found,
+          left,
+          right,
+          explanation: found ? `Tìm thấy ${target} (tất cả phần tử bằng nhau)` : `Không tìm thấy ${target}`,
+          statistics: { comparisons, auxiliarySpace: 0, executionTime: performance.now() - startTime }
+        });
+        break;
+      }
+      
       const pos = left + Math.floor(
         ((right - left) / (arr[right] - arr[left])) * (target - arr[left])
       );

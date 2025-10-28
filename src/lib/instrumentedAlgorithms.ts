@@ -886,10 +886,35 @@ export function interpolationSearchInstrumented(
     }
 
     // Interpolation formula
+    // Check for division by zero (all elements in range are equal)
+    counters.arrayAccesses += 2;
+    counters.comparisons++;
+    
+    if (arr[right] === arr[left]) {
+      // If all elements are equal, check if any equals target
+      counters.comparisons++;
+      counters.arrayAccesses++;
+      if (arr[left] === target) {
+        if (withSteps) {
+          steps.push({
+            array: [...arr],
+            target,
+            currentIndex: left,
+            found: true,
+            left,
+            right,
+            counters: cloneCounters(counters)
+          });
+        }
+        return { found: true, index: left, counters, steps: withSteps ? steps : undefined };
+      }
+      break;
+    }
+    
     const pos = left + Math.floor(
       ((right - left) / (arr[right] - arr[left])) * (target - arr[left])
     );
-    counters.arrayAccesses += 2;
+    counters.arrayAccesses -= 2; // Already counted above
 
     if (withSteps) {
       steps.push({

@@ -35,12 +35,19 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
   const [arraySize, setArraySize] = useState(isSlowDevice ? 15 : 20);
   const [showSettings, setShowSettings] = useState(false);
 
+  // Animation control with ref for state access
+  const stateRef = useRef(state);
+  const animationRef = useRef<boolean>(false);
+  
+  // Update ref when state changes
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   // Initialize array
   const initializeArray = useCallback(() => {
     // Stop any ongoing animation
-    if (typeof animationRef !== 'undefined' && animationRef.current) {
-      animationRef.current = false;
-    }
+    animationRef.current = false;
     
     const newArray = generateUniqueRandomArray(arraySize, 10, 90);
     setArray(newArray);
@@ -58,9 +65,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
   // Handle custom array input
   const handleCustomArray = useCallback((newArray: number[]) => {
     // Stop any ongoing animation
-    if (typeof animationRef !== 'undefined' && animationRef.current) {
-      animationRef.current = false;
-    }
+    animationRef.current = false;
     
     setArray(newArray);
     setSteps([]);
@@ -77,9 +82,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
   // Handle test case selection
   const handleTestCase = useCallback((testCaseType: TestCaseType) => {
     // Stop any ongoing animation
-    if (typeof animationRef !== 'undefined' && animationRef.current) {
-      animationRef.current = false;
-    }
+    animationRef.current = false;
 
     const testCases = EXTREME_TEST_CASES[algorithm];
     if (!testCases) return;
@@ -142,15 +145,6 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
       generateSteps();
     }
   }, [generateSteps, array.length]);
-
-  // Animation control with ref for state access
-  const stateRef = useRef(state);
-  const animationRef = useRef<boolean>(false);
-  
-  // Update ref when state changes
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
 
   const animate = useCallback(async () => {
     if (steps.length === 0) return;
