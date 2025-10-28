@@ -130,14 +130,15 @@ export default function BenchmarkResults({
     aggregatedSample: aggregated[0]
   });
 
-  // Get summary statistics
+  // Get summary statistics - synchronized with chart distribution
   const summaryStats = algorithms.map((algo, idx) => {
+    // Use 'filteredData' to sync with selected distribution (same as chart)
     const algoData = filteredData.filter(a => a.algorithmName === algo);
     const totalTime = algoData.reduce((sum, a) => sum + a.avgExecutionTime, 0);
     const totalOps = algoData.reduce((sum, a) => sum + a.totalOperations, 0);
     const totalMemory = algoData.reduce((sum, a) => sum + a.avgMemoryUsage, 0);
-    const avgTime = totalTime / algoData.length;
-    const avgMemory = totalMemory / algoData.length;
+    const avgTime = algoData.length > 0 ? totalTime / algoData.length : 0;
+    const avgMemory = algoData.length > 0 ? totalMemory / algoData.length : 0;
 
     return {
       algorithm: algo,
@@ -441,7 +442,31 @@ export default function BenchmarkResults({
         transition={{ delay: 0.5 }}
         className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
       >
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Thống kê thuật toán</h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+          <div>
+            <h3 className="text-xl font-bold text-gray-800">Thống kê thuật toán</h3>
+            <p className="text-sm text-gray-600">
+              Phân phối: <span className="font-semibold text-blue-600">{selectedDistribution}</span>
+            </p>
+          </div>
+          
+          {/* Distribution selector buttons */}
+          <div className="flex gap-2 flex-wrap">
+            {distributions.map((dist) => (
+              <button
+                key={dist}
+                onClick={() => setSelectedDistribution(dist)}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
+                  selectedDistribution === dist
+                    ? 'bg-blue-600 text-white shadow-md scale-105'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                }`}
+              >
+                {dist}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
