@@ -92,6 +92,8 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     const testCase = testCases[testCaseType];
     const newArray = testCase.generate(arraySize);
     
+    // Update array size to match the actual test case size
+    setArraySize(newArray.length);
     setArray(newArray);
     setSteps([]);
     setState(prev => ({

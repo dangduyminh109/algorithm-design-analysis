@@ -10,9 +10,9 @@ interface TestCaseSelectorProps {
   onSelectTestCase: (type: TestCaseType) => void;
   disabled?: boolean;
   testCases: {
-    best: { name: string; description: string };
-    average: { name: string; description: string };
-    worst: { name: string; description: string };
+    best: { name: string; description: string; generate: (size: number) => number[] };
+    average: { name: string; description: string; generate: (size: number) => number[] };
+    worst: { name: string; description: string; generate: (size: number) => number[] };
   };
 }
 
@@ -87,6 +87,7 @@ export default function TestCaseSelector({
             >
               {testCaseOptions.map((option) => {
                 const caseData = testCases[option.type];
+                const arraySize = caseData.generate(0).length; // Get actual array size
                 return (
                   <button
                     key={option.type}
@@ -98,6 +99,11 @@ export default function TestCaseSelector({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-medium text-gray-900">{option.label}</span>
+                          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                            Kích thước: {arraySize}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between mb-1">
                           <span className="text-xs text-gray-500">{caseData.name}</span>
                         </div>
                         <p className="text-xs text-gray-600 leading-relaxed">

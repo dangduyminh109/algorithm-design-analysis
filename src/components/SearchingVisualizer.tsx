@@ -97,6 +97,8 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     // Get algorithm-specific target
     const newTarget = getAlgorithmSpecificTarget(algorithm, newArray, testCaseType);
     
+    // Update array size to match the actual test case size
+    setArraySize(newArray.length);
     setArray(newArray);
     setTarget(newTarget);
     setTargetInput(newTarget.toString());
