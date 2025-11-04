@@ -225,7 +225,7 @@ export const SEARCHING_TEST_CASES: Record<string, Record<TestCaseType, TestCase>
       name: 'Phần Tử Tại Jump Point',
       description: 'Tìm phần tử ngay tại điểm nhảy - O(1) - Không cần tìm kiếm tuyến tính',
       generate: () => {
-        // Mảng 16 phần tử (jump size = 4) - target tại jump point (20)
+        // Mảng 16 phần tử (jump size = 4) - target tại jump point index 4 (25)
         return [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80];
       }
     },
@@ -421,7 +421,7 @@ export function getAlgorithmSpecificTarget(
     case 'jump-search':
       // Jump Search với mảng cố định 16 phần tử, jump size = 4
       // [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]
-      if (testCaseType === 'best') return 20; // Tại jump point (index 3) - O(1)
+      if (testCaseType === 'best') return 25; // Tại jump point (index 4) - O(1)
       if (testCaseType === 'average') return 47; // Trong block - O(√n)
       return 80; // Cuối block - O(√n)
 
