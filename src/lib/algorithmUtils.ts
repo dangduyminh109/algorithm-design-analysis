@@ -500,7 +500,8 @@ export class SearchingAlgorithms {
     });
 
     while (left <= right) {
-      const mid = Math.floor((left + right) / 2);
+      // Use upper-mid to align with ⌈log₂(n)⌉ for worst case
+      const mid = Math.floor((left + right + 1) / 2);
       comparisons++;
       const found = arr[mid] === target;
       

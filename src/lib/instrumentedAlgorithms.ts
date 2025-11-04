@@ -482,7 +482,9 @@ export function binarySearchInstrumented(
 
   while (left <= right) {
     counters.iterations++;
-    const mid = Math.floor((left + right) / 2);
+    // Use upper-mid to align with ⌈log₂(n)⌉ for worst case
+    const mid = Math.floor((left + right + 1) / 2);
+    // Conceptual counting: 1 comparison per probe (Big O style)
     counters.comparisons++;
     counters.arrayAccesses++;
 
@@ -515,9 +517,8 @@ export function binarySearchInstrumented(
       return { found: true, index: mid, counters, steps: withSteps ? steps : undefined };
     }
 
-    counters.comparisons++;
+    // Direction decision doesn't add another conceptual comparison
     counters.arrayAccesses++;
-
     if (arr[mid] < target) {
       left = mid + 1;
     } else {
@@ -860,61 +861,57 @@ export function interpolationSearchInstrumented(
 
   while (left <= right && target >= arr[left] && target <= arr[right]) {
     counters.iterations++;
-    counters.comparisons += 2; // Check range boundaries
-    counters.arrayAccesses += 2;
+    // Conceptual counting: count 1 comparison per probe at pos
+    // Boundary checks are not counted as comparisons (Big O style)
 
     if (left === right) {
+      // Single element left: one probe
       counters.comparisons++;
       counters.arrayAccesses++;
-      
+      const found = arr[left] === target;
+
       if (withSteps) {
         steps.push({
           array: [...arr],
           target,
           currentIndex: left,
-          found: arr[left] === target,
+          found,
           left,
           right,
           counters: cloneCounters(counters)
         });
       }
 
-      if (arr[left] === target) {
+      if (found) {
         return { found: true, index: left, counters, steps: withSteps ? steps : undefined };
       }
       break;
     }
 
     // Interpolation formula
-    // Check for division by zero (all elements in range are equal)
-    counters.arrayAccesses += 2;
-    counters.comparisons++;
-    
+    // If denominator becomes zero, fall back to left probe once
     if (arr[right] === arr[left]) {
-      // If all elements are equal, check if any equals target
       counters.comparisons++;
       counters.arrayAccesses++;
-      if (arr[left] === target) {
-        if (withSteps) {
-          steps.push({
-            array: [...arr],
-            target,
-            currentIndex: left,
-            found: true,
-            left,
-            right,
-            counters: cloneCounters(counters)
-          });
-        }
-        return { found: true, index: left, counters, steps: withSteps ? steps : undefined };
+      const found = arr[left] === target;
+      if (withSteps) {
+        steps.push({
+          array: [...arr],
+          target,
+          currentIndex: left,
+          found,
+          left,
+          right,
+          counters: cloneCounters(counters)
+        });
       }
+      if (found) return { found: true, index: left, counters, steps: withSteps ? steps : undefined };
       break;
     }
     
     const pos = left + Math.floor(
       ((right - left) / (arr[right] - arr[left])) * (target - arr[left])
     );
-    counters.arrayAccesses -= 2; // Already counted above
 
     if (withSteps) {
       steps.push({
@@ -929,9 +926,9 @@ export function interpolationSearchInstrumented(
       });
     }
 
+    // One conceptual comparison at the probe position
     counters.comparisons++;
     counters.arrayAccesses++;
-
     if (arr[pos] === target) {
       if (withSteps) {
         steps.push({
@@ -948,9 +945,7 @@ export function interpolationSearchInstrumented(
       return { found: true, index: pos, counters, steps: withSteps ? steps : undefined };
     }
 
-    counters.comparisons++;
-    counters.arrayAccesses++;
-
+    // Direction decision is not counted as an extra comparison
     if (arr[pos] < target) {
       left = pos + 1;
     } else {
