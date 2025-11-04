@@ -500,7 +500,8 @@ export class SearchingAlgorithms {
     });
 
     while (left <= right) {
-      const mid = Math.floor((left + right) / 2);
+      // Use upper-mid to align with ⌈log₂(n)⌉ for worst case
+      const mid = Math.floor((left + right + 1) / 2);
       comparisons++;
       const found = arr[mid] === target;
       
@@ -581,17 +582,25 @@ export class SearchingAlgorithms {
     // Check the last block boundary if within array bounds
     if (curr < n) {
       comparisons++;
+      const foundAtJumpPoint = arr[curr] === target;
       steps.push({
         array: [...arr],
         target,
         currentIndex: curr,
-        found: false,
+        found: foundAtJumpPoint,
         left: prev,
         right: curr,
         isJumpPoint: true,
-        explanation: `Kiểm tra vị trí ${curr}: ${arr[curr]} ≥ ${target}, tìm trong khối`,
+        explanation: foundAtJumpPoint 
+          ? `Tìm thấy ${target} tại jump point ${curr}` 
+          : `Kiểm tra vị trí ${curr}: ${arr[curr]} ≥ ${target}, tìm trong khối`,
         statistics: { comparisons, auxiliarySpace: 0, executionTime: performance.now() - startTime }
       });
+      
+      // Best case: found at jump point - O(1)
+      if (foundAtJumpPoint) {
+        return steps;
+      }
     }
 
     // Linear search in the identified block

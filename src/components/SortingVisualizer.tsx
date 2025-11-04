@@ -36,6 +36,7 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
   // Use ref to track current state for animation
   const stateRef = useRef(state);
   const animationRef = useRef<boolean>(false);
+  const isSettingTestCaseRef = useRef<boolean>(false);
   
   // Update ref when state changes
   useEffect(() => {
@@ -48,6 +49,12 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
 
   // Memoize array generation for better performance
   const initializeArray = useCallback(() => {
+    // Skip if we're setting a test case
+    if (isSettingTestCaseRef.current) {
+      isSettingTestCaseRef.current = false;
+      return;
+    }
+    
     // Stop any ongoing animation
     animationRef.current = false;
     
@@ -92,9 +99,12 @@ export default function SortingVisualizer({ algorithm, onStepChange }: SortingVi
     const testCase = testCases[testCaseType];
     const newArray = testCase.generate(arraySize);
     
-    // Update array size to match the actual test case size
-    setArraySize(newArray.length);
+    // Set flag to prevent initializeArray from running
+    isSettingTestCaseRef.current = true;
+    
+    // Set array and update size
     setArray(newArray);
+    setArraySize(newArray.length);
     setSteps([]);
     setState(prev => ({
       ...prev,

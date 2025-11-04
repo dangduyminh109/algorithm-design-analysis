@@ -38,6 +38,7 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
   // Animation control with ref for state access
   const stateRef = useRef(state);
   const animationRef = useRef<boolean>(false);
+  const isSettingTestCaseRef = useRef<boolean>(false);
   
   // Update ref when state changes
   useEffect(() => {
@@ -46,6 +47,12 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
 
   // Initialize array
   const initializeArray = useCallback(() => {
+    // Skip if we're setting a test case
+    if (isSettingTestCaseRef.current) {
+      isSettingTestCaseRef.current = false;
+      return;
+    }
+    
     // Stop any ongoing animation
     animationRef.current = false;
     
@@ -90,9 +97,12 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
     const testCase = testCases[testCaseType];
     const newArray = testCase.generate(arraySize);
     
-    // Update array size to match the actual test case size
-    setArraySize(newArray.length);
+    // Set flag to prevent initializeArray from running
+    isSettingTestCaseRef.current = true;
+    
+    // Set array and update size
     setArray(newArray);
+    setArraySize(newArray.length);
     setSteps([]);
     setState(prev => ({
       ...prev,
@@ -276,12 +286,12 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
             {state.isPlaying ? (
               <>
                 <Pause className="w-4 h-4" />
-                <span>{state.isPaused ? 'Tiếp Tục' : 'Tạm Dừng'}</span>
+                <span>{state.isPaused ? 'Resume' : 'Pause'}</span>
               </>
             ) : (
               <>
                 <Play className="w-4 h-4" />
-                <span>Tìm Kiếm</span>
+                <span>Search</span>
               </>
             )}
           </button>
