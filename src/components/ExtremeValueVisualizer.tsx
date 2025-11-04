@@ -276,12 +276,12 @@ export default function ExtremeValueVisualizer({ algorithm, onStepChange }: Extr
             {state.isPlaying ? (
               <>
                 <Pause className="w-4 h-4" />
-                <span>{state.isPaused ? 'Tiếp Tục' : 'Tạm Dừng'}</span>
+                <span>{state.isPaused ? 'Resume' : 'Pause'}</span>
               </>
             ) : (
               <>
                 <Play className="w-4 h-4" />
-                <span>Tìm Kiếm</span>
+                <span>Search</span>
               </>
             )}
           </button>
