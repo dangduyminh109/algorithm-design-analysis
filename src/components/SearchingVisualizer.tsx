@@ -32,12 +32,22 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
   // Performance optimization
   const { isSlowDevice } = usePerformanceOptimization();
 
+  // Animation control refs - declare early to use in callbacks
+  const animationRef = useRef<boolean>(false);
+  const isSettingTestCaseRef = useRef<boolean>(false);
+
   // Array size and settings
   const [arraySize, setArraySize] = useState(isSlowDevice ? 15 : 20);
   const [showSettings, setShowSettings] = useState(false);
 
     // Initialize array
   const initializeArray = useCallback(() => {
+    // Skip if we're setting a test case
+    if (isSettingTestCaseRef.current) {
+      isSettingTestCaseRef.current = false;
+      return;
+    }
+    
     // Stop any ongoing animation
     animationRef.current = false;
     
@@ -97,9 +107,12 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
     // Get algorithm-specific target
     const newTarget = getAlgorithmSpecificTarget(algorithm, newArray, testCaseType);
     
-    // Update array size to match the actual test case size
-    setArraySize(newArray.length);
+    // Set flag to prevent initializeArray from running
+    isSettingTestCaseRef.current = true;
+    
+    // Set array and update size
     setArray(newArray);
+    setArraySize(newArray.length);
     setTarget(newTarget);
     setTargetInput(newTarget.toString());
     setTargetWarning('');
@@ -153,7 +166,6 @@ export default function SearchingVisualizer({ algorithm }: SearchingVisualizerPr
 
   // Animation control with ref for state access
   const stateRef = useRef(state);
-  const animationRef = useRef<boolean>(false);
   
   // Update ref when state changes
   useEffect(() => {
