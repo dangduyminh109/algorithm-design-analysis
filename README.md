@@ -124,10 +124,10 @@ Mỗi code sample đều:
 - npm hoặc yarn
 
 ### Cài Đặt
-
+#### Cách 1
 1. **Clone repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/dangduyminh109/algorithm-design-analysis
    cd algorithm-complexity-visualizer
    ```
 
@@ -144,6 +144,8 @@ Mỗi code sample đều:
 4. **Mở trình duyệt**
    Điều hướng đến [http://localhost:3000](http://localhost:3000)
 
+#### Cách 2
+   Truy cập link: https://algorithm-design-analysis.vercel.app/
 ## Cấu Trúc Dự Án
 
 ```
